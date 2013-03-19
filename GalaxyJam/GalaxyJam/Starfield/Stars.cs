@@ -24,7 +24,7 @@ namespace GalaxyJam.Starfield
             {
                 stars.Add(new BasicSprite(new Vector2(rand.Next(0,width),rand.Next(0,height)),texture,frameRectangle,new Vector2(0, rand.Next(15,40))));
                 Color starColor = colors[rand.Next(0, colors.Count())];
-                starColor *= (float) (rand.Next(30, 80)/100f);
+                starColor *= rand.Next(30, 80)/100f;
                 stars[stars.Count() - 1].TintColor = starColor;
             }
         }
