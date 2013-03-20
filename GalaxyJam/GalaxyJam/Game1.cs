@@ -77,15 +77,15 @@ namespace GalaxyJam
         //Goal stuff move outta here soon
         private Rectangle basket = new Rectangle(85, 208, 76,1);
         private bool goalScored;
-        private int score = 0;
+        private int score;
 
-        private float xOffset = 0;
-        private float yOffset = 0;
-        private double shakeTimer = 0;
-        private double shaketime = 200;
-        private int shakeoffset = 20;
-        private bool shaking = false;
-        private bool shakedireciton = false;
+        private float xOffset;
+        private float yOffset;
+        private double shakeTimer;
+        private const double SHAKE_TIME = 200;
+        private const int SHAKE_OFFSET = 20;
+        private bool shaking;
+        private bool shakeDireciton;
 
         public Game1()
         {
@@ -163,7 +163,7 @@ namespace GalaxyJam
             basketScored = Content.Load<SoundEffect>(@"SoundEffects/BasketScored");
 
             List<Texture2D> particleTextures = new List<Texture2D> {Content.Load<Texture2D>("Textures/ExampleFire")};
-            List<Color> flamingBasketballColors = new List<Color>()
+            List<Color> flamingBasketballColors = new List<Color>
                                                       {
                                                           Color.DarkRed,
                                                           Color.DarkOrange
@@ -428,7 +428,7 @@ namespace GalaxyJam
             }
 
             shakeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (shakeTimer > shaketime)
+            if (shakeTimer > SHAKE_TIME)
             {
                 shakeTimer = 0;
                 shaking = false;
@@ -443,23 +443,23 @@ namespace GalaxyJam
 
         private void ApplyCameraShake(GameTime gameTime)
         {
-            if (shakedireciton)
+            if (shakeDireciton)
             {
                 xOffset -= 1.5f*gameTime.ElapsedGameTime.Milliseconds;
-                if (xOffset < -shakeoffset)
+                if (xOffset < -SHAKE_OFFSET)
                 {
-                    xOffset = -shakeoffset;
-                    shakedireciton = !shakedireciton;
+                    xOffset = -SHAKE_OFFSET;
+                    shakeDireciton = !shakeDireciton;
                 }
                 yOffset = xOffset;
             }
             else
             {
                 xOffset += 1.5f*gameTime.ElapsedGameTime.Milliseconds;
-                if (xOffset > shakeoffset)
+                if (xOffset > SHAKE_OFFSET)
                 {
-                    xOffset = shakeoffset;
-                    shakedireciton = !shakedireciton;
+                    xOffset = SHAKE_OFFSET;
+                    shakeDireciton = !shakeDireciton;
                 }
                 yOffset = xOffset;
             }
