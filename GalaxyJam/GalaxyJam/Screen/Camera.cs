@@ -17,7 +17,7 @@ namespace GalaxyJam.Screen
             set
             {
                 position = value;
-                ValidatePosition();
+                //ValidatePosition();
             }
         }
 

@@ -43,7 +43,7 @@ namespace GalaxyJam.Particles
 
             Color particleColor = colors[random.Next(0, colors.Count)];
 
-            float size = 1.8f;
+            float size = 1f;
             
             int ttl = 10;// +random.Next(20);
 

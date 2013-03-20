@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
-using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
-using GalaxyJam.Goals;
 using GalaxyJam.Particles;
 using GalaxyJam.Screen;
 using GalaxyJam.Starfield;
@@ -53,7 +51,6 @@ namespace GalaxyJam
         private Body backboardBody;
         private Body leftRimBody;
         private Body rightRimBody;
-        private Body basketBody;
 
         //Random
         private Random rand = new Random();
@@ -71,10 +68,24 @@ namespace GalaxyJam
 
         //Sounds
         private SoundEffect basketBallShotSoundEffect;
+        private SoundEffect basketScored;
         private bool muteSounds;
 
         //Particles
         private ParticleEngine basketballFlameParticleEngine;
+
+        //Goal stuff move outta here soon
+        private Rectangle basket = new Rectangle(85, 208, 76,1);
+        private bool goalScored;
+        private int score = 0;
+
+        private float xOffset = 0;
+        private float yOffset = 0;
+        private double shakeTimer = 0;
+        private double shaketime = 200;
+        private int shakeoffset = 20;
+        private bool shaking = false;
+        private bool shakedireciton = false;
 
         public Game1()
         {
@@ -140,12 +151,6 @@ namespace GalaxyJam
             rightRimBody.Restitution = 0.3f;
             rightRimBody.Friction = 0.1f;
 
-            Vector2 basketPosition = new Vector2(123/METER_IN_PIXEL,208/METER_IN_PIXEL);
-            basketBody = BodyFactory.CreateRectangle(world, 76f/METER_IN_PIXEL, 1f/METER_IN_PIXEL, 0f, basketPosition);
-            basketBody.BodyType = BodyType.Static;
-            basketBody.Friction = 0f;
-            basketBody.Restitution = 0f;
-
             segoe = Content.Load<SpriteFont>("Fonts/Segoe");
 
             lineSprite = Content.Load<Texture2D>("Textures/LineSprite");
@@ -155,6 +160,7 @@ namespace GalaxyJam
             MediaPlayer.IsRepeating = true;
 
             basketBallShotSoundEffect = Content.Load<SoundEffect>(@"SoundEffects/BasketballShot");
+            basketScored = Content.Load<SoundEffect>(@"SoundEffects/BasketScored");
 
             List<Texture2D> particleTextures = new List<Texture2D> {Content.Load<Texture2D>("Textures/ExampleFire")};
             List<Color> flamingBasketballColors = new List<Color>()
@@ -168,18 +174,8 @@ namespace GalaxyJam
                          {
                              Limits = null
                          };
-
-            basketBody.OnCollision += OnBasket;
         }
 
-        public bool OnBasket(Fixture fixtureOne, Fixture fixtureTwo, Contact contact)
-        {
-            if (!muteSounds)
-            {
-                basketBallShotSoundEffect.Play(1.0f, 0.0f, 0.0f);
-            }
-            return false;
-        }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -203,6 +199,7 @@ namespace GalaxyJam
                 case GameStates.Playing:
                     if (!songStart)
                     {
+                        MediaPlayer.Volume = .8f;
                         MediaPlayer.Play(bgm);
                         songStart = true;
                     }
@@ -212,11 +209,39 @@ namespace GalaxyJam
                     HandlePosition();
                     basketballFlameParticleEngine.EmitterLocation = basketBallBody.Position*METER_IN_PIXEL;
                     basketballFlameParticleEngine.Update();
+
+                    Vector2 basketballCenter = basketBallBody.WorldCenter*METER_IN_PIXEL;
+                    Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X-8, (int)basketballCenter.Y-8, 16, 16);
+                    if (GoalScored(basketballCenterRectangle) && !goalScored)
+                    {
+                        goalScored = true; 
+                        if (!muteSounds)
+                        {
+                            basketScored.Play(1.0f, 0.0f, 0.0f);
+                        }
+                        score += 100;
+                        shaking = true;
+                    }
+
+                    if (shaking)
+                    {
+                        ShakeCamera(gameTime);
+                    }
+                    else
+                    {
+                        camera.Position = Vector2.Zero;
+                    }
+
                     break;
                 case GameStates.Paused:
                     break;
             }
             base.Update(gameTime);
+        }
+
+        protected bool GoalScored(Rectangle basketball)
+        {
+            return basket.Intersects(basketball);
         }
 
         /// <summary>
@@ -249,12 +274,11 @@ namespace GalaxyJam
                     Vector2 rightRimPosition = rightRimBody.Position*METER_IN_PIXEL;
                     Vector2 rightRimOrigin = new Vector2(rimSprite.Width/2f, rimSprite.Height/2f);
 
-                    Vector2 basketPosition = basketBody.Position*METER_IN_PIXEL;
-                    Vector2 basketOrigin = new Vector2(lineSprite.Width/2f, lineSprite.Height/2f);
-
                     //draw starfield separate from other draw methods to keep it simple
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
+                    spriteBatch.Draw(lineSprite, new Rectangle(0,0,1280,720),Color.Black);
                     starField.Draw(spriteBatch);
+                    spriteBatch.Draw(lineSprite, basket, Color.White);
                     spriteBatch.End();
 
                     //draw particle engine separate from other draw methods so that we can take advantage of additive blending
@@ -272,7 +296,8 @@ namespace GalaxyJam
                     spriteBatch.Draw(rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
                     //draw right rim
                     spriteBatch.Draw(rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
-                    spriteBatch.Draw(lineSprite, basketPosition, null, Color.White, 0f, basketOrigin, 1f, SpriteEffects.None, 0f);
+                    string currentScore = String.Format("Player Score: {0}", score);
+                    spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
                     spriteBatch.End();
 
                     break;
@@ -308,6 +333,7 @@ namespace GalaxyJam
                 world.Gravity.Y = 0;
                 basketBallBody.Awake = false;
                 basketBallBody.Position = RandomizePosition();
+                goalScored = false;
             }
         }
 
@@ -392,6 +418,52 @@ namespace GalaxyJam
         {
             camera.Zoom = 1f;
             camera.Position = Vector2.Zero;
+        }
+
+        private void ShakeCamera(GameTime gameTime)
+        {
+            if (shakeTimer == 0)
+            {
+                camera.Position = Vector2.Zero;
+            }
+
+            shakeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (shakeTimer > shaketime)
+            {
+                shakeTimer = 0;
+                shaking = false;
+                xOffset = 0;
+                yOffset = 0;
+            }
+            else
+            {
+                ApplyCameraShake(gameTime);
+            }
+        }
+
+        private void ApplyCameraShake(GameTime gameTime)
+        {
+            if (shakedireciton)
+            {
+                xOffset -= 1.5f*gameTime.ElapsedGameTime.Milliseconds;
+                if (xOffset < -shakeoffset)
+                {
+                    xOffset = -shakeoffset;
+                    shakedireciton = !shakedireciton;
+                }
+                yOffset = xOffset;
+            }
+            else
+            {
+                xOffset += 1.5f*gameTime.ElapsedGameTime.Milliseconds;
+                if (xOffset > shakeoffset)
+                {
+                    xOffset = shakeoffset;
+                    shakedireciton = !shakedireciton;
+                }
+                yOffset = xOffset;
+            }
+            camera.Position = new Vector2(xOffset, yOffset);
         }
     }
 }
