@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using GalaxyJam.Particles;
 using GalaxyJam.Screen;
@@ -23,7 +24,6 @@ namespace GalaxyJam
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private Camera camera;
-        private Vector2 screenCenter;
 
         //Game State
         private enum GameStates
@@ -39,7 +39,9 @@ namespace GalaxyJam
         private Texture2D lineSprite;
         private Texture2D backboardSprite;
         private Texture2D rimSprite;
+        private Texture2D rimSpriteGlow;
         private Texture2D galaxyJamLogo;
+        private Texture2D backboardSpriteGlow;
 
         //Input
         private InputManager input;
@@ -87,6 +89,16 @@ namespace GalaxyJam
         private bool shaking;
         private bool shakeDireciton;
 
+        private const double GLOWTIME = 200;
+        private bool backboardCollisionHappened;
+        private double backboardGlowTimer;
+
+        private bool leftRimCollisionHappened;
+        private double leftrimGlowTimer;
+
+        private bool rightRimCollisionHappened;
+        private double rightrimGlowTimer;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this) {PreferredBackBufferWidth = 1280, PreferredBackBufferHeight = 720};
@@ -119,8 +131,6 @@ namespace GalaxyJam
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenCenter = new Vector2(graphics.GraphicsDevice.Viewport.Width/2f,
-                                       graphics.GraphicsDevice.Viewport.Height/2f);
 
             galaxyJamLogo = Content.Load<Texture2D>("Textures/GalaxyJamLogo");
 
@@ -131,25 +141,30 @@ namespace GalaxyJam
             basketBallBody.Restitution = 0.3f;
             basketBallBody.Friction = 0.5f;
 
-            backboardSprite = Content.Load<Texture2D>("Textures/Backboard");
+            backboardSprite = Content.Load<Texture2D>("Textures/Backboard2");
+            backboardSpriteGlow = Content.Load<Texture2D>("Textures/Backboard2Glow");
             Vector2 backboardPosition = new Vector2(64f/METER_IN_PIXEL, 116f/METER_IN_PIXEL);
             backboardBody = BodyFactory.CreateRectangle(world, 6f/METER_IN_PIXEL, 140f/METER_IN_PIXEL, 1f, backboardPosition);
             backboardBody.BodyType = BodyType.Static;
             backboardBody.Restitution = 0.3f;
             backboardBody.Friction = 0.1f;
+            backboardBody.OnCollision += BackboardCollision;
 
-            rimSprite = Content.Load<Texture2D>("Textures/Rim");
+            rimSprite = Content.Load<Texture2D>("Textures/Rim2");
+            rimSpriteGlow = Content.Load<Texture2D>("Textures/Rim2Glow");
             Vector2 leftRimPosition = new Vector2(80f/METER_IN_PIXEL, 206/METER_IN_PIXEL);
             leftRimBody = BodyFactory.CreateRectangle(world, 10f/METER_IN_PIXEL, 16f/METER_IN_PIXEL, 1f, leftRimPosition);
             leftRimBody.BodyType = BodyType.Static;
             leftRimBody.Restitution = 0.3f;
             leftRimBody.Friction = 0.1f;
+            leftRimBody.OnCollision += LeftRimCollision;
 
             Vector2 rightRimPosition = new Vector2(166/METER_IN_PIXEL, 206/METER_IN_PIXEL);
             rightRimBody = BodyFactory.CreateRectangle(world, 10f/METER_IN_PIXEL, 16f/METER_IN_PIXEL, 1f, rightRimPosition);
             rightRimBody.BodyType = BodyType.Static;
             rightRimBody.Restitution = 0.3f;
             rightRimBody.Friction = 0.1f;
+            rightRimBody.OnCollision += RightRimCollision;
 
             segoe = Content.Load<SpriteFont>("Fonts/Segoe");
 
@@ -176,6 +191,23 @@ namespace GalaxyJam
                          };
         }
 
+        public bool BackboardCollision(Fixture f1, Fixture f2, Contact contact)
+        {
+            backboardCollisionHappened = true;
+            return true;
+        }
+
+        public bool LeftRimCollision(Fixture f1, Fixture f2, Contact contact)
+        {
+            leftRimCollisionHappened = true;
+            return true;
+        }
+
+        public bool RightRimCollision(Fixture f1, Fixture f2, Contact contact)
+        {
+            rightRimCollisionHappened = true;
+            return true;
+        }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -232,6 +264,21 @@ namespace GalaxyJam
                         camera.Position = Vector2.Zero;
                     }
 
+                    if (backboardCollisionHappened)
+                    {
+                        GlowBackboard(gameTime);
+                    }
+
+                    if (leftRimCollisionHappened)
+                    {
+                        GlowLeftRim(gameTime);
+                    }
+
+                    if (rightRimCollisionHappened)
+                    {
+                        GlowRightRim(gameTime);
+                    }
+
                     break;
                 case GameStates.Paused:
                     break;
@@ -278,7 +325,6 @@ namespace GalaxyJam
                     spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
                     spriteBatch.Draw(lineSprite, new Rectangle(0,0,1280,720),Color.Black);
                     starField.Draw(spriteBatch);
-                    spriteBatch.Draw(lineSprite, basket, Color.White);
                     spriteBatch.End();
 
                     //draw particle engine separate from other draw methods so that we can take advantage of additive blending
@@ -291,13 +337,15 @@ namespace GalaxyJam
                     //draw basketball
                     spriteBatch.Draw(basketBallSprite, basketBallPosition, null, Color.White, basketBallRotation, basketBallOrigin, 1f, SpriteEffects.None, 0f);
                     //draw backboard
-                    spriteBatch.Draw(backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(backboardCollisionHappened ? backboardSpriteGlow : backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
                     //draw left rim
-                    spriteBatch.Draw(rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
                     //draw right rim
-                    spriteBatch.Draw(rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
+
                     string currentScore = String.Format("Player Score: {0}", score);
                     spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
+
                     spriteBatch.End();
 
                     break;
@@ -464,6 +512,36 @@ namespace GalaxyJam
                 yOffset = xOffset;
             }
             camera.Position = new Vector2(xOffset, yOffset);
+        }
+
+        private void GlowBackboard(GameTime gameTime)
+        {
+            backboardGlowTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (backboardGlowTimer > GLOWTIME)
+            {
+                backboardCollisionHappened = false;
+                backboardGlowTimer = 0;
+            }
+        }
+
+        private void GlowLeftRim(GameTime gameTime)
+        {
+            leftrimGlowTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (leftrimGlowTimer > GLOWTIME)
+            {
+                leftRimCollisionHappened = false;
+                leftrimGlowTimer = 0;
+            }
+        }
+
+        private void GlowRightRim(GameTime gameTime)
+        {
+            rightrimGlowTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (rightrimGlowTimer > GLOWTIME)
+            {
+                rightRimCollisionHappened = false;
+                rightrimGlowTimer = 0;
+            }
         }
     }
 }
