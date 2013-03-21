@@ -105,13 +105,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\GalaxyJamLogo.png">
-      <Name>GalaxyJamLogo</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="SoundEffects\BasketScored.wav">
       <Name>BasketScored</Name>
       <Importer>WavImporter</Importer>
@@ -147,6 +140,20 @@
   <ItemGroup>
     <Compile Include="Textures\SimpleParticle12px.png">
       <Name>SimpleParticle12px</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\GalaxyJamLogo.jpg">
+      <Name>GalaxyJamLogo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\BasketBall2.png">
+      <Name>BasketBall2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

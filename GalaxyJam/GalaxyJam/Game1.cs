@@ -142,7 +142,7 @@ namespace GalaxyJam
 
             galaxyJamLogo = Content.Load<Texture2D>("Textures/GalaxyJamLogo");
 
-            basketBallSprite = Content.Load<Texture2D>("Textures/BasketBall"); //32x32 => .5m x .5m
+            basketBallSprite = Content.Load<Texture2D>("Textures/BasketBall2"); //32x32 => .5m x .5m
             Vector2 basketBallPosition = new Vector2((rand.Next(370,1230))/METER_IN_PIXEL,(rand.Next(310,680))/METER_IN_PIXEL);
             basketBallBody = BodyFactory.CreateCircle(world, 32f/(2f*METER_IN_PIXEL), 1f, basketBallPosition);
             basketBallBody.BodyType = BodyType.Dynamic;
