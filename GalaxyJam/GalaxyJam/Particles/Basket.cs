@@ -5,12 +5,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GalaxyJam.Particles
 {
-    public class ParticleEngine
+    public class Basket
     {
         private Random random;
         public Vector2 EmitterLocation { get; set; }
         private List<Particle> particlesList;
         private List<Texture2D> texturesList;
+
+        private bool toTheLeft;
+
         private List<Color> colors = new List<Color>();
         public List<Color> Colors
         {
@@ -18,13 +21,14 @@ namespace GalaxyJam.Particles
             set { colors = value; }
         }
 
-        public ParticleEngine(List<Texture2D> textures, Vector2 location, List<Color> colorList)
+        public Basket(List<Texture2D> textures, Vector2 location, List<Color> colorList, bool flowToTheLeft)
         {
             EmitterLocation = location;
             texturesList = textures;
             particlesList = new List<Particle>();
             random = new Random();
             Colors = colorList;
+            toTheLeft = flowToTheLeft;
         }
 
         private Particle GenerateNewParticle()
@@ -33,28 +37,27 @@ namespace GalaxyJam.Particles
 
             Vector2 position = EmitterLocation;
 
-            Vector2 velocity = new Vector2(1f * (float)(random.NextDouble() * 2 - 1),1f * (float)(random.NextDouble() * 2 - 1));
+            //Vector2 velocity = new Vector2(1f * (float)(random.NextDouble() * 2 - 1), 1f * (float)(random.NextDouble() * 2 - 1));
             //Vector2 velocity = new Vector2(0,0);
+            Vector2 velocity = new Vector2(1, 0);
 
             const float angle = 0;
             float angularVelocity = 0.1f * (float)(random.NextDouble() * 2 - 1);
-            
+
             //float size = (float)random.NextDouble();
 
             Color particleColor = colors[random.Next(0, colors.Count)];
 
             float size = 1f;
-            
-            int ttl = 10;// +random.Next(20);
 
-            
+            int ttl = 10;// +random.Next(20);
 
             return new Particle(texture, position, velocity, angle, angularVelocity, particleColor, size, ttl);
         }
 
         public void Update()
         {
-            int total = 20;
+            int total = 8;
 
             for (int i = 0; i < total; i++)
             {

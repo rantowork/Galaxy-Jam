@@ -74,13 +74,20 @@ namespace GalaxyJam
         private bool muteSounds;
 
         //Particles
-        private ParticleEngine basketballFlameParticleEngine;
+        private BasketballFlame basketballFlameParticleEngine;
 
-        //Goal stuff move outta here soon
+        //Goal stuff move outta here soon!
         private Rectangle basket = new Rectangle(85, 208, 76,1);
         private bool goalScored;
-        private int score;
+        private double score;
+        private int multiplier = 1;
+        private bool backboardHit;
+        private bool rimHit;
+        private int streak;
+        private bool scoreOnShot;
+        private bool scoreOnLastShot;
 
+        //screen shake get me outta here!
         private float xOffset;
         private float yOffset;
         private double shakeTimer;
@@ -89,6 +96,7 @@ namespace GalaxyJam
         private bool shaking;
         private bool shakeDireciton;
 
+        //collisions get me outta here!
         private const double GLOWTIME = 200;
         private bool backboardCollisionHappened;
         private double backboardGlowTimer;
@@ -183,7 +191,7 @@ namespace GalaxyJam
                                                           Color.DarkRed,
                                                           Color.DarkOrange
                                                       };
-            basketballFlameParticleEngine = new ParticleEngine(particleTextures, new Vector2(-40, -40), flamingBasketballColors);
+            basketballFlameParticleEngine = new BasketballFlame(particleTextures, new Vector2(-40, -40), flamingBasketballColors);
 
             camera = new Camera(GraphicsDevice.Viewport)
                          {
@@ -194,18 +202,21 @@ namespace GalaxyJam
         public bool BackboardCollision(Fixture f1, Fixture f2, Contact contact)
         {
             backboardCollisionHappened = true;
+            backboardHit = true;
             return true;
         }
 
         public bool LeftRimCollision(Fixture f1, Fixture f2, Contact contact)
         {
             leftRimCollisionHappened = true;
+            rimHit = true;
             return true;
         }
 
         public bool RightRimCollision(Fixture f1, Fixture f2, Contact contact)
         {
             rightRimCollisionHappened = true;
+            rimHit = true;
             return true;
         }
 
@@ -251,7 +262,20 @@ namespace GalaxyJam
                         {
                             basketScored.Play(1.0f, 0.0f, 0.0f);
                         }
-                        score += 100;
+
+                        if (!backboardHit && !rimHit)
+                        {
+                            multiplier += 2;
+                        }
+
+                        if (!backboardHit && rimHit)
+                        {
+                            multiplier++;
+                        }
+
+                        scoreOnShot = true;
+                        streak++;
+                        score += 100 * multiplier;
                         shaking = true;
                     }
 
@@ -277,6 +301,15 @@ namespace GalaxyJam
                     if (rightRimCollisionHappened)
                     {
                         GlowRightRim(gameTime);
+                    }
+
+                    if (streak >= 3)
+                    {
+                        basketballFlameParticleEngine.Colors = new List<Color> { Color.Blue, Color.Purple };
+                    }
+                    else
+                    {
+                        basketballFlameParticleEngine.Colors = new List<Color>{Color.DarkRed, Color.DarkOrange};
                     }
 
                     break;
@@ -346,6 +379,12 @@ namespace GalaxyJam
                     string currentScore = String.Format("Player Score: {0}", score);
                     spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
 
+                    string currentMultiplier = String.Format("Multiplier: {0}", multiplier);
+                    spriteBatch.DrawString(segoe, currentMultiplier, new Vector2(1180, 10), Color.White);
+
+                    string currentStreak = String.Format("Streak: {0}", streak);
+                    spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
+
                     spriteBatch.End();
 
                     break;
@@ -382,6 +421,16 @@ namespace GalaxyJam
                 basketBallBody.Awake = false;
                 basketBallBody.Position = RandomizePosition();
                 goalScored = false;
+                backboardHit = false;
+                rimHit = false;
+                if (scoreOnShot)
+                {
+                    scoreOnShot = false;
+                }
+                else if (!scoreOnShot)
+                {
+                    streak = 0;
+                }
             }
         }
 
