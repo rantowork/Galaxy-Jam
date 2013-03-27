@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -106,7 +107,7 @@ namespace GalaxyJam
 
         private bool rightRimCollisionHappened;
         private double rightrimGlowTimer;
-
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this) {PreferredBackBufferWidth = 1280, PreferredBackBufferHeight = 720};
@@ -114,6 +115,7 @@ namespace GalaxyJam
             Content.RootDirectory = "Content";
             input = new InputManager(Services, Window.Handle);
             Components.Add(input);
+            Components.Add(new ParticleEmitter(this, 100));
 
             world = new World(Vector2.Zero);
         }
@@ -187,11 +189,9 @@ namespace GalaxyJam
             rightRimBody.OnCollision += RightRimCollision;
 
             starField = new Stars(Window.ClientBounds.Width, Window.ClientBounds.Height, 300, lineSprite, new Rectangle(0,0,2,2));
-
             
             MediaPlayer.IsRepeating = true;
 
-           
             List<Color> flamingBasketballColors = new List<Color>
                                                       {
                                                           Color.DarkRed,

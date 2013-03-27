@@ -92,6 +92,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\2D\Particle.cs" />
+    <Compile Include="Effects\2D\ParticleEmitter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Fonts.cs" />
     <Compile Include="Resources\Music.cs" />
