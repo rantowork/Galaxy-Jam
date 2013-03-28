@@ -31,6 +31,7 @@ namespace GalaxyJam.Particles
             Ttl--;
             Position += Velocity;
             Angle += AngularVelocity;
+            Size -= .05f;
         }
 
         public void Draw(SpriteBatch spriteBatch)

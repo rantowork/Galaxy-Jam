@@ -55,7 +55,7 @@ namespace GalaxyJam.Particles
             return new Particle(texture, position, velocity, angle, angularVelocity, particleColor, size, ttl);
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             int total = 8;
 

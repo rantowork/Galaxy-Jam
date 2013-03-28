@@ -5,14 +5,13 @@ using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using GalaxyJam.Particles;
 using GalaxyJam.Screen;
-using GalaxyJam.Starfield;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
-using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -45,6 +44,8 @@ namespace GalaxyJam
         private Texture2D rimSpriteGlow;
         private Texture2D galaxyJamLogo;
         private Texture2D backboardSpriteGlow;
+        private Texture2D twopxsolidstar;
+        private Texture2D fourpxblurstar;
 
         //Input
         private InputManager input;
@@ -65,7 +66,7 @@ namespace GalaxyJam
         private SpriteFont pixel;
 
         //Starfield
-        private Stars starField;
+        private Starfield starField;
 
         //Music
         private Song bgm;
@@ -115,7 +116,7 @@ namespace GalaxyJam
             Content.RootDirectory = "Content";
             input = new InputManager(Services, Window.Handle);
             Components.Add(input);
-            Components.Add(new ParticleEmitter(this, 100));
+            //Components.Add(new ParticleEmitter(this, 100));
 
             world = new World(Vector2.Zero);
         }
@@ -149,7 +150,10 @@ namespace GalaxyJam
             rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
             rimSpriteGlow = Textures.LoadPersistentTexture("Textures/Rim2Glow", Content);
             lineSprite = Textures.LoadPersistentTexture("Textures/LineSprite", Content);
+            twopxsolidstar = Textures.LoadPersistentTexture("Textures/2x2SolidStar", Content);
+            fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
             List<Texture2D> particleTextures = new List<Texture2D> { Textures.LoadPersistentTexture("Textures/ExampleFire", Content) };
+            List<Texture2D> starTextures = new List<Texture2D>{ twopxsolidstar, fourpxblurstar };
 
             segoe = Fonts.LoadPersistentFont("Fonts/Segoe", Content);
             pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
@@ -188,14 +192,13 @@ namespace GalaxyJam
             rightRimBody.Friction = 0.1f;
             rightRimBody.OnCollision += RightRimCollision;
 
-            starField = new Stars(Window.ClientBounds.Width, Window.ClientBounds.Height, 300, lineSprite, new Rectangle(0,0,2,2));
+            starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 800, starTextures);
             
             MediaPlayer.IsRepeating = true;
 
             List<Color> flamingBasketballColors = new List<Color>
                                                       {
-                                                          Color.DarkRed,
-                                                          Color.DarkOrange
+                                                          Color.White,
                                                       };
             basketballFlameParticleEngine = new BasketballFlame(particleTextures, new Vector2(-40, -40), flamingBasketballColors);
 

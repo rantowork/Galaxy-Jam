@@ -1,42 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GalaxyJam.Sprites
+namespace SpoidaGamesArcadeLibrary.Effects.Environment
 {
-    public class BasicSprite
+    public class Stars
     {
         public Texture2D texture;
 
         protected List<Rectangle> frames = new List<Rectangle>();
-        private int frameWidth = 0;
-        private int frameHeight = 0;
+        private int frameWidth;
+        private int frameHeight;
         private int currentFrame;
-        private float frameTime = 0.1f;
-        private float timeForCurrentFrame = 0.0f;
 
         private Color tintColor = Color.White;
-        private float rotation = 0.0f;
-
-        public int CollisionRadius = 0;
-        public int BoundingXPadding = 0;
-        public int BoundingYPadding = 0;
+        private float rotation;
 
         protected Vector2 location = Vector2.Zero;
         protected Vector2 velocity = Vector2.Zero;
 
-        public BasicSprite(Vector2 spriteLocation, Texture2D spriteTexture, Rectangle spriteInitialFrame, Vector2 spriteVelocity)
+        public Stars(Vector2 spriteLocation, Texture2D spriteTexture, Vector2 spriteVelocity)
         {
             location = spriteLocation;
             texture = spriteTexture;
             velocity = spriteVelocity;
 
-            frames.Add(spriteInitialFrame);
-            frameWidth = spriteInitialFrame.Width;
-            frameHeight = spriteInitialFrame.Height;
+            frames.Add(new Rectangle(0, 0, spriteTexture.Width, spriteTexture.Height));
+            frameWidth = spriteTexture.Width;
+            frameHeight = spriteTexture.Height;
         }
 
         public Vector2 Location
@@ -69,12 +60,6 @@ namespace GalaxyJam.Sprites
             set { currentFrame = (int)MathHelper.Clamp(value, 0, frames.Count - 1); }
         }
 
-        public float FrameTime
-        {
-            get { return frameTime; }
-            set { frameTime = MathHelper.Max(0, value); }
-        }
-
         public Rectangle Source
         {
             get { return frames[currentFrame]; }
@@ -98,14 +83,6 @@ namespace GalaxyJam.Sprites
         public virtual void Update(GameTime gameTime)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            timeForCurrentFrame += elapsed;
-
-            if (timeForCurrentFrame >= FrameTime)
-            {
-                currentFrame = (currentFrame + 1) % (frames.Count);
-                timeForCurrentFrame = 0.0f;
-            }
-
             location += (velocity * elapsed);
         }
 

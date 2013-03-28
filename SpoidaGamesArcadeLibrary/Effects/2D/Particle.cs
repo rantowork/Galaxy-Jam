@@ -14,6 +14,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         public int height;
         public Vector2 origin;
         public int depth;
+        public int timeToLive;
 
         public Texture2D Texture
         {
@@ -33,6 +34,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
             color = Color.White;
             origin = Vector2.Zero;
             depth = 0;
+            timeToLive = 10;
         }
 
         public void Draw(SpriteBatch spriteBatch)
