@@ -11,7 +11,20 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         public Vector2 EmitterLocation { get; set; }
         private List<Particle> particles;
         private List<Texture2D> textures;
+        
         private List<Color> colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
+        public List<Color> Colors
+        {
+            get { return colors; }
+            set { colors = value; }
+        }
+
+        private int particleCount = 50;
+        public int ParticleCount
+        {
+            get { return particleCount; }
+            set { particleCount = value; }
+        }
 
         public SparkleEmitter(List<Texture2D> textures, Vector2 location)
         {
@@ -23,7 +36,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
  
         public void Update()
         {
-            int total = 100;
+            int total = particleCount;
  
             for (int i = 0; i < total; i++)
             {

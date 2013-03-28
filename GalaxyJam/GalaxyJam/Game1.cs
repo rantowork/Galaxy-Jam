@@ -81,13 +81,8 @@ namespace GalaxyJam
         //Particles
         private SparkleEmitter basketballSparkle;
 
-        //Goal stuff move outta here soon!
-        private Rectangle basket = new Rectangle(85, 208, 76,1);
-        private bool goalScored;
-        private bool backboardHit;
-        private bool rimHit;
-        private bool scoreOnShot;
-        private GoalManager goalManager = new GoalManager(100);
+        //Game goals
+        private GoalManager goalManager = new GoalManager(100, true, new Rectangle(85, 208, 76, 1));
 
         //screen shake get me outta here!
 
@@ -218,8 +213,8 @@ namespace GalaxyJam
                     break;
                 case GameStates.Playing:
                     SoundManager.PlayBackgroundMusic(bgm, .8f);
-
                     starField.Update(gameTime);
+                    
                     world.Step((float) gameTime.ElapsedGameTime.TotalMilliseconds*0.001f);
                     HandleInput();
                     HandlePosition();
@@ -229,36 +224,7 @@ namespace GalaxyJam
 
                     Vector2 basketballCenter = basketBallBody.WorldCenter*METER_IN_PIXEL;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X-8, (int)basketballCenter.Y-8, 16, 16);
-                    if (GoalScored(basketballCenterRectangle) && !goalScored)
-                    {
-                        goalScored = true;
-
-                        SoundManager.PlaySoundEffect(basketScoredSoundEffect, 1.0f, 0.0f, 0.0f);
-
-                        if (!backboardHit && !rimHit)
-                        {
-                            goalManager.ScoreMulitplier += 2;
-                        }
-
-                        if (!backboardHit && rimHit)
-                        {
-                            goalManager.ScoreMulitplier++;
-                        }
-
-                        scoreOnShot = true;
-                        goalManager.Streak++;
-                        goalManager.GoalScored();
-                        camera.Shaking = true;
-                    }
-
-                    if (camera.Shaking)
-                    {
-                        camera.ShakeCamera(gameTime);
-                    }
-                    else
-                    {
-                        camera.Position = Vector2.Zero;
-                    }
+                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle);
 
                     if (backboardCollisionHappened)
                     {
@@ -275,21 +241,18 @@ namespace GalaxyJam
                         GlowRightRim(gameTime);
                     }
 
-                    if (goalManager.Streak >= 3)
+                    if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0,0,2,0))
                     {
-                        
+                        gameState = GameStates.Paused;
                     }
 
                     break;
                 case GameStates.Paused:
+                    SoundManager.PlayBackgroundMusic(bgm, .8f);
+                    starField.Update(gameTime);
                     break;
             }
             base.Update(gameTime);
-        }
-
-        protected bool GoalScored(Rectangle basketball)
-        {
-            return basket.Intersects(basketball);
         }
 
         /// <summary>
@@ -352,10 +315,33 @@ namespace GalaxyJam
                     string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
                     spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
 
+                    string timeRemaining = String.Format("Time Remaining: {0}", GameTimer.GetElapsedGameTime());
+                    spriteBatch.DrawString(pixel, timeRemaining, new Vector2(10, 694), Color.White);
+
                     spriteBatch.End();
 
                     break;
                 case GameStates.Paused:
+                    //TODO: this isn't really the paused state, i'm using this for the post game state for now
+                    spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
+                    spriteBatch.Draw(lineSprite, new Rectangle(0,0,1280,720),Color.Black);
+                    starField.Draw(spriteBatch);
+                    spriteBatch.End();
+
+                    spriteBatch.Begin(); 
+                    string currentScore2 = String.Format("Player Score: {0}", goalManager.GameScore);
+                    spriteBatch.DrawString(segoe, currentScore2, new Vector2(10, 10), Color.White);
+
+                    string currentMultiplier2 = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
+                    spriteBatch.DrawString(pixel, currentMultiplier2, new Vector2(1020, 694), Color.White);
+
+                    string currentStreak2 = String.Format("Streak: {0}", goalManager.Streak);
+                    spriteBatch.DrawString(segoe, currentStreak2, new Vector2(1180, 22), Color.White);
+
+                    string timeRemaining2 = String.Format("Time Remaining: {0}", String.Format("{0:00}:{1:00}", new TimeSpan(0,0,0,0).Minutes, new TimeSpan(0,0,0,0).Seconds));
+                    spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
+
+                    spriteBatch.End();
                     break;
             }
 
@@ -384,14 +370,14 @@ namespace GalaxyJam
                 world.Gravity.Y = 0;
                 basketBallBody.Awake = false;
                 basketBallBody.Position = RandomizePosition();
-                goalScored = false;
-                backboardHit = false;
-                rimHit = false;
-                if (scoreOnShot)
+                goalManager.GoalScored = false;
+                goalManager.BackboardHit = false;
+                goalManager.RimHit = false;
+                if (goalManager.ScoredOnShot)
                 {
-                    scoreOnShot = false;
+                    goalManager.ScoredOnShot = false;
                 }
-                else if (!scoreOnShot)
+                else if (!goalManager.ScoredOnShot)
                 {
                     goalManager.Streak = 0;
                 }
@@ -433,6 +419,7 @@ namespace GalaxyJam
                     camera.Limits = new Rectangle(0, 0, 1280, 720);
                     camera.ResetCamera();
                     gameState = GameStates.Playing;
+                    GameTimer.StartGameTimer();
                 }
                 if (character == 27)
                 {
@@ -501,7 +488,7 @@ namespace GalaxyJam
         public bool BackboardCollision(Fixture f1, Fixture f2, Contact contact)
         {
             backboardCollisionHappened = true;
-            backboardHit = true;
+            goalManager.BackboardHit = true;
             SoundManager.PlaySoundEffect(collisionSoundEffect, .8f, 0.0f, 0.0f);
             return true;
         }
@@ -509,7 +496,7 @@ namespace GalaxyJam
         public bool LeftRimCollision(Fixture f1, Fixture f2, Contact contact)
         {
             leftRimCollisionHappened = true;
-            rimHit = true;
+            goalManager.RimHit = true;
             SoundManager.PlaySoundEffect(collisionSoundEffect, .8f, 0.0f, 0.0f);
             return true;
         }
@@ -517,7 +504,7 @@ namespace GalaxyJam
         public bool RightRimCollision(Fixture f1, Fixture f2, Contact contact)
         {
             rightRimCollisionHappened = true;
-            rimHit = true;
+            goalManager.RimHit = true;
             SoundManager.PlaySoundEffect(collisionSoundEffect, .8f, 0.0f, 0.0f);
             return true;
         }
