@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
-using GalaxyJam.Screen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +12,7 @@ using Nuclex.Input;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
+using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -276,10 +276,6 @@ namespace GalaxyJam
                     }
 
                     if (goalManager.Streak >= 3)
-                    {
-                        
-                    }
-                    else
                     {
                         
                     }

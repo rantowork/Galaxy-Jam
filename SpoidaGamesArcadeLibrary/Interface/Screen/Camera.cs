@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GalaxyJam.Screen
+namespace SpoidaGamesArcadeLibrary.Interface.Screen
 {
-    class Camera
+    public class Camera
     {
         private const float MIN_ZOOM = 0.1f;
 
