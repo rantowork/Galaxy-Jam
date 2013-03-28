@@ -10,6 +10,19 @@ namespace GalaxyJam.Screen
         private readonly Viewport viewport;
         private readonly Vector2 origin;
 
+        private bool shaking;
+        public bool Shaking
+        {
+            get { return shaking; }
+            set { shaking = value; }
+        }
+        private float xOffset;
+        private float yOffset;
+        private double shakeTimer;
+        private const double SHAKE_TIME = 200;
+        private const int SHAKE_OFFSET = 20;
+        private bool shakeDireciton;
+
         private Vector2 position;
         public Vector2 Position
         {
@@ -96,6 +109,58 @@ namespace GalaxyJam.Screen
                 float minZoomY = (float)viewport.Height / limits.Value.Height;
                 zoom = MathHelper.Max(zoom, MathHelper.Max(minZoomX, minZoomY));
             }
+        }
+
+        public void ResetCamera()
+        {
+            Zoom = 1f;
+            Position = Vector2.Zero;
+        }
+
+        public void ShakeCamera(GameTime gameTime)
+        {
+            if (shakeTimer == 0)
+            {
+                Position = Vector2.Zero;
+            }
+
+            shakeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (shakeTimer > SHAKE_TIME)
+            {
+                shakeTimer = 0;
+                shaking = false;
+                xOffset = 0;
+                yOffset = 0;
+            }
+            else
+            {
+                ApplyCameraShake(gameTime);
+            }
+        }
+
+        public void ApplyCameraShake(GameTime gameTime)
+        {
+            if (shakeDireciton)
+            {
+                xOffset -= 1.5f * gameTime.ElapsedGameTime.Milliseconds;
+                if (xOffset < -SHAKE_OFFSET)
+                {
+                    xOffset = -SHAKE_OFFSET;
+                    shakeDireciton = !shakeDireciton;
+                }
+                yOffset = xOffset;
+            }
+            else
+            {
+                xOffset += 1.5f * gameTime.ElapsedGameTime.Milliseconds;
+                if (xOffset > SHAKE_OFFSET)
+                {
+                    xOffset = SHAKE_OFFSET;
+                    shakeDireciton = !shakeDireciton;
+                }
+                yOffset = xOffset;
+            }
+            Position = new Vector2(xOffset, yOffset);
         }
     }
 }

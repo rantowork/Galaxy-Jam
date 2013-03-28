@@ -90,13 +90,6 @@ namespace GalaxyJam
         private GoalManager goalManager = new GoalManager(100);
 
         //screen shake get me outta here!
-        private float xOffset;
-        private float yOffset;
-        private double shakeTimer;
-        private const double SHAKE_TIME = 200;
-        private const int SHAKE_OFFSET = 20;
-        private bool shaking;
-        private bool shakeDireciton;
 
         //collisions get me outta here!
         private const double GLOWTIME = 200;
@@ -255,12 +248,12 @@ namespace GalaxyJam
                         scoreOnShot = true;
                         goalManager.Streak++;
                         goalManager.GoalScored();
-                        shaking = true;
+                        camera.Shaking = true;
                     }
 
-                    if (shaking)
+                    if (camera.Shaking)
                     {
-                        ShakeCamera(gameTime);
+                        camera.ShakeCamera(gameTime);
                     }
                     else
                     {
@@ -442,7 +435,7 @@ namespace GalaxyJam
                 if (character == 13)
                 {
                     camera.Limits = new Rectangle(0, 0, 1280, 720);
-                    ResetCamera();
+                    camera.ResetCamera();
                     gameState = GameStates.Playing;
                 }
                 if (character == 27)
@@ -475,60 +468,6 @@ namespace GalaxyJam
                 }
             }
         }
-
-        #region Camera Events
-        private void ResetCamera()
-        {
-            camera.Zoom = 1f;
-            camera.Position = Vector2.Zero;
-        }
-
-        private void ShakeCamera(GameTime gameTime)
-        {
-            if (shakeTimer == 0)
-            {
-                camera.Position = Vector2.Zero;
-            }
-
-            shakeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (shakeTimer > SHAKE_TIME)
-            {
-                shakeTimer = 0;
-                shaking = false;
-                xOffset = 0;
-                yOffset = 0;
-            }
-            else
-            {
-                ApplyCameraShake(gameTime);
-            }
-        }
-
-        private void ApplyCameraShake(GameTime gameTime)
-        {
-            if (shakeDireciton)
-            {
-                xOffset -= 1.5f*gameTime.ElapsedGameTime.Milliseconds;
-                if (xOffset < -SHAKE_OFFSET)
-                {
-                    xOffset = -SHAKE_OFFSET;
-                    shakeDireciton = !shakeDireciton;
-                }
-                yOffset = xOffset;
-            }
-            else
-            {
-                xOffset += 1.5f*gameTime.ElapsedGameTime.Milliseconds;
-                if (xOffset > SHAKE_OFFSET)
-                {
-                    xOffset = SHAKE_OFFSET;
-                    shakeDireciton = !shakeDireciton;
-                }
-                yOffset = xOffset;
-            }
-            camera.Position = new Vector2(xOffset, yOffset);
-        }
-        #endregion
 
         #region Glow Events
         private void GlowBackboard(GameTime gameTime)
