@@ -31,5 +31,11 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         {
             return stopWatch.Elapsed;
         }
+
+        public static void ResetTimer()
+        {
+            stopWatch.Reset();
+            
+        }
     }
 }

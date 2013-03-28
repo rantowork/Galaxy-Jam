@@ -187,5 +187,14 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         {
             return basketLocation.Intersects(basketball);
         }
+
+        public void ResetGoalManager()
+        {
+            gameScore = 0;
+            streak = 0;
+            scoreMulitplier = 1;
+            goalScored = false;
+            scoredOnShot = false;
+        }
     }
 }

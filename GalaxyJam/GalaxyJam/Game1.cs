@@ -31,8 +31,11 @@ namespace GalaxyJam
         //Game State
         private enum GameStates
         {
+            IntroScreens,
             StartScreen,
+            GetReadyState,
             Playing,
+            GameEnd,
             Paused
         } ;
         private GameStates gameState = GameStates.StartScreen;
@@ -211,6 +214,10 @@ namespace GalaxyJam
             {
                 case GameStates.StartScreen:
                     break;
+                case GameStates.GetReadyState:
+                    SoundManager.PlayBackgroundMusic(bgm, .8f);
+                    starField.Update(gameTime);
+                    break;
                 case GameStates.Playing:
                     SoundManager.PlayBackgroundMusic(bgm, .8f);
                     starField.Update(gameTime);
@@ -243,11 +250,14 @@ namespace GalaxyJam
 
                     if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0,0,2,0))
                     {
-                        gameState = GameStates.Paused;
+                        gameState = GameStates.GameEnd;
+                        GameTimer.StopGameTimer();
                     }
 
                     break;
                 case GameStates.Paused:
+                    break;
+                case GameStates.GameEnd:
                     SoundManager.PlayBackgroundMusic(bgm, .8f);
                     starField.Update(gameTime);
                     break;
@@ -270,82 +280,94 @@ namespace GalaxyJam
                     spriteBatch.Draw(galaxyJamLogo, new Rectangle(0, 0, 1280, 720), Color.White);
                     spriteBatch.End();
                     break;
+                case GameStates.GetReadyState:
+                    DrawGameWorld();
+                    break;
                 case GameStates.Playing:
-
-                    Vector2 basketBallPosition = basketBallBody.Position*METER_IN_PIXEL;
-                    float basketBallRotation = basketBallBody.Rotation;
-                    Vector2 basketBallOrigin = new Vector2(basketBallSprite.Width/2f, basketBallSprite.Height/2f);
-
-                    Vector2 backboardPosition = backboardBody.Position*METER_IN_PIXEL;
-                    Vector2 backboardOrigin = new Vector2(backboardSprite.Width/2f,backboardSprite.Height/2f);
-
-                    Vector2 leftRimPosition = leftRimBody.Position*METER_IN_PIXEL;
-                    Vector2 leftRimOrigin = new Vector2(rimSprite.Width/2f, rimSprite.Height/2f);
-
-                    Vector2 rightRimPosition = rightRimBody.Position*METER_IN_PIXEL;
-                    Vector2 rightRimOrigin = new Vector2(rimSprite.Width/2f, rimSprite.Height/2f);
-
-                    //draw starfield separate from other draw methods to keep it simple
-                    spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
-                    spriteBatch.Draw(lineSprite, new Rectangle(0,0,1280,720),Color.Black);
-                    starField.Draw(spriteBatch);
-                    spriteBatch.End();
-
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix);
-                    basketballSparkle.Draw(spriteBatch);
-                    spriteBatch.End();
-
-                    //draw objects which contain a body that can have forces applied to it
-                    spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix);
-                    //draw basketball
-                    spriteBatch.Draw(basketBallSprite, basketBallPosition, null, Color.White, basketBallRotation, basketBallOrigin, 1f, SpriteEffects.None, 0f);
-                    //draw backboard
-                    spriteBatch.Draw(backboardCollisionHappened ? backboardSpriteGlow : backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
-                    //draw left rim
-                    spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
-                    //draw right rim
-                    spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
-
-                    string currentScore = String.Format("Player Score: {0}", goalManager.GameScore);
-                    spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
-
-                    string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
-                    spriteBatch.DrawString(pixel, currentMultiplier, new Vector2(1020, 694), Color.White);
-
-                    string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
-                    spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
-
-                    string timeRemaining = String.Format("Time Remaining: {0}", GameTimer.GetElapsedGameTime());
-                    spriteBatch.DrawString(pixel, timeRemaining, new Vector2(10, 694), Color.White);
-
-                    spriteBatch.End();
-
+                    DrawGameWorld();
                     break;
                 case GameStates.Paused:
+                    DrawGameWorld();
+                    spriteBatch.Begin();
+                    const string paused = "Paused!";
+                    Vector2 pausedOrigin = pixel.MeasureString(paused)/2;
+                    spriteBatch.DrawString(pixel, paused, new Vector2(1280/2, 720/2), Color.White, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
+                    spriteBatch.End();
+                    break;
+                case GameStates.GameEnd:
                     //TODO: this isn't really the paused state, i'm using this for the post game state for now
                     spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
                     spriteBatch.Draw(lineSprite, new Rectangle(0,0,1280,720),Color.Black);
                     starField.Draw(spriteBatch);
                     spriteBatch.End();
-
-                    spriteBatch.Begin(); 
-                    string currentScore2 = String.Format("Player Score: {0}", goalManager.GameScore);
-                    spriteBatch.DrawString(segoe, currentScore2, new Vector2(10, 10), Color.White);
-
-                    string currentMultiplier2 = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
-                    spriteBatch.DrawString(pixel, currentMultiplier2, new Vector2(1020, 694), Color.White);
-
-                    string currentStreak2 = String.Format("Streak: {0}", goalManager.Streak);
-                    spriteBatch.DrawString(segoe, currentStreak2, new Vector2(1180, 22), Color.White);
-
+                    
+                    const string gameOver = "Game Over!";
+                    string finalScore = String.Format("Final Score: {0}!", goalManager.GameScore);
                     string timeRemaining2 = String.Format("Time Remaining: {0}", String.Format("{0:00}:{1:00}", new TimeSpan(0,0,0,0).Minutes, new TimeSpan(0,0,0,0).Seconds));
-                    spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
 
+                    Vector2 gameOverOrigin = pixel.MeasureString(gameOver) / 2;
+                    Vector2 finalScoreOrigin = pixel.MeasureString(finalScore) / 2;
+                    
+                    spriteBatch.Begin();
+                    spriteBatch.DrawString(pixel, gameOver, new Vector2(1280/2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(pixel, finalScore, new Vector2(1280/2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
                     spriteBatch.End();
                     break;
             }
 
             base.Draw(gameTime);
+        }
+
+        private void DrawGameWorld()
+        {
+            Vector2 basketBallPosition = basketBallBody.Position * METER_IN_PIXEL;
+            float basketBallRotation = basketBallBody.Rotation;
+            Vector2 basketBallOrigin = new Vector2(basketBallSprite.Width / 2f, basketBallSprite.Height / 2f);
+
+            Vector2 backboardPosition = backboardBody.Position * METER_IN_PIXEL;
+            Vector2 backboardOrigin = new Vector2(backboardSprite.Width / 2f, backboardSprite.Height / 2f);
+
+            Vector2 leftRimPosition = leftRimBody.Position * METER_IN_PIXEL;
+            Vector2 leftRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+
+            Vector2 rightRimPosition = rightRimBody.Position * METER_IN_PIXEL;
+            Vector2 rightRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+
+            //draw starfield separate from other draw methods to keep it simple
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
+            spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
+            starField.Draw(spriteBatch);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix);
+            basketballSparkle.Draw(spriteBatch);
+            spriteBatch.End();
+
+            //draw objects which contain a body that can have forces applied to it
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix);
+            //draw basketball
+            spriteBatch.Draw(basketBallSprite, basketBallPosition, null, Color.White, basketBallRotation, basketBallOrigin, 1f, SpriteEffects.None, 0f);
+            //draw backboard
+            spriteBatch.Draw(backboardCollisionHappened ? backboardSpriteGlow : backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+            //draw left rim
+            spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+            //draw right rim
+            spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
+
+            string currentScore = String.Format("Player Score: {0}", goalManager.GameScore);
+            spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
+
+            string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
+            spriteBatch.DrawString(pixel, currentMultiplier, new Vector2(1020, 694), Color.White);
+
+            string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
+            spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
+
+            string timeRemaining = String.Format("Time Remaining: {0}", GameTimer.GetElapsedGameTime());
+            spriteBatch.DrawString(pixel, timeRemaining, new Vector2(10, 694), Color.White);
+
+            spriteBatch.End();
         }
 
         private void HandleInput()
@@ -382,6 +404,13 @@ namespace GalaxyJam
                     goalManager.Streak = 0;
                 }
             }
+        }
+
+        private void ResetPosition()
+        {
+            world.Gravity.Y = 0;
+            basketBallBody.Awake = false;
+            basketBallBody.Position = RandomizePosition();
         }
 
         private Vector2 RandomizePosition()
@@ -430,7 +459,9 @@ namespace GalaxyJam
             {
                 if (character == 27)
                 {
-                    Exit();
+                    gameState = GameStates.Paused;
+                    SoundManager.MuteSounds();
+                    GameTimer.StopGameTimer();
                 }
 
                 if (character == 112)
@@ -447,7 +478,25 @@ namespace GalaxyJam
             {
                 if (character == 27)
                 {
+                    gameState = GameStates.Playing;
+                    SoundManager.MuteSounds();
+                    GameTimer.StartGameTimer();
+                }
+            }
+            else if (gameState == GameStates.GameEnd)
+            {
+                if (character == 27)
+                {
                     Exit();
+                }
+
+                if (character == 116)
+                {
+                    ResetPosition();
+                    goalManager.ResetGoalManager();
+                    gameState = GameStates.Playing;
+                    GameTimer.ResetTimer();
+                    GameTimer.StartGameTimer();
                 }
             }
         }
