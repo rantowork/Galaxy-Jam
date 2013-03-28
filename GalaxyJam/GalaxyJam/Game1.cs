@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
+using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -83,12 +84,10 @@ namespace GalaxyJam
         //Goal stuff move outta here soon!
         private Rectangle basket = new Rectangle(85, 208, 76,1);
         private bool goalScored;
-        private double score;
-        private int multiplier = 1;
         private bool backboardHit;
         private bool rimHit;
-        private int streak;
         private bool scoreOnShot;
+        private GoalManager goalManager = new GoalManager(100);
 
         //screen shake get me outta here!
         private float xOffset;
@@ -245,17 +244,17 @@ namespace GalaxyJam
 
                         if (!backboardHit && !rimHit)
                         {
-                            multiplier += 2;
+                            goalManager.ScoreMulitplier += 2;
                         }
 
                         if (!backboardHit && rimHit)
                         {
-                            multiplier++;
+                            goalManager.ScoreMulitplier++;
                         }
 
                         scoreOnShot = true;
-                        streak++;
-                        score += 100 * multiplier;
+                        goalManager.Streak++;
+                        goalManager.GoalScored();
                         shaking = true;
                     }
 
@@ -283,7 +282,7 @@ namespace GalaxyJam
                         GlowRightRim(gameTime);
                     }
 
-                    if (streak >= 3)
+                    if (goalManager.Streak >= 3)
                     {
                         
                     }
@@ -355,13 +354,13 @@ namespace GalaxyJam
                     //draw right rim
                     spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
 
-                    string currentScore = String.Format("Player Score: {0}", score);
+                    string currentScore = String.Format("Player Score: {0}", goalManager.GameScore);
                     spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
 
-                    string currentMultiplier = String.Format("Score Multiplier: {0}", multiplier);
+                    string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
                     spriteBatch.DrawString(pixel, currentMultiplier, new Vector2(1020, 694), Color.White);
 
-                    string currentStreak = String.Format("Streak: {0}", streak);
+                    string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
                     spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
 
                     spriteBatch.End();
@@ -405,7 +404,7 @@ namespace GalaxyJam
                 }
                 else if (!scoreOnShot)
                 {
-                    streak = 0;
+                    goalManager.Streak = 0;
                 }
             }
         }
