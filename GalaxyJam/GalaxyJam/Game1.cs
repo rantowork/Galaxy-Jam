@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
-using GalaxyJam.Particles;
 using GalaxyJam.Screen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -11,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Settings;
@@ -46,6 +46,7 @@ namespace GalaxyJam
         private Texture2D backboardSpriteGlow;
         private Texture2D twopxsolidstar;
         private Texture2D fourpxblurstar;
+        private Texture2D onepxsolidstar;
 
         //Input
         private InputManager input;
@@ -77,7 +78,7 @@ namespace GalaxyJam
         private SoundEffect collisionSoundEffect;
 
         //Particles
-        private BasketballFlame basketballFlameParticleEngine;
+        private SparkleEmitter basketballSparkle;
 
         //Goal stuff move outta here soon!
         private Rectangle basket = new Rectangle(85, 208, 76,1);
@@ -152,8 +153,8 @@ namespace GalaxyJam
             lineSprite = Textures.LoadPersistentTexture("Textures/LineSprite", Content);
             twopxsolidstar = Textures.LoadPersistentTexture("Textures/2x2SolidStar", Content);
             fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
-            List<Texture2D> particleTextures = new List<Texture2D> { Textures.LoadPersistentTexture("Textures/ExampleFire", Content) };
-            List<Texture2D> starTextures = new List<Texture2D>{ twopxsolidstar, fourpxblurstar };
+            onepxsolidstar = Textures.LoadPersistentTexture("Textures/1x1SolidStar", Content);
+            List<Texture2D> starTextures = new List<Texture2D>{ twopxsolidstar, fourpxblurstar, onepxsolidstar };
 
             segoe = Fonts.LoadPersistentFont("Fonts/Segoe", Content);
             pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
@@ -192,15 +193,11 @@ namespace GalaxyJam
             rightRimBody.Friction = 0.1f;
             rightRimBody.OnCollision += RightRimCollision;
 
-            starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 800, starTextures);
+            starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 1000, starTextures);
             
             MediaPlayer.IsRepeating = true;
 
-            List<Color> flamingBasketballColors = new List<Color>
-                                                      {
-                                                          Color.White,
-                                                      };
-            basketballFlameParticleEngine = new BasketballFlame(particleTextures, new Vector2(-40, -40), flamingBasketballColors);
+            basketballSparkle = new SparkleEmitter(new List<Texture2D> {twopxsolidstar}, new Vector2(-40, -40));
 
             camera = new Camera(GraphicsDevice.Viewport)
                          {
@@ -234,8 +231,9 @@ namespace GalaxyJam
                     world.Step((float) gameTime.ElapsedGameTime.TotalMilliseconds*0.001f);
                     HandleInput();
                     HandlePosition();
-                    basketballFlameParticleEngine.EmitterLocation = basketBallBody.Position*METER_IN_PIXEL;
-                    basketballFlameParticleEngine.Update();
+
+                    basketballSparkle.EmitterLocation = basketBallBody.WorldCenter*METER_IN_PIXEL;
+                    basketballSparkle.Update();
 
                     Vector2 basketballCenter = basketBallBody.WorldCenter*METER_IN_PIXEL;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X-8, (int)basketballCenter.Y-8, 16, 16);
@@ -287,11 +285,11 @@ namespace GalaxyJam
 
                     if (streak >= 3)
                     {
-                        basketballFlameParticleEngine.Colors = new List<Color> { Color.Blue, Color.Purple };
+                        
                     }
                     else
                     {
-                        basketballFlameParticleEngine.Colors = new List<Color>{Color.DarkRed, Color.DarkOrange};
+                        
                     }
 
                     break;
@@ -342,9 +340,8 @@ namespace GalaxyJam
                     starField.Draw(spriteBatch);
                     spriteBatch.End();
 
-                    //draw particle engine separate from other draw methods so that we can take advantage of additive blending
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix);
-                    basketballFlameParticleEngine.Draw(spriteBatch);
+                    basketballSparkle.Draw(spriteBatch);
                     spriteBatch.End();
 
                     //draw objects which contain a body that can have forces applied to it

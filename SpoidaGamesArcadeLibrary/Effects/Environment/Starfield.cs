@@ -20,8 +20,8 @@ namespace SpoidaGamesArcadeLibrary.Effects.Environment
             height = screenHeight;
             for (int x = 0; x < starCount; x++)
             {
-                Texture2D texture = textures[rand.Next(textures.Count - 1)];
-                stars.Add(new Stars(new Vector2(rand.Next(0,width),rand.Next(0,height)),texture,new Vector2(0, rand.Next(5,30))));
+                Texture2D texture = textures[rand.Next(textures.Count)];
+                stars.Add(new Stars(new Vector2(rand.Next(0,width),rand.Next(0,height)),texture,new Vector2(0, rand.Next(8,22))));
                 Color starColor = colors[rand.Next(0, colors.Count())];
                 starColor *= rand.Next(10, 80)/100f;
                 stars[stars.Count() - 1].TintColor = starColor;

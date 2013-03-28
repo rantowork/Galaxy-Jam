@@ -92,9 +92,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\2D\CometTailEmitter.cs" />
-    <Compile Include="Effects\2D\Particle.cs" />
-    <Compile Include="Effects\2D\ParticleEmitter.cs" />
+    <Compile Include="Effects\2D\CometTailEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Effects\2D\Particle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Effects\2D\SparkleEmitter.cs" />
     <Compile Include="Effects\Environment\Starfield.cs" />
     <Compile Include="Effects\Environment\Stars.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

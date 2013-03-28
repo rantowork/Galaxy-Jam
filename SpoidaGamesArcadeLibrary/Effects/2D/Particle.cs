@@ -5,41 +5,41 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
 {
     public class Particle
     {
-        private Texture2D texture;
-        public Vector2 position;
-        public float rotation;
-        public float scale;
-        public Color color;
-        public int width;
-        public int height;
-        public Vector2 origin;
-        public int depth;
-        public int timeToLive;
+        public Texture2D Texture { get; set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
+        public float Angle { get; set; }
+        public float AngularVelocity { get; set; }
+        public Color Color { get; set; }
+        public float Size { get; set; }
+        public int Ttl { get; set; }
 
-        public Texture2D Texture
+        public Particle(Texture2D texture, Vector2 position, Vector2 velocity, float angle, float angularVelocity, Color color, float size, int ttl)
         {
-            get { return texture; }
-            set
-            {
-                texture = value;
-                origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            }
+            Texture = texture;
+            Position = position;
+            Velocity = velocity;
+            Angle = angle;
+            AngularVelocity = angularVelocity;
+            Color = color;
+            Size = size;
+            Ttl = ttl;
         }
 
-        public Particle()
+        public void Update()
         {
-            position = Vector2.Zero;
-            rotation = 0;
-            scale = 1;
-            color = Color.White;
-            origin = Vector2.Zero;
-            depth = 0;
-            timeToLive = 10;
+            Ttl--;
+            Position += Velocity;
+            Angle += AngularVelocity;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, (int)(width * scale), (int)(height * scale)), new Rectangle(0, 0, texture.Width, texture.Height), color, rotation, origin, SpriteEffects.None, depth);
+            Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+            Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+
+            spriteBatch.Draw(Texture, Position, sourceRectangle, Color,
+                Angle, origin, Size, SpriteEffects.None, 0f);
         }
     }
 }
