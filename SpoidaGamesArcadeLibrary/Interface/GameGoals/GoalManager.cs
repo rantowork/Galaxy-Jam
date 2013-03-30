@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -116,7 +117,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         /// <summary>
         /// Observes the game loop for triggers that indicate a goal has scored and sets the appropriate flags
         /// </summary>
-        public void UpdateGoalScored(GameTime gameTime, Camera camera, Rectangle shotCenterRectangle, SoundEffect goalScoredSoundEffect, SparkleEmitter sparkleEmitter)
+        public void UpdateGoalScored(GameTime gameTime, Camera camera, Rectangle shotCenterRectangle, SoundEffect goalScoredSoundEffect, SparkleEmitter sparkleEmitter, Starfield starfield)
         {
             if (IsGoalScored(shotCenterRectangle) && !GoalScored)
             {
@@ -165,21 +166,25 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             {
                 sparkleEmitter.Colors = new List<Color> { Color.Tomato, Color.DarkOrange, Color.OrangeRed, Color.IndianRed};
                 sparkleEmitter.ParticleCount = 100;
+                starfield.StarSpeedModifier = 6;
             }
             else if (Streak >= 6 && Streak < 9)
             {
                 sparkleEmitter.Colors = new List<Color> {Color.LimeGreen, Color.Teal, Color.Green};
                 sparkleEmitter.ParticleCount = 150;
+                starfield.StarSpeedModifier = 13;
             }
             else if (Streak >= 9)
             {
                 sparkleEmitter.Colors = new List<Color> {Color.Thistle, Color.BlueViolet, Color.RoyalBlue};
                 sparkleEmitter.ParticleCount = 200;
+                starfield.StarSpeedModifier = 20;
             }
             else
             {
                 sparkleEmitter.Colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
                 sparkleEmitter.ParticleCount = 50;
+                starfield.StarSpeedModifier = 1;
             }
         }
 

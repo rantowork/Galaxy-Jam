@@ -14,6 +14,13 @@ namespace SpoidaGamesArcadeLibrary.Effects.Environment
         private Random rand = new Random();
         private Color[] colors = { Color.White, Color.GhostWhite, Color.LightGray, Color.LightSteelBlue, Color.LightBlue};
 
+        private int starSpeedModifier;
+        public int StarSpeedModifier
+        {
+            get { return starSpeedModifier; }
+            set { starSpeedModifier = value; }
+        }
+
         public Starfield(int screenWidth, int screenHeight, int starCount, List<Texture2D> textures)
         {
             width = screenWidth;
@@ -32,7 +39,7 @@ namespace SpoidaGamesArcadeLibrary.Effects.Environment
         {
             foreach (Stars star in stars)
             {
-                star.Update(gameTime);
+                star.Update(gameTime, starSpeedModifier);
                 if (star.Location.Y > height)
                 {
                     star.Location = new Vector2(rand.Next(0, width), 0);

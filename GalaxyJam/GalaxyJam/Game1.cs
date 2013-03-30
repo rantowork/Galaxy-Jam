@@ -14,6 +14,7 @@ using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources;
+using SpoidaGamesArcadeLibrary.Resources.Entities;
 using SpoidaGamesArcadeLibrary.Settings;
 
 namespace GalaxyJam
@@ -33,6 +34,7 @@ namespace GalaxyJam
         {
             IntroScreens,
             StartScreen,
+            OptionsScreen,
             GetReadyState,
             Playing,
             GameEnd,
@@ -99,10 +101,10 @@ namespace GalaxyJam
 
         private bool rightRimCollisionHappened;
         private double rightrimGlowTimer;
-        
+
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this) {PreferredBackBufferWidth = 1280, PreferredBackBufferHeight = 720};
+            graphics = new GraphicsDeviceManager(this) { PreferredBackBufferWidth = 1280, PreferredBackBufferHeight = 720 };
 
             Content.RootDirectory = "Content";
             input = new InputManager(Services, Window.Handle);
@@ -134,8 +136,9 @@ namespace GalaxyJam
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            #region Load Textures
             galaxyJamLogo = Textures.LoadPersistentTexture("Textures/GalaxyJamLogo", Content);
-            basketBallSprite = Textures.LoadPersistentTexture("Textures/BasketBall2", Content);
+            basketBallSprite = Textures.LoadPersistentTexture("Textures/Basketballs/GreenGlowBall", Content);
             backboardSprite = Textures.LoadPersistentTexture("Textures/Backboard2", Content);
             backboardSpriteGlow = Textures.LoadPersistentTexture("Textures/Backboard2Glow", Content);
             rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
@@ -144,50 +147,40 @@ namespace GalaxyJam
             twopxsolidstar = Textures.LoadPersistentTexture("Textures/2x2SolidStar", Content);
             fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
             onepxsolidstar = Textures.LoadPersistentTexture("Textures/1x1SolidStar", Content);
-            List<Texture2D> starTextures = new List<Texture2D>{ twopxsolidstar, fourpxblurstar, onepxsolidstar };
+            List<Texture2D> starTextures = new List<Texture2D> { twopxsolidstar, fourpxblurstar, onepxsolidstar };
+            #endregion
 
+            #region Load Fonts
             segoe = Fonts.LoadPersistentFont("Fonts/Segoe", Content);
             pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
+            #endregion
 
             basketBallShotSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketballShot", Content);
             basketScoredSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketScored", Content);
             collisionSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/Collision", Content);
 
-            bgm = Music.LoadPersistentSong("Music/bgm", Content);
+            bgm = Music.LoadPersistentSong("Music/SpaceLoop1", Content);
 
-            Vector2 basketBallPosition = new Vector2((rand.Next(370,1230))/METER_IN_PIXEL,(rand.Next(310,680))/METER_IN_PIXEL);
-            basketBallBody = BodyFactory.CreateCircle(world, 32f/(2f*METER_IN_PIXEL), 1f, basketBallPosition);
+            Vector2 basketBallPosition = new Vector2((rand.Next(370, 1230)) / METER_IN_PIXEL, (rand.Next(310, 680)) / METER_IN_PIXEL);
+            basketBallBody = BodyFactory.CreateCircle(world, 32f / (2f * METER_IN_PIXEL), 1f, basketBallPosition);
             basketBallBody.BodyType = BodyType.Dynamic;
             basketBallBody.Restitution = 0.3f;
             basketBallBody.Friction = 0.5f;
 
-            Vector2 backboardPosition = new Vector2(64f/METER_IN_PIXEL, 116f/METER_IN_PIXEL);
-            backboardBody = BodyFactory.CreateRectangle(world, 6f/METER_IN_PIXEL, 140f/METER_IN_PIXEL, 1f, backboardPosition);
-            backboardBody.BodyType = BodyType.Static;
-            backboardBody.Restitution = 0.3f;
-            backboardBody.Friction = 0.1f;
+            backboardBody = StaticEntity.CreateStaticRectangleBody(world, new Vector2(64f / METER_IN_PIXEL, 116f / METER_IN_PIXEL), METER_IN_PIXEL, 6f, 140f, 1f, .3f, .1f);
             backboardBody.OnCollision += BackboardCollision;
 
-
-            Vector2 leftRimPosition = new Vector2(80f/METER_IN_PIXEL, 206/METER_IN_PIXEL);
-            leftRimBody = BodyFactory.CreateRectangle(world, 10f/METER_IN_PIXEL, 16f/METER_IN_PIXEL, 1f, leftRimPosition);
-            leftRimBody.BodyType = BodyType.Static;
-            leftRimBody.Restitution = 0.3f;
-            leftRimBody.Friction = 0.1f;
+            leftRimBody = StaticEntity.CreateStaticRectangleBody(world, new Vector2(80f/METER_IN_PIXEL, 206/METER_IN_PIXEL), METER_IN_PIXEL, 10f, 16f, 1f, .3f, .1f);
             leftRimBody.OnCollision += LeftRimCollision;
 
-            Vector2 rightRimPosition = new Vector2(166/METER_IN_PIXEL, 206/METER_IN_PIXEL);
-            rightRimBody = BodyFactory.CreateRectangle(world, 10f/METER_IN_PIXEL, 16f/METER_IN_PIXEL, 1f, rightRimPosition);
-            rightRimBody.BodyType = BodyType.Static;
-            rightRimBody.Restitution = 0.3f;
-            rightRimBody.Friction = 0.1f;
+            rightRimBody = StaticEntity.CreateStaticRectangleBody(world, new Vector2(166/METER_IN_PIXEL, 206/METER_IN_PIXEL), METER_IN_PIXEL, 10f, 16f, 1f, .3f, 1f);
             rightRimBody.OnCollision += RightRimCollision;
 
             starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 1000, starTextures);
-            
+
             MediaPlayer.IsRepeating = true;
 
-            basketballSparkle = new SparkleEmitter(new List<Texture2D> {twopxsolidstar}, new Vector2(-40, -40));
+            basketballSparkle = new SparkleEmitter(new List<Texture2D> { twopxsolidstar }, new Vector2(-40, -40));
 
             camera = new Camera(GraphicsDevice.Viewport)
                          {
@@ -213,6 +206,10 @@ namespace GalaxyJam
             switch (gameState)
             {
                 case GameStates.StartScreen:
+
+                    break;
+                case GameStates.OptionsScreen:
+
                     break;
                 case GameStates.GetReadyState:
                     SoundManager.PlayBackgroundMusic(bgm, .8f);
@@ -221,17 +218,17 @@ namespace GalaxyJam
                 case GameStates.Playing:
                     SoundManager.PlayBackgroundMusic(bgm, .8f);
                     starField.Update(gameTime);
-                    
-                    world.Step((float) gameTime.ElapsedGameTime.TotalMilliseconds*0.001f);
+
+                    world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                     HandleInput();
                     HandlePosition();
 
-                    basketballSparkle.EmitterLocation = basketBallBody.WorldCenter*METER_IN_PIXEL;
+                    basketballSparkle.EmitterLocation = basketBallBody.WorldCenter * METER_IN_PIXEL;
                     basketballSparkle.Update();
 
-                    Vector2 basketballCenter = basketBallBody.WorldCenter*METER_IN_PIXEL;
-                    Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X-8, (int)basketballCenter.Y-8, 16, 16);
-                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle);
+                    Vector2 basketballCenter = basketBallBody.WorldCenter * METER_IN_PIXEL;
+                    Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
+                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle, starField);
 
                     if (backboardCollisionHappened)
                     {
@@ -248,7 +245,7 @@ namespace GalaxyJam
                         GlowRightRim(gameTime);
                     }
 
-                    if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0,0,2,0))
+                    if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
                     {
                         gameState = GameStates.GameEnd;
                         GameTimer.StopGameTimer();
@@ -280,6 +277,11 @@ namespace GalaxyJam
                     spriteBatch.Draw(galaxyJamLogo, new Rectangle(0, 0, 1280, 720), Color.White);
                     spriteBatch.End();
                     break;
+                case GameStates.OptionsScreen:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
+                    spriteBatch.End();
+                    break;
                 case GameStates.GetReadyState:
                     DrawGameWorld();
                     break;
@@ -290,27 +292,26 @@ namespace GalaxyJam
                     DrawGameWorld();
                     spriteBatch.Begin();
                     const string paused = "Paused!";
-                    Vector2 pausedOrigin = pixel.MeasureString(paused)/2;
-                    spriteBatch.DrawString(pixel, paused, new Vector2(1280/2, 720/2), Color.White, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
+                    Vector2 pausedOrigin = pixel.MeasureString(paused) / 2;
+                    spriteBatch.DrawString(pixel, paused, new Vector2(1280 / 2, 720 / 2), Color.White, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
                     spriteBatch.End();
                     break;
                 case GameStates.GameEnd:
-                    //TODO: this isn't really the paused state, i'm using this for the post game state for now
                     spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
-                    spriteBatch.Draw(lineSprite, new Rectangle(0,0,1280,720),Color.Black);
+                    spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     starField.Draw(spriteBatch);
                     spriteBatch.End();
-                    
+
                     const string gameOver = "Game Over!";
                     string finalScore = String.Format("Final Score: {0}!", goalManager.GameScore);
-                    string timeRemaining2 = String.Format("Time Remaining: {0}", String.Format("{0:00}:{1:00}", new TimeSpan(0,0,0,0).Minutes, new TimeSpan(0,0,0,0).Seconds));
+                    string timeRemaining2 = String.Format("Time Remaining: {0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
 
                     Vector2 gameOverOrigin = pixel.MeasureString(gameOver) / 2;
                     Vector2 finalScoreOrigin = pixel.MeasureString(finalScore) / 2;
-                    
+
                     spriteBatch.Begin();
-                    spriteBatch.DrawString(pixel, gameOver, new Vector2(1280/2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
-                    spriteBatch.DrawString(pixel, finalScore, new Vector2(1280/2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(pixel, gameOver, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(pixel, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
                     spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
                     spriteBatch.End();
                     break;
@@ -387,7 +388,7 @@ namespace GalaxyJam
 
         private void HandlePosition()
         {
-            if (basketBallBody.Position.Y > 720/METER_IN_PIXEL)
+            if (basketBallBody.Position.Y > 720 / METER_IN_PIXEL)
             {
                 world.Gravity.Y = 0;
                 basketBallBody.Awake = false;
@@ -420,8 +421,8 @@ namespace GalaxyJam
 
         private void HandleShotAngle(MouseState state)
         {
-            Vector2 basketballLocation = new Vector2(basketBallBody.Position.X*METER_IN_PIXEL,
-                                                     basketBallBody.Position.Y*METER_IN_PIXEL);
+            Vector2 basketballLocation = new Vector2(basketBallBody.Position.X * METER_IN_PIXEL,
+                                                     basketBallBody.Position.Y * METER_IN_PIXEL);
             Vector2 mouseLocation = new Vector2(state.X, state.Y);
 
             double radians = MouseAngle(basketballLocation, mouseLocation);
@@ -442,6 +443,17 @@ namespace GalaxyJam
         private void GamePlayInput(char character)
         {
             if (gameState == GameStates.StartScreen)
+            {
+                if (character == 13)
+                {
+                    gameState = GameStates.OptionsScreen;
+                }
+                if (character == 27)
+                {
+                    Exit();
+                }
+            }
+            else if (gameState == GameStates.OptionsScreen)
             {
                 if (character == 13)
                 {

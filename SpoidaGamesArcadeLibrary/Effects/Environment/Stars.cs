@@ -80,10 +80,10 @@ namespace SpoidaGamesArcadeLibrary.Effects.Environment
             frames.Add(frameRectangle);
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime, int starSpeedModifier)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            location += (velocity * elapsed);
+            location += (velocity * starSpeedModifier * elapsed);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
