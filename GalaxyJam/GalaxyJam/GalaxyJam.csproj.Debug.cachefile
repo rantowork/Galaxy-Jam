@@ -1,4 +1,3 @@
-Content\Textures\BasketBall.xnb
 Content\Textures\FakeGround.xnb
 Content\Fonts\Segoe.xnb
 Content\Textures\LineSprite.xnb
@@ -13,7 +12,6 @@ Content\Textures\Backboard2Glow.xnb
 Content\Textures\Rim2.xnb
 Content\Textures\Rim2Glow.xnb
 Content\Textures\SimpleParticle12px.xnb
-Content\Textures\BasketBall2.xnb
 Content\SoundEffects\Collision.xnb
 Content\Fonts\PixelFont.xnb
 Content\Textures\CometTail.xnb
@@ -27,6 +25,9 @@ Content\Textures\GalaxyJamLogo.xnb
 Content\Music\SpaceLoop1.xnb
 Content\Music\SpaceLoop2.xnb
 Content\Music\SpaceLoop3.xnb
+Content\Textures\Basketballs\BasketBall.xnb
+Content\Textures\Basketballs\BasketBall2.xnb
+Content\Textures\Basketballs\YellowGlowBall.xnb
 Content\Music\bgm.wma
 Content\Music\SpaceLoop1.wma
 Content\Music\SpaceLoop2.wma

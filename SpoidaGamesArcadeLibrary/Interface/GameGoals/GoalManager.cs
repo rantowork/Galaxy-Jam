@@ -51,6 +51,13 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             set { scoredOnShot = value; }
         }
 
+        private int topStreak;
+        public int TopStreak
+        {
+            get { return topStreak; }
+            set { topStreak = value; }
+        }
+
         /// <summary>
         /// The base value that the score added to the total game score is multiplied by.
         /// </summary>
@@ -136,19 +143,29 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 }
 
                 //Adds bonus multiplier based on streak
-                if (Streak >= 6 && Streak < 9)
+                if (Streak >= 3 && Streak < 6)
                 {
                     ScoreMulitplier++;
                 }
 
                 //Adds bonus multiplier based on awesome streak!
-                if (Streak >= 9)
+                if (Streak >= 6 && Streak < 9)
                 {
                     ScoreMulitplier += 2;
                 }
 
+                //Adds bonus multiplier based on godly streak!
+                if (Streak >= 9)
+                {
+                    ScoreMulitplier += 3;
+                }
+
                 scoredOnShot = true;
                 Streak++;
+                if (streak > topStreak)
+                {
+                    TopStreak = streak;
+                }
                 AddPointsForScoredGoal();
                 camera.Shaking = true;
             }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
@@ -88,6 +90,12 @@ namespace GalaxyJam
 
         //Game goals
         private GoalManager goalManager = new GoalManager(100, true, new Rectangle(85, 208, 76, 1));
+        private const string HIGH_SCORES_FILENAME = "highscores.lst";
+        private HighScoreManager.HighScoreData highScoreData;
+        private bool highScoresLoaded;
+        private StringBuilder highScoresPlayers = new StringBuilder();
+        private StringBuilder highScoresScore = new StringBuilder();
+        private StringBuilder highScoresStreak = new StringBuilder();
 
         //screen shake get me outta here!
 
@@ -124,6 +132,18 @@ namespace GalaxyJam
         {
             IsMouseVisible = true;
             input.GetKeyboard().CharacterEntered += GamePlayInput;
+            string fullpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
+            if (!File.Exists(fullpath))
+            {
+                //If the file doesn't exist, make a fake one...
+                // Create the data to save
+                HighScoreManager.HighScoreData data = new HighScoreManager.HighScoreData(10);
+                data.playerName[0] = "Null Man";
+                data.streak[0] = 1;
+                data.score[0] = 100;
+
+                HighScoreManager.SaveHighScores(data, HIGH_SCORES_FILENAME);
+            }
 
             base.Initialize();
         }
@@ -138,7 +158,7 @@ namespace GalaxyJam
 
             #region Load Textures
             galaxyJamLogo = Textures.LoadPersistentTexture("Textures/GalaxyJamLogo", Content);
-            basketBallSprite = Textures.LoadPersistentTexture("Textures/Basketballs/GreenGlowBall", Content);
+            basketBallSprite = Textures.LoadPersistentTexture("Textures/Basketballs/BasketBall2", Content);
             backboardSprite = Textures.LoadPersistentTexture("Textures/Backboard2", Content);
             backboardSpriteGlow = Textures.LoadPersistentTexture("Textures/Backboard2Glow", Content);
             rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
@@ -159,7 +179,7 @@ namespace GalaxyJam
             basketScoredSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketScored", Content);
             collisionSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/Collision", Content);
 
-            bgm = Music.LoadPersistentSong("Music/SpaceLoop1", Content);
+            bgm = Music.LoadPersistentSong("Music/SpaceLoop3", Content);
 
             Vector2 basketBallPosition = new Vector2((rand.Next(370, 1230)) / METER_IN_PIXEL, (rand.Next(310, 680)) / METER_IN_PIXEL);
             basketBallBody = BodyFactory.CreateCircle(world, 32f / (2f * METER_IN_PIXEL), 1f, basketBallPosition);
@@ -247,8 +267,12 @@ namespace GalaxyJam
 
                     if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
                     {
-                        gameState = GameStates.GameEnd;
                         GameTimer.StopGameTimer();
+                        HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, "Player1", goalManager.TopStreak);
+                        highScoresPlayers.Clear();
+                        highScoresScore.Clear();
+                        highScoresStreak.Clear();
+                        gameState = GameStates.GameEnd;
                     }
 
                     break;
@@ -257,6 +281,22 @@ namespace GalaxyJam
                 case GameStates.GameEnd:
                     SoundManager.PlayBackgroundMusic(bgm, .8f);
                     starField.Update(gameTime);
+                    if (!highScoresLoaded)
+                    {
+                        highScoreData = HighScoreManager.LoadHighScores(HIGH_SCORES_FILENAME);
+
+                        for (int i = 0; i < highScoreData.count; i++)
+                        {
+                            if (highScoreData.playerName[i] != null)
+                            {
+                                highScoresPlayers.AppendLine(String.Format("{0}", highScoreData.playerName[i]));
+                                highScoresScore.AppendLine(String.Format("{0}", highScoreData.score[i]));
+                                highScoresStreak.AppendLine(String.Format("{0}", highScoreData.streak[i]));
+                            }
+                        }
+
+                        highScoresLoaded = true;
+                    }
                     break;
             }
             base.Update(gameTime);
@@ -313,6 +353,15 @@ namespace GalaxyJam
                     spriteBatch.DrawString(pixel, gameOver, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
                     spriteBatch.DrawString(pixel, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
                     spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
+                    spriteBatch.DrawString(pixel, "High Scores", new Vector2(10, 30), Color.White);
+                    spriteBatch.DrawString(pixel, "Player", new Vector2(10, 50), Color.White);
+                    spriteBatch.DrawString(pixel, "Top Streak", new Vector2(154, 50), Color.White);
+                    spriteBatch.DrawString(pixel, "Score", new Vector2(324, 50), Color.White);
+                    
+                    spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
+                    spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(154, 74), Color.White);
+                    spriteBatch.DrawString(pixel, highScoresScore, new Vector2(324, 74), Color.White);
+                    
                     spriteBatch.End();
                     break;
             }
@@ -506,6 +555,7 @@ namespace GalaxyJam
                 {
                     ResetPosition();
                     goalManager.ResetGoalManager();
+                    highScoresLoaded = false;
                     gameState = GameStates.Playing;
                     GameTimer.ResetTimer();
                     GameTimer.StartGameTimer();
