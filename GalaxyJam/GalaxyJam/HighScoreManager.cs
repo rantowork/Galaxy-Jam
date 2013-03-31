@@ -96,7 +96,7 @@ namespace GalaxyJam
                     data.streak[i] = data.streak[i - 1];
                 }
 
-                data.playerName[scoreIndex] = "Player1"; //Retrieve User Name Here
+                data.playerName[scoreIndex] = playerName; //Retrieve User Name Here
                 data.score[scoreIndex] = score;
                 data.streak[scoreIndex] = streak;
 

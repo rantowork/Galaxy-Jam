@@ -55,6 +55,7 @@ namespace GalaxyJam
         private Texture2D twopxsolidstar;
         private Texture2D fourpxblurstar;
         private Texture2D onepxsolidstar;
+        private Texture2D cursor;
 
         //Input
         private InputManager input;
@@ -96,9 +97,9 @@ namespace GalaxyJam
         private StringBuilder highScoresPlayers = new StringBuilder();
         private StringBuilder highScoresScore = new StringBuilder();
         private StringBuilder highScoresStreak = new StringBuilder();
-
-        //screen shake get me outta here!
-
+        private StringBuilder playerName = new StringBuilder();
+        private bool nameToShort;
+        
         //collisions get me outta here!
         private const double GLOWTIME = 200;
         private bool backboardCollisionHappened;
@@ -167,6 +168,7 @@ namespace GalaxyJam
             twopxsolidstar = Textures.LoadPersistentTexture("Textures/2x2SolidStar", Content);
             fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
             onepxsolidstar = Textures.LoadPersistentTexture("Textures/1x1SolidStar", Content);
+            cursor = Textures.LoadPersistentTexture("Textures/Cursor", Content);
             List<Texture2D> starTextures = new List<Texture2D> { twopxsolidstar, fourpxblurstar, onepxsolidstar };
             #endregion
 
@@ -268,7 +270,7 @@ namespace GalaxyJam
                     if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
                     {
                         GameTimer.StopGameTimer();
-                        HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, "Player1", goalManager.TopStreak);
+                        HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, goalManager.PlayerName, goalManager.TopStreak);
                         highScoresPlayers.Clear();
                         highScoresScore.Clear();
                         highScoresStreak.Clear();
@@ -320,6 +322,18 @@ namespace GalaxyJam
                 case GameStates.OptionsScreen:
                     spriteBatch.Begin();
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
+                    GetPlayerName(gameTime);
+                    const string instructions = "Input your name and hit enter to begin";
+                    Vector2 instructionsOrigin = pixel.MeasureString(instructions)/2;
+                    spriteBatch.DrawString(pixel, instructions, new Vector2(1280 / 2, 180), Color.White, 0.0f, instructionsOrigin, 1f, SpriteEffects.None, 1.0f);
+
+                    if (nameToShort)
+                    {
+                        const string nameError = "Name must be between 3 and 12 characters!";
+                        Vector2 nameErrorOrigin = pixel.MeasureString(nameError) / 2;
+                        spriteBatch.DrawString(pixel, nameError, new Vector2(1280 / 2, 675), Color.Red, 0.0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
+                    }
+
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
@@ -355,12 +369,12 @@ namespace GalaxyJam
                     spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
                     spriteBatch.DrawString(pixel, "High Scores", new Vector2(10, 30), Color.White);
                     spriteBatch.DrawString(pixel, "Player", new Vector2(10, 50), Color.White);
-                    spriteBatch.DrawString(pixel, "Top Streak", new Vector2(154, 50), Color.White);
-                    spriteBatch.DrawString(pixel, "Score", new Vector2(324, 50), Color.White);
+                    spriteBatch.DrawString(pixel, "Top Streak", new Vector2(170, 50), Color.White);
+                    spriteBatch.DrawString(pixel, "Score", new Vector2(340, 50), Color.White);
                     
                     spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
-                    spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(154, 74), Color.White);
-                    spriteBatch.DrawString(pixel, highScoresScore, new Vector2(324, 74), Color.White);
+                    spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(170, 74), Color.White);
+                    spriteBatch.DrawString(pixel, highScoresScore, new Vector2(340, 74), Color.White);
                     
                     spriteBatch.End();
                     break;
@@ -504,12 +518,35 @@ namespace GalaxyJam
             }
             else if (gameState == GameStates.OptionsScreen)
             {
+                if (character == '\b')
+                { // backspace
+                    if (playerName.Length > 0)
+                    {
+                        playerName.Remove(playerName.Length - 1, 1);
+                    }
+                }
+                else
+                {
+                    if (playerName.Length != 12)
+                    {
+                        if (character != 13)
+                            playerName.Append(character);
+                    }
+                }
                 if (character == 13)
                 {
-                    camera.Limits = new Rectangle(0, 0, 1280, 720);
-                    camera.ResetCamera();
-                    gameState = GameStates.Playing;
-                    GameTimer.StartGameTimer();
+                    if (playerName.Length < 3)
+                    {
+                        nameToShort = true;
+                    }
+                    else
+                    {
+                        goalManager.PlayerName = playerName.ToString();
+                        camera.Limits = new Rectangle(0, 0, 1280, 720);
+                        camera.ResetCamera();
+                        gameState = GameStates.Playing;
+                        GameTimer.StartGameTimer();   
+                    }
                 }
                 if (character == 27)
                 {
@@ -560,6 +597,21 @@ namespace GalaxyJam
                     GameTimer.ResetTimer();
                     GameTimer.StartGameTimer();
                 }
+            }
+        }
+
+        private void GetPlayerName(GameTime gameTime)
+        {
+            bool caretVisible = (gameTime.TotalGameTime.TotalMilliseconds % 1000) >= 500;
+
+            spriteBatch.DrawString(pixel, "Player Name:", new Vector2(1280 / 2 - 180, 200), Color.White);
+            Vector2 size = pixel.MeasureString("Player Name: ");
+            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 1280 / 2 - 180, 200), Color.White);
+
+            if (caretVisible)
+            {
+                Vector2 inputLength = pixel.MeasureString(playerName + "Player Name: ");
+                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 1280 / 2 - 180, 200), Color.White);
             }
         }
 
