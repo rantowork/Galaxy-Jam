@@ -533,6 +533,7 @@ namespace GalaxyJam
                             playerName.Append(character);
                     }
                 }
+                //commit options
                 if (character == 13)
                 {
                     if (playerName.Length < 3)
