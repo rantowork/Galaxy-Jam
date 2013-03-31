@@ -13,37 +13,36 @@ namespace SpoidaGamesArcadeLibrary.Settings
             }
         }
 
-        public static void PlayBackgroundMusic(Song backgroundMusic, float volume)
+        public static void PlayBackgroundMusic(Cue cueToPlay)
         {
             if (!InterfaceOptions.BackgroundMusicStarted)
             {
-                MediaPlayer.Volume = volume;
-                MediaPlayer.Play(backgroundMusic);
+                cueToPlay.Play();
                 InterfaceOptions.BackgroundMusicStarted = true;
             }
         }
 
-        public static void PauseBackgroundMusic()
+        public static void PauseBackgroundMusic(Cue cueToPause)
         {
             if (!InterfaceOptions.BackgroundMusicMuted)
             {
-                MediaPlayer.Pause();
+                cueToPause.Pause();
                 InterfaceOptions.BackgroundMusicMuted = !InterfaceOptions.BackgroundMusicMuted;
             }
             else
             {
-                MediaPlayer.Resume();
+                cueToPause.Resume();
                 InterfaceOptions.BackgroundMusicMuted = !InterfaceOptions.BackgroundMusicMuted;
             }
         }
 
-        public static void MuteSounds()
+        public static void MuteSounds(Cue cueToPause)
         {
             if (!InterfaceOptions.AllSoundsMuted)
             {
                 if (!InterfaceOptions.BackgroundMusicMuted)
                 {
-                    MediaPlayer.Pause();
+                    cueToPause.Pause();
                     InterfaceOptions.BackgroundMusicMuted = true;
                 }
                 InterfaceOptions.AllSoundsMuted = !InterfaceOptions.AllSoundsMuted;
@@ -52,7 +51,7 @@ namespace SpoidaGamesArcadeLibrary.Settings
             {
                 if (InterfaceOptions.BackgroundMusicMuted)
                 {
-                    MediaPlayer.Resume();
+                    cueToPause.Resume();
                     InterfaceOptions.BackgroundMusicMuted = false;
                 }
                 InterfaceOptions.AllSoundsMuted = !InterfaceOptions.AllSoundsMuted;

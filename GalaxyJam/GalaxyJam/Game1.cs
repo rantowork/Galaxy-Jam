@@ -57,6 +57,12 @@ namespace GalaxyJam
         private Texture2D onepxsolidstar;
         private Texture2D cursor;
 
+        //Sounds
+        private AudioEngine audioEngine;
+        private WaveBank waveBank;
+        private SoundBank soundBank;
+        private Cue spaceLoop3;
+
         //Input
         private InputManager input;
 
@@ -77,10 +83,7 @@ namespace GalaxyJam
 
         //Starfield
         private Starfield starField;
-
-        //Music
-        private Song bgm;
-
+        
         //Sounds
         private SoundEffect basketBallShotSoundEffect;
         private SoundEffect basketScoredSoundEffect;
@@ -146,6 +149,10 @@ namespace GalaxyJam
                 HighScoreManager.SaveHighScores(data, HIGH_SCORES_FILENAME);
             }
 
+            audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");
+            waveBank = new WaveBank(audioEngine, "Content\\Audio\\Wave Bank.xwb");
+            soundBank = new SoundBank(audioEngine, "Content\\Audio\\Sound Bank.xsb");
+
             base.Initialize();
         }
 
@@ -159,7 +166,7 @@ namespace GalaxyJam
 
             #region Load Textures
             galaxyJamLogo = Textures.LoadPersistentTexture("Textures/GalaxyJamLogo", Content);
-            basketBallSprite = Textures.LoadPersistentTexture("Textures/Basketballs/BasketBall2", Content);
+            basketBallSprite = Textures.LoadPersistentTexture("Textures/Basketballs/YellowGlowBall", Content);
             backboardSprite = Textures.LoadPersistentTexture("Textures/Backboard2", Content);
             backboardSpriteGlow = Textures.LoadPersistentTexture("Textures/Backboard2Glow", Content);
             rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
@@ -180,9 +187,7 @@ namespace GalaxyJam
             basketBallShotSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketballShot", Content);
             basketScoredSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketScored", Content);
             collisionSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/Collision", Content);
-
-            bgm = Music.LoadPersistentSong("Music/SpaceLoop3", Content);
-
+            
             Vector2 basketBallPosition = new Vector2((rand.Next(370, 1230)) / METER_IN_PIXEL, (rand.Next(310, 680)) / METER_IN_PIXEL);
             basketBallBody = BodyFactory.CreateCircle(world, 32f / (2f * METER_IN_PIXEL), 1f, basketBallPosition);
             basketBallBody.BodyType = BodyType.Dynamic;
@@ -208,6 +213,8 @@ namespace GalaxyJam
                          {
                              Limits = null
                          };
+
+            spaceLoop3 = soundBank.GetCue("SpaceLoop3");
         }
 
         /// <summary>
@@ -234,11 +241,10 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.GetReadyState:
-                    SoundManager.PlayBackgroundMusic(bgm, .8f);
                     starField.Update(gameTime);
                     break;
                 case GameStates.Playing:
-                    SoundManager.PlayBackgroundMusic(bgm, .8f);
+                    SoundManager.PlayBackgroundMusic(spaceLoop3);
                     starField.Update(gameTime);
 
                     world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -270,19 +276,23 @@ namespace GalaxyJam
                     if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
                     {
                         GameTimer.StopGameTimer();
-                        HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, goalManager.PlayerName, goalManager.TopStreak);
-                        highScoresPlayers.Clear();
-                        highScoresScore.Clear();
-                        highScoresStreak.Clear();
-                        gameState = GameStates.GameEnd;
+                        if (basketBallBody.Awake == false)
+                        {
+                            HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, goalManager.PlayerName, goalManager.TopStreak);
+                            highScoresPlayers.Clear();
+                            highScoresScore.Clear();
+                            highScoresStreak.Clear();
+                            gameState = GameStates.GameEnd;
+                        }
                     }
 
                     break;
                 case GameStates.Paused:
                     break;
                 case GameStates.GameEnd:
-                    SoundManager.PlayBackgroundMusic(bgm, .8f);
+                    SoundManager.PlayBackgroundMusic(spaceLoop3);
                     starField.Update(gameTime);
+                    //TODO: this works kinda but it needs some love...
                     if (!highScoresLoaded)
                     {
                         highScoreData = HighScoreManager.LoadHighScores(HIGH_SCORES_FILENAME);
@@ -559,18 +569,18 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Paused;
-                    SoundManager.MuteSounds();
+                    SoundManager.MuteSounds(spaceLoop3);
                     GameTimer.StopGameTimer();
                 }
 
                 if (character == 112)
                 {
-                    SoundManager.PauseBackgroundMusic();
+                    SoundManager.PauseBackgroundMusic(spaceLoop3);
                 }
 
                 if (character == 109)
                 {
-                    SoundManager.MuteSounds();
+                    SoundManager.MuteSounds(spaceLoop3);
                 }
             }
             else if (gameState == GameStates.Paused)
@@ -578,7 +588,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Playing;
-                    SoundManager.MuteSounds();
+                    SoundManager.MuteSounds(spaceLoop3);
                     GameTimer.StartGameTimer();
                 }
             }
