@@ -3,16 +3,12 @@ Content\Fonts\Segoe.xnb
 Content\Textures\LineSprite.xnb
 Content\Textures\Backboard.xnb
 Content\Textures\Rim.xnb
-Content\Music\bgm.xnb
-Content\SoundEffects\BasketballShot.xnb
 Content\Textures\ExampleFire.xnb
-Content\SoundEffects\BasketScored.xnb
 Content\Textures\Backboard2.xnb
 Content\Textures\Backboard2Glow.xnb
 Content\Textures\Rim2.xnb
 Content\Textures\Rim2Glow.xnb
 Content\Textures\SimpleParticle12px.xnb
-Content\SoundEffects\Collision.xnb
 Content\Fonts\PixelFont.xnb
 Content\Textures\CometTail.xnb
 Content\Textures\fire.xnb
@@ -22,17 +18,15 @@ Content\Textures\1x1SolidStar.xnb
 Content\Textures\Basketballs\RedGlowBall.xnb
 Content\Textures\Basketballs\GreenGlowBall.xnb
 Content\Textures\GalaxyJamLogo.xnb
-Content\Music\SpaceLoop1.xnb
-Content\Music\SpaceLoop2.xnb
-Content\Music\SpaceLoop3.xnb
-Content\Textures\Basketballs\BasketBall.xnb
-Content\Textures\Basketballs\BasketBall2.xnb
 Content\Textures\Basketballs\YellowGlowBall.xnb
 Content\Textures\Cursor.xnb
-Content\Music\bgm.wma
-Content\Music\SpaceLoop1.wma
-Content\Music\SpaceLoop2.wma
-Content\Music\SpaceLoop3.wma
+Content\Audio\Music\SpaceLoop1.xnb
+Content\Audio\Music\SpaceLoop2.xnb
+Content\Audio\SoundEffects\BasketballShot.xnb
+Content\Audio\SoundEffects\BasketScored.xnb
+Content\Audio\SoundEffects\Collision.xnb
+Content\Fonts\PixelScoreGlow.xnb
+Content\Audio\Music\BouncyLoop1.xnb
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
 Content\Audio\Sound Bank.xsb

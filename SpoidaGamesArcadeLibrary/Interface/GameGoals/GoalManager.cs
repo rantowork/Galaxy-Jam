@@ -58,13 +58,6 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             set { topStreak = value; }
         }
 
-        private string playerName;
-        public string PlayerName
-        {
-            get { return playerName; }
-            set { playerName = value; }
-        }
-
         /// <summary>
         /// The base value that the score added to the total game score is multiplied by.
         /// </summary>
@@ -137,7 +130,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             {
                 GoalScored = true;
 
-                SoundManager.PlaySoundEffect(goalScoredSoundEffect, 1.0f, 0.0f, 0.0f);
+                SoundManager.PlaySoundEffect(goalScoredSoundEffect, 0.5f, 0.0f, 0.0f);
 
                 if (!backboardHit && !rimHit)
                 {

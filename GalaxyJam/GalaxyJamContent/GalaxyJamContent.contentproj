@@ -42,13 +42,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Basketballs\BasketBall.png">
-      <Name>BasketBall</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\FakeGround.png">
       <Name>FakeGround</Name>
       <Importer>TextureImporter</Importer>
@@ -84,7 +77,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SoundEffects\BasketballShot.wav">
+    <Compile Include="Audio\SoundEffects\BasketballShot.wav">
       <Name>BasketballShot</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
@@ -98,7 +91,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SoundEffects\BasketScored.wav">
+    <Compile Include="Audio\SoundEffects\BasketScored.wav">
       <Name>BasketScored</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
@@ -138,14 +131,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Basketballs\BasketBall2.png">
-      <Name>BasketBall2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SoundEffects\Collision.wav">
+    <Compile Include="Audio\SoundEffects\Collision.wav">
       <Name>Collision</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
@@ -232,6 +218,30 @@
       <Name>GalaxyJamAudio</Name>
       <Importer>XactImporter</Importer>
       <Processor>XactProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\Music\BouncyLoop1.wav">
+      <Name>BouncyLoop1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\Music\SpaceLoop1.wav">
+      <Name>SpaceLoop1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\Music\SpaceLoop2.wav">
+      <Name>SpaceLoop2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\PixelScoreGlow.png">
+      <Name>PixelScoreGlow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

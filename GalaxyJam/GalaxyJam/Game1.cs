@@ -14,6 +14,7 @@ using Nuclex.Input;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
+using SpoidaGamesArcadeLibrary.Interface.GameOptions;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
@@ -57,11 +58,20 @@ namespace GalaxyJam
         private Texture2D onepxsolidstar;
         private Texture2D cursor;
 
+        private Rectangle redRectangle = new Rectangle(1100, 140, 32, 32);
+        private Rectangle greenRectangle = new Rectangle(1100, 210, 32, 32);
+        private Rectangle yellowRectangle = new Rectangle(1100, 280, 32, 32);
+
+        //Basketballs
+        private Texture2D greenGlowBasketball;
+        private Texture2D redGlowBasketball;
+        private Texture2D yellowGlowBasketball;
+
         //Sounds
         private AudioEngine audioEngine;
         private WaveBank waveBank;
         private SoundBank soundBank;
-        private Cue spaceLoop3;
+        private Cue currentlySelectedSong;
 
         //Input
         private InputManager input;
@@ -80,6 +90,7 @@ namespace GalaxyJam
         //Fonts
         private SpriteFont segoe;
         private SpriteFont pixel;
+        private SpriteFont pixelScoreGlow;
 
         //Starfield
         private Starfield starField;
@@ -102,6 +113,8 @@ namespace GalaxyJam
         private StringBuilder highScoresStreak = new StringBuilder();
         private StringBuilder playerName = new StringBuilder();
         private bool nameToShort;
+
+        private PlayerOptions playerOptions = new PlayerOptions();
         
         //collisions get me outta here!
         private const double GLOWTIME = 200;
@@ -163,10 +176,25 @@ namespace GalaxyJam
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            LoadTextures();
+            LoadFonts();
+            LoadSoundEffectsAndSounds();
+            LoadEffectsAndParticles();
+            LoadPhysicalWorldEntities();
+            
+            camera = new Camera(GraphicsDevice.Viewport)
+                         {
+                             Limits = null
+                         };
+        }
 
-            #region Load Textures
+        private void LoadTextures()
+        {
             galaxyJamLogo = Textures.LoadPersistentTexture("Textures/GalaxyJamLogo", Content);
-            basketBallSprite = Textures.LoadPersistentTexture("Textures/Basketballs/YellowGlowBall", Content);
+
+            string currentBasketball = String.Format("Textures/Basketballs/{0}", playerOptions.GetSelectedBasketball());
+            basketBallSprite = Textures.LoadPersistentTexture(currentBasketball, Content);
+
             backboardSprite = Textures.LoadPersistentTexture("Textures/Backboard2", Content);
             backboardSpriteGlow = Textures.LoadPersistentTexture("Textures/Backboard2Glow", Content);
             rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
@@ -176,45 +204,50 @@ namespace GalaxyJam
             fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
             onepxsolidstar = Textures.LoadPersistentTexture("Textures/1x1SolidStar", Content);
             cursor = Textures.LoadPersistentTexture("Textures/Cursor", Content);
-            List<Texture2D> starTextures = new List<Texture2D> { twopxsolidstar, fourpxblurstar, onepxsolidstar };
-            #endregion
 
-            #region Load Fonts
+            //Temporary loading basketballs
+            redGlowBasketball = Content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall");
+            greenGlowBasketball = Content.Load<Texture2D>(@"Textures/Basketballs/GreenGlowBall");
+            yellowGlowBasketball = Content.Load<Texture2D>(@"Textures/Basketballs/YellowGlowBall");
+        }
+
+        private void LoadFonts()
+        {
             segoe = Fonts.LoadPersistentFont("Fonts/Segoe", Content);
             pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
-            #endregion
+            pixelScoreGlow = Fonts.LoadPersistentFont("Fonts/PixelScoreGlow", Content);
+        }
 
-            basketBallShotSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketballShot", Content);
-            basketScoredSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/BasketScored", Content);
-            collisionSoundEffect = SoundEffects.LoadPersistentSoundEffect("SoundEffects/Collision", Content);
-            
-            Vector2 basketBallPosition = new Vector2((rand.Next(370, 1230)) / METER_IN_PIXEL, (rand.Next(310, 680)) / METER_IN_PIXEL);
-            basketBallBody = BodyFactory.CreateCircle(world, 32f / (2f * METER_IN_PIXEL), 1f, basketBallPosition);
-            basketBallBody.BodyType = BodyType.Dynamic;
-            basketBallBody.Restitution = 0.3f;
-            basketBallBody.Friction = 0.5f;
+        private void LoadSoundEffectsAndSounds()
+        {
+            basketBallShotSoundEffect = SoundEffects.LoadPersistentSoundEffect("Audio/SoundEffects/BasketballShot", Content);
+            basketScoredSoundEffect = SoundEffects.LoadPersistentSoundEffect("Audio/SoundEffects/BasketScored", Content);
+            collisionSoundEffect = SoundEffects.LoadPersistentSoundEffect("Audio/SoundEffects/Collision", Content);
 
-            backboardBody = StaticEntity.CreateStaticRectangleBody(world, new Vector2(64f / METER_IN_PIXEL, 116f / METER_IN_PIXEL), METER_IN_PIXEL, 6f, 140f, 1f, .3f, .1f);
-            backboardBody.OnCollision += BackboardCollision;
+            currentlySelectedSong = soundBank.GetCue(playerOptions.GetSelectedMusic());
+        }
 
-            leftRimBody = StaticEntity.CreateStaticRectangleBody(world, new Vector2(80f/METER_IN_PIXEL, 206/METER_IN_PIXEL), METER_IN_PIXEL, 10f, 16f, 1f, .3f, .1f);
-            leftRimBody.OnCollision += LeftRimCollision;
-
-            rightRimBody = StaticEntity.CreateStaticRectangleBody(world, new Vector2(166/METER_IN_PIXEL, 206/METER_IN_PIXEL), METER_IN_PIXEL, 10f, 16f, 1f, .3f, 1f);
-            rightRimBody.OnCollision += RightRimCollision;
-
+        private void LoadEffectsAndParticles()
+        {
+            //Load Starfield
+            List<Texture2D> starTextures = new List<Texture2D> { twopxsolidstar, fourpxblurstar, onepxsolidstar };
             starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 1000, starTextures);
 
-            MediaPlayer.IsRepeating = true;
-
             basketballSparkle = new SparkleEmitter(new List<Texture2D> { twopxsolidstar }, new Vector2(-40, -40));
+        }
 
-            camera = new Camera(GraphicsDevice.Viewport)
-                         {
-                             Limits = null
-                         };
+        private void LoadPhysicalWorldEntities()
+        {
+            basketBallBody = PhysicalEntity.CreateDynamicCircularBody(world, new Vector2((rand.Next(370, 1230)) / METER_IN_PIXEL, (rand.Next(310, 680)) / METER_IN_PIXEL), METER_IN_PIXEL, 32f, 1f, .3f, .5f);
 
-            spaceLoop3 = soundBank.GetCue("SpaceLoop3");
+            backboardBody = PhysicalEntity.CreateStaticRectangleBody(world, new Vector2(64f / METER_IN_PIXEL, 116f / METER_IN_PIXEL), METER_IN_PIXEL, 6f, 140f, 1f, .3f, .1f);
+            backboardBody.OnCollision += BackboardCollision;
+
+            leftRimBody = PhysicalEntity.CreateStaticRectangleBody(world, new Vector2(80f / METER_IN_PIXEL, 206 / METER_IN_PIXEL), METER_IN_PIXEL, 10f, 16f, 1f, .3f, .1f);
+            leftRimBody.OnCollision += LeftRimCollision;
+
+            rightRimBody = PhysicalEntity.CreateStaticRectangleBody(world, new Vector2(166 / METER_IN_PIXEL, 206 / METER_IN_PIXEL), METER_IN_PIXEL, 10f, 16f, 1f, .3f, 1f);
+            rightRimBody.OnCollision += RightRimCollision;
         }
 
         /// <summary>
@@ -238,13 +271,14 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.OptionsScreen:
-
+                    SoundManager.PlayBackgroundMusic(currentlySelectedSong);
                     break;
                 case GameStates.GetReadyState:
                     starField.Update(gameTime);
                     break;
                 case GameStates.Playing:
-                    SoundManager.PlayBackgroundMusic(spaceLoop3);
+                    SoundManager.PlayBackgroundMusic(currentlySelectedSong);
+                    
                     starField.Update(gameTime);
 
                     world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -278,7 +312,8 @@ namespace GalaxyJam
                         GameTimer.StopGameTimer();
                         if (basketBallBody.Awake == false)
                         {
-                            HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, goalManager.PlayerName, goalManager.TopStreak);
+                            HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, playerOptions.PlayerName, goalManager.TopStreak);
+                            highScoreData = HighScoreManager.LoadHighScores(HIGH_SCORES_FILENAME);
                             highScoresPlayers.Clear();
                             highScoresScore.Clear();
                             highScoresStreak.Clear();
@@ -290,13 +325,10 @@ namespace GalaxyJam
                 case GameStates.Paused:
                     break;
                 case GameStates.GameEnd:
-                    SoundManager.PlayBackgroundMusic(spaceLoop3);
+                    SoundManager.PlayBackgroundMusic(currentlySelectedSong);
                     starField.Update(gameTime);
-                    //TODO: this works kinda but it needs some love...
                     if (!highScoresLoaded)
                     {
-                        highScoreData = HighScoreManager.LoadHighScores(HIGH_SCORES_FILENAME);
-
                         for (int i = 0; i < highScoreData.count; i++)
                         {
                             if (highScoreData.playerName[i] != null)
@@ -342,6 +374,28 @@ namespace GalaxyJam
                         const string nameError = "Name must be between 3 and 12 characters!";
                         Vector2 nameErrorOrigin = pixel.MeasureString(nameError) / 2;
                         spriteBatch.DrawString(pixel, nameError, new Vector2(1280 / 2, 675), Color.Red, 0.0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
+                    }
+
+                    Vector2 ballSelectionCenterLine = pixel.MeasureString("Select a Basketball")/2;
+                    spriteBatch.DrawString(pixel, "Select a Basketball", new Vector2(1000, 100), Color.White);
+                    spriteBatch.Draw(redGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 140), null, Color.White, 0f, new Vector2(redGlowBasketball.Width/2, 0), 1.0f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(greenGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 210), null, Color.White, 0f, new Vector2(greenGlowBasketball.Width / 2, 0), 1.0f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(yellowGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 280), null, Color.White, 0f, new Vector2(yellowGlowBasketball.Width / 2, 0), 1.0f, SpriteEffects.None, 0f);
+
+                    MouseState state = input.GetMouse().GetState();
+                    Rectangle mouseLocation = new Rectangle(state.X, state.Y, 1, 1);
+
+                    if (mouseLocation.Intersects(redRectangle))
+                    {
+                        spriteBatch.DrawString(pixel, "Red Glow Ball", new Vector2(1000 + ballSelectionCenterLine.X, 400), Color.White, 0, new Vector2(pixel.MeasureString("Red Glow Ball").X / 2, 0), 1f, SpriteEffects.None, 0f);
+                    }
+                    else if (mouseLocation.Intersects(greenRectangle))
+                    {
+                        spriteBatch.DrawString(pixel, "Green Glow Ball", new Vector2(1000 + ballSelectionCenterLine.X, 400), Color.White, 0, new Vector2(pixel.MeasureString("Green Glow Ball").X / 2, 0), 1f, SpriteEffects.None, 0f);
+                    }
+                    else if (mouseLocation.Intersects(yellowRectangle))
+                    {
+                        spriteBatch.DrawString(pixel, "Yellow Glow Ball", new Vector2(1000 + ballSelectionCenterLine.X, 400), Color.White, 0, new Vector2(pixel.MeasureString("Yellow Glow Ball").X/2,0), 1f, SpriteEffects.None, 0f);
                     }
 
                     spriteBatch.End();
@@ -429,8 +483,13 @@ namespace GalaxyJam
             //draw right rim
             spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
 
-            string currentScore = String.Format("Player Score: {0}", goalManager.GameScore);
-            spriteBatch.DrawString(segoe, currentScore, new Vector2(10, 10), Color.White);
+            spriteBatch.End();
+
+            //Draw Interface
+            spriteBatch.Begin();
+            string currentScore = String.Format("{0}", goalManager.GameScore);
+            Vector2 currentScoreOrigin = pixelScoreGlow.MeasureString(currentScore) / 2;
+            spriteBatch.DrawString(pixelScoreGlow, currentScore, new Vector2(1280 / 2, 30), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 0f);
 
             string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
             spriteBatch.DrawString(pixel, currentMultiplier, new Vector2(1020, 694), Color.White);
@@ -438,9 +497,8 @@ namespace GalaxyJam
             string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
             spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
 
-            string timeRemaining = String.Format("Time Remaining: {0}", GameTimer.GetElapsedGameTime());
-            spriteBatch.DrawString(pixel, timeRemaining, new Vector2(10, 694), Color.White);
-
+            string timeRemaining = String.Format("{0}", GameTimer.GetElapsedGameTime());
+            spriteBatch.DrawString(pixelScoreGlow, timeRemaining, new Vector2(10, 664), Color.White);
             spriteBatch.End();
         }
 
@@ -454,7 +512,7 @@ namespace GalaxyJam
                     world.Gravity.Y = 25;
                     basketBallBody.Awake = true;
                     HandleShotAngle(state);
-                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 1.0f, 0.0f, 0.0f);
+                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 0.5f, 0.0f, 0.0f);
                 }
             }
         }
@@ -552,7 +610,7 @@ namespace GalaxyJam
                     }
                     else
                     {
-                        goalManager.PlayerName = playerName.ToString();
+                        playerOptions.PlayerName = playerName.ToString();
                         camera.Limits = new Rectangle(0, 0, 1280, 720);
                         camera.ResetCamera();
                         gameState = GameStates.Playing;
@@ -569,18 +627,18 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Paused;
-                    SoundManager.MuteSounds(spaceLoop3);
+                    SoundManager.MuteSounds(currentlySelectedSong);
                     GameTimer.StopGameTimer();
                 }
 
                 if (character == 112)
                 {
-                    SoundManager.PauseBackgroundMusic(spaceLoop3);
+                    SoundManager.PauseBackgroundMusic(currentlySelectedSong);
                 }
 
                 if (character == 109)
                 {
-                    SoundManager.MuteSounds(spaceLoop3);
+                    SoundManager.MuteSounds(currentlySelectedSong);
                 }
             }
             else if (gameState == GameStates.Paused)
@@ -588,7 +646,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Playing;
-                    SoundManager.MuteSounds(spaceLoop3);
+                    SoundManager.MuteSounds(currentlySelectedSong);
                     GameTimer.StartGameTimer();
                 }
             }
@@ -663,7 +721,7 @@ namespace GalaxyJam
         {
             backboardCollisionHappened = true;
             goalManager.BackboardHit = true;
-            SoundManager.PlaySoundEffect(collisionSoundEffect, .8f, 0.0f, 0.0f);
+            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.4f, 0.0f, 0.0f);
             return true;
         }
 
@@ -671,7 +729,7 @@ namespace GalaxyJam
         {
             leftRimCollisionHappened = true;
             goalManager.RimHit = true;
-            SoundManager.PlaySoundEffect(collisionSoundEffect, .8f, 0.0f, 0.0f);
+            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.4f, 0.0f, 0.0f);
             return true;
         }
 
@@ -679,7 +737,7 @@ namespace GalaxyJam
         {
             rightRimCollisionHappened = true;
             goalManager.RimHit = true;
-            SoundManager.PlaySoundEffect(collisionSoundEffect, .8f, 0.0f, 0.0f);
+            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.4f, 0.0f, 0.0f);
             return true;
         }
         #endregion

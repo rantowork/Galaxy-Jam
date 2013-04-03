@@ -53,8 +53,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             string fullpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
             // Open the file
-            FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate,
-            FileAccess.Read);
+            FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Read);
             try
             {
 
