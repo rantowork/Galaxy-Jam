@@ -1,6 +1,4 @@
-﻿using System;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,8 +6,6 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
     public class Basketball
     {
-        private Random random = new Random();
-
         private Texture2D basketballTexture;
         public Texture2D BasketballTexture
         {
@@ -17,18 +13,71 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             set { basketballTexture = value; }
         }
 
-        private Body basketballBody;
-        public Body BasketballBody
+        public Vector2 Origin
         {
-            get { return basketballBody; }
+            get { return new Vector2(Source.Width / 2f, Source.Height / 2f); }
         }
 
-        public Basketball()
+        private List<Rectangle> frames = new List<Rectangle>();
+        private int currentFrame;
+        public int Frame
         {
-            basketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
-            basketballBody.BodyType = BodyType.Dynamic;
-            basketballBody.Restitution = 0.3f;
-            basketballBody.Friction = 0.1f;
+            get { return currentFrame; }
+            set { currentFrame = (int)MathHelper.Clamp(value, 0, frames.Count - 1); }
+        }
+
+        public int FrameCount
+        {
+            get { return frames.Count; }
+        }
+
+        private float frameTime = 0.2f;
+        public float FrameTime
+        {
+            get { return frameTime; }
+            set { frameTime = MathHelper.Max(0, value); }
+        }
+
+        private float timeLeftForCurrentFrame;
+        public float TimeLeftForCurrentFrame
+        {
+            get { return timeLeftForCurrentFrame; }
+            set { timeLeftForCurrentFrame = value; }
+        }
+
+        public Rectangle Source
+        {
+            get { return frames[currentFrame]; }
+        }
+
+        private bool animate;
+        public bool Animate
+        {
+            get { return animate; }
+            set { animate = value; }
+        }
+
+        public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated)
+        {
+            BasketballTexture = texture;
+            frames = framesList;
+            Animate = isAnimated;
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            TimeLeftForCurrentFrame += elapsed;
+
+            if (Animate)
+            {
+                if (TimeLeftForCurrentFrame >= FrameTime)
+                {
+                    Frame = (Frame + 1) % (FrameCount);
+                    TimeLeftForCurrentFrame = 0.0f;
+                }
+            }
         }
     }
 }

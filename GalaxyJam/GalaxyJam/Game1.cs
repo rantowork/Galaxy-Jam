@@ -44,7 +44,6 @@ namespace GalaxyJam
         private GameStates gameState = GameStates.StartScreen;
 
         //Textures
-        private Texture2D basketBallSprite;
         private Texture2D lineSprite;
         private Texture2D backboardSprite;
         private Texture2D rimSprite;
@@ -75,7 +74,7 @@ namespace GalaxyJam
         private InputManager input;
 
         //Physical World
-        private Basketball basketball;
+        private BasketballManager basketball;
         private Body backboardBody;
         private Body leftRimBody;
         private Body rightRimBody;
@@ -86,7 +85,7 @@ namespace GalaxyJam
         //Fonts
         private SpriteFont segoe;
         private SpriteFont pixel;
-        private SpriteFont pixelScoreGlow;
+        private SpriteFont pixelGlowFont;
 
         //Starfield
         private Starfield starField;
@@ -166,6 +165,8 @@ namespace GalaxyJam
             waveBank = new WaveBank(audioEngine, "Content\\Audio\\Wave Bank.xwb");
             soundBank = new SoundBank(audioEngine, "Content\\Audio\\Sound Bank.xsb");
 
+            basketball = new BasketballManager();
+
             base.Initialize();
         }
 
@@ -192,9 +193,9 @@ namespace GalaxyJam
         {
             galaxyJamLogo = Textures.LoadPersistentTexture("Textures/GalaxyJamLogo", Content);
 
-            string currentBasketball = String.Format("Textures/Basketballs/{0}", playerOptions.GetSelectedBasketball());
-            basketBallSprite = Textures.LoadPersistentTexture(currentBasketball, Content);
-
+            basketball.LoadBasketballs(Content);
+            basketball.SelectBasketball(BasketballTypes.PurpleSkullBall);
+            
             backboardSprite = Textures.LoadPersistentTexture("Textures/Backboard2", Content);
             backboardSpriteGlow = Textures.LoadPersistentTexture("Textures/Backboard2Glow", Content);
             rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
@@ -215,7 +216,7 @@ namespace GalaxyJam
         {
             segoe = Fonts.LoadPersistentFont("Fonts/Segoe", Content);
             pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
-            pixelScoreGlow = Fonts.LoadPersistentFont("Fonts/PixelScoreGlow", Content);
+            pixelGlowFont = Fonts.LoadPersistentFont("Fonts/PixelScoreGlow", Content);
         }
 
         private void LoadSoundEffectsAndSounds()
@@ -238,8 +239,6 @@ namespace GalaxyJam
 
         private void LoadPhysicalWorldEntities()
         {
-            basketball = new Basketball();
-
             backboardBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(64f / PhysicalWorld.MetersInPixels, 116f / PhysicalWorld.MetersInPixels), 6f, 140f, 1f, .3f, .1f);
             backboardBody.OnCollision += BackboardCollision;
 
@@ -278,10 +277,10 @@ namespace GalaxyJam
                     break;
                 case GameStates.Playing:
                     SoundManager.PlayBackgroundMusic(currentlySelectedSong);
-                    
                     starField.Update(gameTime);
-
+                    BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+                    
                     HandleInput();
                     HandlePosition();
 
@@ -291,9 +290,7 @@ namespace GalaxyJam
                     Vector2 basketballCenter = basketball.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
                     goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle, starField);
-
-
-
+                    
                     if (backboardCollisionHappened)
                     {
                         GlowBackboard(gameTime);
@@ -360,26 +357,16 @@ namespace GalaxyJam
             {
                 case GameStates.StartScreen:
                     spriteBatch.Begin();
-                    spriteBatch.Draw(galaxyJamLogo, new Rectangle(0, 0, 1280, 720), Color.White);
+                    GameInterface.DrawTitleScreen(spriteBatch, galaxyJamLogo);
                     spriteBatch.End();
                     break;
                 case GameStates.OptionsScreen:
                     spriteBatch.Begin();
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     GetPlayerName(gameTime);
-                    const string instructions = "Input your name and hit enter to begin";
-                    Vector2 instructionsOrigin = pixel.MeasureString(instructions)/2;
-                    spriteBatch.DrawString(pixel, instructions, new Vector2(1280 / 2, 180), Color.White, 0.0f, instructionsOrigin, 1f, SpriteEffects.None, 1.0f);
+                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort);
 
-                    if (nameToShort)
-                    {
-                        const string nameError = "Name must be between 3 and 12 characters!";
-                        Vector2 nameErrorOrigin = pixel.MeasureString(nameError) / 2;
-                        spriteBatch.DrawString(pixel, nameError, new Vector2(1280 / 2, 675), Color.Red, 0.0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
-                    }
-
-                    Vector2 ballSelectionCenterLine = pixel.MeasureString("Select a Basketball")/2;
-                    spriteBatch.DrawString(pixel, "Select a Basketball", new Vector2(1000, 100), Color.White);
+                    Vector2 ballSelectionCenterLine = pixel.MeasureString("Select a Basketball") / 2;
                     spriteBatch.Draw(redGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 140), null, Color.White, 0f, new Vector2(redGlowBasketball.Width/2, 0), 1.0f, SpriteEffects.None, 0f);
                     spriteBatch.Draw(greenGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 210), null, Color.White, 0f, new Vector2(greenGlowBasketball.Width / 2, 0), 1.0f, SpriteEffects.None, 0f);
                     spriteBatch.Draw(yellowGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 280), null, Color.White, 0f, new Vector2(yellowGlowBasketball.Width / 2, 0), 1.0f, SpriteEffects.None, 0f);
@@ -411,38 +398,11 @@ namespace GalaxyJam
                 case GameStates.Paused:
                     DrawGameWorld();
                     spriteBatch.Begin();
-                    const string paused = "Paused!";
-                    Vector2 pausedOrigin = pixel.MeasureString(paused) / 2;
-                    spriteBatch.DrawString(pixel, paused, new Vector2(1280 / 2, 720 / 2), Color.White, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
+                    GameInterface.DrawPausedInterface(spriteBatch, pixel, pixelGlowFont);
                     spriteBatch.End();
                     break;
                 case GameStates.GameEnd:
-                    spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
-                    spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
-                    starField.Draw(spriteBatch);
-                    spriteBatch.End();
-
-                    const string gameOver = "Game Over!";
-                    string finalScore = String.Format("Final Score: {0}!", goalManager.GameScore);
-                    string timeRemaining2 = String.Format("Time Remaining: {0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
-
-                    Vector2 gameOverOrigin = pixel.MeasureString(gameOver) / 2;
-                    Vector2 finalScoreOrigin = pixel.MeasureString(finalScore) / 2;
-
-                    spriteBatch.Begin();
-                    spriteBatch.DrawString(pixel, gameOver, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
-                    spriteBatch.DrawString(pixel, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
-                    spriteBatch.DrawString(pixel, timeRemaining2, new Vector2(10, 694), Color.White);
-                    spriteBatch.DrawString(pixel, "High Scores", new Vector2(10, 30), Color.White);
-                    spriteBatch.DrawString(pixel, "Player", new Vector2(10, 50), Color.White);
-                    spriteBatch.DrawString(pixel, "Top Streak", new Vector2(170, 50), Color.White);
-                    spriteBatch.DrawString(pixel, "Score", new Vector2(340, 50), Color.White);
-                    
-                    spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
-                    spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(170, 74), Color.White);
-                    spriteBatch.DrawString(pixel, highScoresScore, new Vector2(340, 74), Color.White);
-                    
-                    spriteBatch.End();
+                    DrawGameEnd();
                     break;
             }
 
@@ -451,10 +411,6 @@ namespace GalaxyJam
 
         private void DrawGameWorld()
         {
-            Vector2 basketBallPosition = basketball.BasketballBody.Position * PhysicalWorld.MetersInPixels;
-            float basketBallRotation = basketball.BasketballBody.Rotation;
-            Vector2 basketBallOrigin = new Vector2(basketBallSprite.Width / 2f, basketBallSprite.Height / 2f);
-
             Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
             Vector2 backboardOrigin = new Vector2(backboardSprite.Width / 2f, backboardSprite.Height / 2f);
 
@@ -477,7 +433,7 @@ namespace GalaxyJam
             //draw objects which contain a body that can have forces applied to it
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix);
             //draw basketball
-            spriteBatch.Draw(basketBallSprite, basketBallPosition, null, Color.White, basketBallRotation, basketBallOrigin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(BasketballManager.SelectedBasketball.BasketballTexture, (basketball.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.SelectedBasketball.Source, Color.White, basketball.BasketballBody.Rotation, BasketballManager.SelectedBasketball.Origin, 1f, SpriteEffects.None, 0f);
             //draw backboard
             spriteBatch.Draw(backboardCollisionHappened ? backboardSpriteGlow : backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
             //draw left rim
@@ -485,22 +441,27 @@ namespace GalaxyJam
             //draw right rim
             spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
 
+            GameInterface.DrawPlayingInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
+
+            spriteBatch.End();
+        }
+        private void DrawGameEnd()
+        {
+            //Draw a full black background.  This helps with rendering the stars in front of it as the cleared viewport renders 3d space and we force it into 2d space with this.
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
+
+            spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black); //background
+            starField.Draw(spriteBatch); //stars!
+            GameInterface.DrawGameEndInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
+
             spriteBatch.End();
 
-            //Draw Interface
             spriteBatch.Begin();
-            string currentScore = String.Format("{0}", goalManager.GameScore);
-            Vector2 currentScoreOrigin = pixelScoreGlow.MeasureString(currentScore) / 2;
-            spriteBatch.DrawString(pixelScoreGlow, currentScore, new Vector2(1280 / 2, 30), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 0f);
 
-            string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
-            spriteBatch.DrawString(pixel, currentMultiplier, new Vector2(1020, 694), Color.White);
+            spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
+            spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(170, 74), Color.White);
+            spriteBatch.DrawString(pixel, highScoresScore, new Vector2(340, 74), Color.White);
 
-            string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
-            spriteBatch.DrawString(segoe, currentStreak, new Vector2(1180, 22), Color.White);
-
-            string timeRemaining = String.Format("{0}", GameTimer.GetElapsedGameTime());
-            spriteBatch.DrawString(pixelScoreGlow, timeRemaining, new Vector2(10, 664), Color.White);
             spriteBatch.End();
         }
 
@@ -514,7 +475,7 @@ namespace GalaxyJam
                     PhysicalWorld.World.Gravity.Y = 25;
                     basketball.BasketballBody.Awake = true;
                     HandleShotAngle(state);
-                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 0.5f, 0.0f, 0.0f);
+                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 0.3f, 0.0f, 0.0f);
                 }
             }
         }
@@ -723,7 +684,7 @@ namespace GalaxyJam
         {
             backboardCollisionHappened = true;
             goalManager.BackboardHit = true;
-            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.4f, 0.0f, 0.0f);
+            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.3f, 0.0f, 0.0f);
             return true;
         }
 
@@ -731,7 +692,7 @@ namespace GalaxyJam
         {
             leftRimCollisionHappened = true;
             goalManager.RimHit = true;
-            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.4f, 0.0f, 0.0f);
+            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.3f, 0.0f, 0.0f);
             return true;
         }
 
@@ -739,7 +700,7 @@ namespace GalaxyJam
         {
             rightRimCollisionHappened = true;
             goalManager.RimHit = true;
-            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.4f, 0.0f, 0.0f);
+            SoundManager.PlaySoundEffect(collisionSoundEffect, 0.3f, 0.0f, 0.0f);
             return true;
         }
         #endregion
