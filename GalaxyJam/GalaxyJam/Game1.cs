@@ -55,15 +55,6 @@ namespace GalaxyJam
         private Texture2D onepxsolidstar;
         private Texture2D cursor;
 
-        private Rectangle redRectangle = new Rectangle(1100, 140, 32, 32);
-        private Rectangle greenRectangle = new Rectangle(1100, 210, 32, 32);
-        private Rectangle yellowRectangle = new Rectangle(1100, 280, 32, 32);
-
-        //Basketballs
-        private Texture2D greenGlowBasketball;
-        private Texture2D redGlowBasketball;
-        private Texture2D yellowGlowBasketball;
-
         //Sounds
         private AudioEngine audioEngine;
         private WaveBank waveBank;
@@ -83,7 +74,6 @@ namespace GalaxyJam
         private Random rand = new Random();
 
         //Fonts
-        private SpriteFont segoe;
         private SpriteFont pixel;
         private SpriteFont pixelGlowFont;
 
@@ -110,6 +100,8 @@ namespace GalaxyJam
         private bool nameToShort;
 
         private PlayerOptions playerOptions = new PlayerOptions();
+        private int currentlySelectedBasketball;
+        private KeyboardState cachedKeyboardState;
 
         //Shot Constants
         private const double TEXT_FADE_TIME = 2000;
@@ -205,16 +197,10 @@ namespace GalaxyJam
             fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
             onepxsolidstar = Textures.LoadPersistentTexture("Textures/1x1SolidStar", Content);
             cursor = Textures.LoadPersistentTexture("Textures/Cursor", Content);
-
-            //Temporary loading basketballs
-            redGlowBasketball = Content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall");
-            greenGlowBasketball = Content.Load<Texture2D>(@"Textures/Basketballs/GreenGlowBall");
-            yellowGlowBasketball = Content.Load<Texture2D>(@"Textures/Basketballs/YellowGlowBall");
         }
 
         private void LoadFonts()
         {
-            segoe = Fonts.LoadPersistentFont("Fonts/Segoe", Content);
             pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
             pixelGlowFont = Fonts.LoadPersistentFont("Fonts/PixelScoreGlow", Content);
         }
@@ -271,6 +257,23 @@ namespace GalaxyJam
                     break;
                 case GameStates.OptionsScreen:
                     SoundManager.PlayBackgroundMusic(currentlySelectedSong);
+
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedKeyboardState.IsKeyDown(Keys.Up))
+                    {
+                        if (currentlySelectedBasketball > 0)
+                        {
+                            currentlySelectedBasketball--;
+                        }
+                    }
+                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedKeyboardState.IsKeyDown(Keys.Down))
+                    {
+                        if (currentlySelectedBasketball < BasketballManager.basketballs.Count - 1)
+                        {
+                            currentlySelectedBasketball++;
+                        }
+                    }
+                    cachedKeyboardState = input.GetKeyboard().GetState();
+                    
                     break;
                 case GameStates.GetReadyState:
                     starField.Update(gameTime);
@@ -364,29 +367,7 @@ namespace GalaxyJam
                     spriteBatch.Begin();
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     GetPlayerName(gameTime);
-                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort);
-
-                    Vector2 ballSelectionCenterLine = pixel.MeasureString("Select a Basketball") / 2;
-                    spriteBatch.Draw(redGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 140), null, Color.White, 0f, new Vector2(redGlowBasketball.Width/2, 0), 1.0f, SpriteEffects.None, 0f);
-                    spriteBatch.Draw(greenGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 210), null, Color.White, 0f, new Vector2(greenGlowBasketball.Width / 2, 0), 1.0f, SpriteEffects.None, 0f);
-                    spriteBatch.Draw(yellowGlowBasketball, new Vector2(1000 + ballSelectionCenterLine.X, 280), null, Color.White, 0f, new Vector2(yellowGlowBasketball.Width / 2, 0), 1.0f, SpriteEffects.None, 0f);
-
-                    MouseState state = input.GetMouse().GetState();
-                    Rectangle mouseLocation = new Rectangle(state.X, state.Y, 1, 1);
-
-                    if (mouseLocation.Intersects(redRectangle))
-                    {
-                        spriteBatch.DrawString(pixel, "Red Glow Ball", new Vector2(1000 + ballSelectionCenterLine.X, 400), Color.White, 0, new Vector2(pixel.MeasureString("Red Glow Ball").X / 2, 0), 1f, SpriteEffects.None, 0f);
-                    }
-                    else if (mouseLocation.Intersects(greenRectangle))
-                    {
-                        spriteBatch.DrawString(pixel, "Green Glow Ball", new Vector2(1000 + ballSelectionCenterLine.X, 400), Color.White, 0, new Vector2(pixel.MeasureString("Green Glow Ball").X / 2, 0), 1f, SpriteEffects.None, 0f);
-                    }
-                    else if (mouseLocation.Intersects(yellowRectangle))
-                    {
-                        spriteBatch.DrawString(pixel, "Yellow Glow Ball", new Vector2(1000 + ballSelectionCenterLine.X, 400), Color.White, 0, new Vector2(pixel.MeasureString("Yellow Glow Ball").X/2,0), 1f, SpriteEffects.None, 0f);
-                    }
-
+                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort, currentlySelectedBasketball);
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:

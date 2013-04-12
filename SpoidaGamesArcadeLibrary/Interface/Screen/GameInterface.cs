@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
+using SpoidaGamesArcadeLibrary.Resources.Entities;
 
 namespace SpoidaGamesArcadeLibrary.Interface.Screen
 {
@@ -17,7 +19,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         const string INSTRUCTIONS = "Input your name and hit enter to begin";
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
 
-        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, bool nameToShort)
+        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, bool nameToShort, int currentSelection)
         {
             Vector2 instructionsOrigin = pixelFont.MeasureString(INSTRUCTIONS) / 2;
             Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
@@ -29,7 +31,46 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(1280 / 2, 675), Color.Red, 0.0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
             }
 
-            spriteBatch.DrawString(pixelFont, "Select a Basketball", new Vector2(1000, 100), Color.White);
+            if (BasketballManager.basketballSelection.Count == 0)
+            {
+                int count = 0;
+                var values = Enum.GetValues(typeof(BasketballTypes));
+                foreach (BasketballTypes type in values)
+                {
+                    BasketballManager.basketballSelection.Add(count, type);
+                    count++;
+                }
+            }
+
+            BasketballTypes selectedType;
+            if (BasketballManager.basketballSelection.TryGetValue(currentSelection, out selectedType))
+            {
+                spriteBatch.DrawString(pixelFont, GetBasketballTypeString(selectedType), new Vector2(500, 500), Color.White);
+            }
+
+            Basketball basketball;
+            if (BasketballManager.basketballs.TryGetValue(selectedType, out basketball))
+            {
+                spriteBatch.Draw(basketball.BasketballTexture, new Vector2(740, 508), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
+                BasketballManager.SelectedBasketball = basketball;
+            }
+        }
+        
+        private static string GetBasketballTypeString(BasketballTypes type)
+        {
+            if (type == BasketballTypes.RedGlowBall)
+            {
+                return "Red Glow Ball";
+            }
+            if (type == BasketballTypes.GreenGlowBall)
+            {
+                return "Green Glow Ball";
+            }
+            if (type == BasketballTypes.YellowGlowBall)
+            {
+                return "Yellow Glow Ball";
+            }
+            return "Puple Skull Ball";
         }
 
         //Playing Interface

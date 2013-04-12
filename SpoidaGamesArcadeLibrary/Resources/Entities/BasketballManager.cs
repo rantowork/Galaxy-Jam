@@ -12,7 +12,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
     {
         private Random random = new Random();
 
-        public Dictionary<BasketballTypes, Basketball> basketballs = new Dictionary<BasketballTypes, Basketball>();
+        public static Dictionary<BasketballTypes, Basketball> basketballs = new Dictionary<BasketballTypes, Basketball>();
+        public static Dictionary<int, BasketballTypes> basketballSelection = new Dictionary<int, BasketballTypes>();
 
         private static Basketball selectedBasketball;
         public static Basketball SelectedBasketball
