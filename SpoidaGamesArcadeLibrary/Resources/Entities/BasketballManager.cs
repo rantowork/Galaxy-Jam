@@ -41,15 +41,16 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             get { return basketballBody; }
         }
         
-        public BasketballManager()
+        public BasketballManager(ContentManager content)
         {
             basketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
             basketballBody.BodyType = BodyType.Dynamic;
             basketballBody.Restitution = 0.3f;
             basketballBody.Friction = 0.1f;
+            LoadBasketballs(content);
         }
 
-        public void LoadBasketballs(ContentManager content)
+        private static void LoadBasketballs(ContentManager content)
         {
             basketballs.Add(BasketballTypes.RedGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 48, 48)}, false));
             basketballs.Add(BasketballTypes.GreenGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/GreenGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));

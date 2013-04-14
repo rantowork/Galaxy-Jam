@@ -16,18 +16,10 @@
             set { allSoundsMuted = value; }
         }
 
-        private static bool backgroundMusicStarted;
-        public static bool BackgroundMusicStarted
-        {
-            get { return backgroundMusicStarted; }
-            set { backgroundMusicStarted = value; }
-        }
-
         public InterfaceOptions()
         {
             BackgroundMusicMuted = false;
             AllSoundsMuted = false;
-            BackgroundMusicStarted = false;
         }
     }
 }

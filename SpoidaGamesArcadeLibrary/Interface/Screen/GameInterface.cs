@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
+using SpoidaGamesArcadeLibrary.Settings;
 
 namespace SpoidaGamesArcadeLibrary.Interface.Screen
 {
@@ -19,7 +21,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         const string INSTRUCTIONS = "Input your name and hit enter to begin";
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
 
-        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, bool nameToShort, int currentSelection)
+        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
         {
             Vector2 instructionsOrigin = pixelFont.MeasureString(INSTRUCTIONS) / 2;
             Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
@@ -42,14 +44,39 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 }
             }
 
-            BasketballTypes selectedType;
-            if (BasketballManager.basketballSelection.TryGetValue(currentSelection, out selectedType))
+            if (SoundManager.musicSelection.Count == 0)
             {
-                spriteBatch.DrawString(pixelFont, GetBasketballTypeString(selectedType), new Vector2(500, 500), Color.White);
+                int count = 0;
+                var values = Enum.GetValues(typeof (SongTypes));
+                foreach (SongTypes type in values)
+                {
+                    SoundManager.musicSelection.Add(count, type);
+                    count++;
+                }
+            }
+
+            SongTypes songType;
+            if (SoundManager.musicSelection.TryGetValue(currentSongSelection, out songType))
+            {
+                spriteBatch.DrawString(pixelFont, GetSongTypeString(songType), new Vector2(500, 600), Color.White);
+            }
+
+            Cue cue;
+            if (SoundManager.music.TryGetValue(songType, out cue))
+            {
+                SoundManager.SelectedMusic.Stop(AudioStopOptions.Immediate);
+                SoundManager.SelectedMusic = cue;
+                SoundManager.PlayBackgroundMusic();
+            }
+
+            BasketballTypes basketballTypes;
+            if (BasketballManager.basketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
+            {
+                spriteBatch.DrawString(pixelFont, GetBasketballTypeString(basketballTypes), new Vector2(500, 500), Color.White);
             }
 
             Basketball basketball;
-            if (BasketballManager.basketballs.TryGetValue(selectedType, out basketball))
+            if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
             {
                 spriteBatch.Draw(basketball.BasketballTexture, new Vector2(740, 508), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
                 BasketballManager.SelectedBasketball = basketball;
@@ -71,6 +98,19 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 return "Yellow Glow Ball";
             }
             return "Puple Skull Ball";
+        }
+
+        private static string GetSongTypeString(SongTypes type)
+        {
+            if (type == SongTypes.BouncyLoop1)
+            {
+                return "Bouncy Loop";
+            }
+            if (type == SongTypes.SpaceLoop1)
+            {
+                return "Spacey Loop 1";
+            }
+            return "Spacey Loop 2";
         }
 
         //Playing Interface

@@ -111,10 +111,6 @@
     <Compile Include="Resources\Entities\Basketball.cs" />
     <Compile Include="Resources\Entities\BasketballManager.cs" />
     <Compile Include="Resources\Entities\PhysicalWorld.cs" />
-    <Compile Include="Resources\Fonts.cs" />
-    <Compile Include="Resources\Music.cs" />
-    <Compile Include="Resources\SoundEffects.cs" />
-    <Compile Include="Resources\Textures.cs" />
     <Compile Include="Settings\InterfaceOptions.cs" />
     <Compile Include="Settings\SoundManager.cs" />
   </ItemGroup>

@@ -59,13 +59,13 @@ namespace GalaxyJam
         private AudioEngine audioEngine;
         private WaveBank waveBank;
         private SoundBank soundBank;
-        private Cue currentlySelectedSong;
+        private Cue selectedSong;
 
         //Input
         private InputManager input;
 
         //Physical World
-        private BasketballManager basketball;
+        private BasketballManager basketballManager;
         private Body backboardBody;
         private Body leftRimBody;
         private Body rightRimBody;
@@ -84,6 +84,7 @@ namespace GalaxyJam
         private SoundEffect basketBallShotSoundEffect;
         private SoundEffect basketScoredSoundEffect;
         private SoundEffect collisionSoundEffect;
+        private SoundManager soundManager;
 
         //Particles
         private SparkleEmitter basketballSparkle;
@@ -100,8 +101,10 @@ namespace GalaxyJam
         private bool nameToShort;
 
         private PlayerOptions playerOptions = new PlayerOptions();
-        private int currentlySelectedBasketball;
-        private KeyboardState cachedKeyboardState;
+        private int currentlySelectedBasketballKey;
+        private int currentlySelectedSongKey;
+        private KeyboardState cachedUpDownKeyboardState;
+        private KeyboardState cachedRightLeftKeyboardState;
 
         //Shot Constants
         private const double TEXT_FADE_TIME = 2000;
@@ -157,8 +160,6 @@ namespace GalaxyJam
             waveBank = new WaveBank(audioEngine, "Content\\Audio\\Wave Bank.xwb");
             soundBank = new SoundBank(audioEngine, "Content\\Audio\\Sound Bank.xsb");
 
-            basketball = new BasketballManager();
-
             base.Initialize();
         }
 
@@ -169,6 +170,10 @@ namespace GalaxyJam
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            basketballManager = new BasketballManager(Content);
+            soundManager = new SoundManager(soundBank);
+            
             LoadTextures();
             LoadFonts();
             LoadSoundEffectsAndSounds();
@@ -183,35 +188,30 @@ namespace GalaxyJam
 
         private void LoadTextures()
         {
-            galaxyJamLogo = Textures.LoadPersistentTexture("Textures/GalaxyJamLogo", Content);
-
-            basketball.LoadBasketballs(Content);
-            basketball.SelectBasketball(BasketballTypes.PurpleSkullBall);
-            
-            backboardSprite = Textures.LoadPersistentTexture("Textures/Backboard2", Content);
-            backboardSpriteGlow = Textures.LoadPersistentTexture("Textures/Backboard2Glow", Content);
-            rimSprite = Textures.LoadPersistentTexture("Textures/Rim2", Content);
-            rimSpriteGlow = Textures.LoadPersistentTexture("Textures/Rim2Glow", Content);
-            lineSprite = Textures.LoadPersistentTexture("Textures/LineSprite", Content);
-            twopxsolidstar = Textures.LoadPersistentTexture("Textures/2x2SolidStar", Content);
-            fourpxblurstar = Textures.LoadPersistentTexture("Textures/4x4BlurStar", Content);
-            onepxsolidstar = Textures.LoadPersistentTexture("Textures/1x1SolidStar", Content);
-            cursor = Textures.LoadPersistentTexture("Textures/Cursor", Content);
+            galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamLogo");
+            backboardSprite = Content.Load<Texture2D>(@"Textures/Backboard2");
+            backboardSpriteGlow = Content.Load<Texture2D>(@"Textures/Backboard2Glow");
+            rimSprite = Content.Load<Texture2D>(@"Textures/Rim2");
+            rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Rim2Glow");
+            lineSprite = Content.Load<Texture2D>(@"Textures/LineSprite");
+            twopxsolidstar = Content.Load<Texture2D>(@"Textures/2x2SolidStar");
+            fourpxblurstar = Content.Load<Texture2D>(@"Textures/4x4BlurStar");
+            onepxsolidstar = Content.Load<Texture2D>(@"Textures/1x1SolidStar");
+            cursor = Content.Load<Texture2D>(@"Textures/Cursor");
         }
 
         private void LoadFonts()
         {
-            pixel = Fonts.LoadPersistentFont("Fonts/PixelFont", Content);
-            pixelGlowFont = Fonts.LoadPersistentFont("Fonts/PixelScoreGlow", Content);
+            pixel = Content.Load<SpriteFont>(@"Fonts/PixelFont");
+            pixelGlowFont = Content.Load<SpriteFont>(@"Fonts/PixelScoreGlow");
         }
 
         private void LoadSoundEffectsAndSounds()
         {
-            basketBallShotSoundEffect = SoundEffects.LoadPersistentSoundEffect("Audio/SoundEffects/BasketballShot", Content);
-            basketScoredSoundEffect = SoundEffects.LoadPersistentSoundEffect("Audio/SoundEffects/BasketScored", Content);
-            collisionSoundEffect = SoundEffects.LoadPersistentSoundEffect("Audio/SoundEffects/Collision", Content);
-
-            currentlySelectedSong = soundBank.GetCue(playerOptions.GetSelectedMusic());
+            basketBallShotSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketballShot");
+            basketScoredSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketScored");
+            collisionSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Collision");
+            soundManager.SelectMusic(SongTypes.BouncyLoop1);
         }
 
         private void LoadEffectsAndParticles()
@@ -256,30 +256,44 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.OptionsScreen:
-                    SoundManager.PlayBackgroundMusic(currentlySelectedSong);
 
-                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedKeyboardState.IsKeyDown(Keys.Up))
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
                     {
-                        if (currentlySelectedBasketball > 0)
+                        if (currentlySelectedSongKey > 0)
                         {
-                            currentlySelectedBasketball--;
+                            currentlySelectedSongKey--;
                         }
                     }
-                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedKeyboardState.IsKeyDown(Keys.Down))
+                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
                     {
-                        if (currentlySelectedBasketball < BasketballManager.basketballs.Count - 1)
+                        if (currentlySelectedSongKey < SoundManager.music.Count - 1)
                         {
-                            currentlySelectedBasketball++;
+                            currentlySelectedSongKey++;
                         }
                     }
-                    cachedKeyboardState = input.GetKeyboard().GetState();
+                    cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up))
+                    {
+                        if (currentlySelectedBasketballKey > 0)
+                        {
+                            currentlySelectedBasketballKey--;
+                        }
+                    }
+                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
+                    {
+                        if (currentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
+                        {
+                            currentlySelectedBasketballKey++;
+                        }
+                    }
+                    cachedUpDownKeyboardState = input.GetKeyboard().GetState();
                     
                     break;
                 case GameStates.GetReadyState:
                     starField.Update(gameTime);
                     break;
                 case GameStates.Playing:
-                    SoundManager.PlayBackgroundMusic(currentlySelectedSong);
                     starField.Update(gameTime);
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -287,10 +301,10 @@ namespace GalaxyJam
                     HandleInput();
                     HandlePosition();
 
-                    basketballSparkle.EmitterLocation = basketball.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                    basketballSparkle.EmitterLocation = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     basketballSparkle.Update();
 
-                    Vector2 basketballCenter = basketball.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                    Vector2 basketballCenter = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
                     goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle, starField);
                     
@@ -312,7 +326,7 @@ namespace GalaxyJam
                     if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
                     {
                         GameTimer.StopGameTimer();
-                        if (basketball.BasketballBody.Awake == false)
+                        if (basketballManager.BasketballBody.Awake == false)
                         {
                             HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, playerOptions.PlayerName, goalManager.TopStreak);
                             highScoreData = HighScoreManager.LoadHighScores(HIGH_SCORES_FILENAME);
@@ -327,7 +341,6 @@ namespace GalaxyJam
                 case GameStates.Paused:
                     break;
                 case GameStates.GameEnd:
-                    SoundManager.PlayBackgroundMusic(currentlySelectedSong);
                     starField.Update(gameTime);
                     if (!highScoresLoaded)
                     {
@@ -367,7 +380,7 @@ namespace GalaxyJam
                     spriteBatch.Begin();
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     GetPlayerName(gameTime);
-                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort, currentlySelectedBasketball);
+                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
@@ -414,7 +427,7 @@ namespace GalaxyJam
             //draw objects which contain a body that can have forces applied to it
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix);
             //draw basketball
-            spriteBatch.Draw(BasketballManager.SelectedBasketball.BasketballTexture, (basketball.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.SelectedBasketball.Source, Color.White, basketball.BasketballBody.Rotation, BasketballManager.SelectedBasketball.Origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(BasketballManager.SelectedBasketball.BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.SelectedBasketball.Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.SelectedBasketball.Origin, 1f, SpriteEffects.None, 0f);
             //draw backboard
             spriteBatch.Draw(backboardCollisionHappened ? backboardSpriteGlow : backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
             //draw left rim
@@ -449,12 +462,12 @@ namespace GalaxyJam
         private void HandleInput()
         {
             MouseState state = input.GetMouse().GetState();
-            if (basketball.BasketballBody.Awake == false)
+            if (basketballManager.BasketballBody.Awake == false)
             {
                 if (state.LeftButton == ButtonState.Pressed)
                 {
                     PhysicalWorld.World.Gravity.Y = 25;
-                    basketball.BasketballBody.Awake = true;
+                    basketballManager.BasketballBody.Awake = true;
                     HandleShotAngle(state);
                     SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 0.3f, 0.0f, 0.0f);
                 }
@@ -463,11 +476,11 @@ namespace GalaxyJam
 
         private void HandlePosition()
         {
-            if (basketball.BasketballBody.Position.Y > 720 / PhysicalWorld.MetersInPixels)
+            if (basketballManager.BasketballBody.Position.Y > 720 / PhysicalWorld.MetersInPixels)
             {
                 PhysicalWorld.World.Gravity.Y = 0;
-                basketball.BasketballBody.Awake = false;
-                basketball.BasketballBody.Position = RandomizePosition();
+                basketballManager.BasketballBody.Awake = false;
+                basketballManager.BasketballBody.Position = RandomizePosition();
                 goalManager.GoalScored = false;
                 goalManager.BackboardHit = false;
                 goalManager.RimHit = false;
@@ -485,8 +498,8 @@ namespace GalaxyJam
         private void ResetPosition()
         {
             PhysicalWorld.World.Gravity.Y = 0;
-            basketball.BasketballBody.Awake = false;
-            basketball.BasketballBody.Position = RandomizePosition();
+            basketballManager.BasketballBody.Awake = false;
+            basketballManager.BasketballBody.Position = RandomizePosition();
         }
 
         private Vector2 RandomizePosition()
@@ -496,8 +509,8 @@ namespace GalaxyJam
 
         private void HandleShotAngle(MouseState state)
         {
-            Vector2 basketballLocation = new Vector2(basketball.BasketballBody.Position.X * PhysicalWorld.MetersInPixels,
-                                                     basketball.BasketballBody.Position.Y * PhysicalWorld.MetersInPixels);
+            Vector2 basketballLocation = new Vector2(basketballManager.BasketballBody.Position.X * PhysicalWorld.MetersInPixels,
+                                                     basketballManager.BasketballBody.Position.Y * PhysicalWorld.MetersInPixels);
             Vector2 mouseLocation = new Vector2(state.X, state.Y);
 
             double radians = MouseAngle(basketballLocation, mouseLocation);
@@ -507,7 +520,7 @@ namespace GalaxyJam
 
             Vector2 shotVector = new Vector2(MathHelper.Clamp((pointingAt.X * distance) / (PhysicalWorld.MetersInPixels * 1.5f), -3, 3), MathHelper.Clamp(((pointingAt.Y * distance) / (PhysicalWorld.MetersInPixels)), -4, 3));
 
-            basketball.BasketballBody.ApplyLinearImpulse(shotVector);
+            basketballManager.BasketballBody.ApplyLinearImpulse(shotVector);
         }
 
         private static double MouseAngle(Vector2 spriteLocation, Vector2 mouseLocation)
@@ -571,18 +584,18 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Paused;
-                    SoundManager.MuteSounds(currentlySelectedSong);
+                    SoundManager.MuteSounds(selectedSong);
                     GameTimer.StopGameTimer();
                 }
 
                 if (character == 112)
                 {
-                    SoundManager.PauseBackgroundMusic(currentlySelectedSong);
+                    SoundManager.PauseBackgroundMusic(selectedSong);
                 }
 
                 if (character == 109)
                 {
-                    SoundManager.MuteSounds(currentlySelectedSong);
+                    SoundManager.MuteSounds(selectedSong);
                 }
             }
             else if (gameState == GameStates.Paused)
@@ -590,7 +603,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Playing;
-                    SoundManager.MuteSounds(currentlySelectedSong);
+                    SoundManager.MuteSounds(selectedSong);
                     GameTimer.StartGameTimer();
                 }
             }

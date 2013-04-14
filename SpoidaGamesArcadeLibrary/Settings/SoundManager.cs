@@ -1,9 +1,13 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SpoidaGamesArcadeLibrary.Settings
 {
     public class SoundManager
     {
+        public static Dictionary<SongTypes,Cue> music = new Dictionary<SongTypes, Cue>();
+        public static Dictionary<int, SongTypes> musicSelection = new Dictionary<int, SongTypes>();
+
         public static void PlaySoundEffect(SoundEffect soundEffect, float volume, float pitch, float pan)
         {
             if (!InterfaceOptions.AllSoundsMuted)
@@ -12,13 +16,9 @@ namespace SpoidaGamesArcadeLibrary.Settings
             }
         }
 
-        public static void PlayBackgroundMusic(Cue cueToPlay)
+        public static void PlayBackgroundMusic()
         {
-            if (!InterfaceOptions.BackgroundMusicStarted)
-            {
-                cueToPlay.Play();
-                InterfaceOptions.BackgroundMusicStarted = true;
-            }
+                selectedMusic.Play();
         }
 
         public static void PauseBackgroundMusic(Cue cueToPause)
@@ -56,5 +56,44 @@ namespace SpoidaGamesArcadeLibrary.Settings
                 InterfaceOptions.AllSoundsMuted = !InterfaceOptions.AllSoundsMuted;
             }
         }
+
+        private static Cue selectedMusic;
+        public static Cue SelectedMusic
+        {
+            get { return selectedMusic; }
+            set { selectedMusic = value; }
+        }
+
+        public void SelectMusic(SongTypes type)
+        {
+            Cue selectedCue;
+            if (music.TryGetValue(type, out selectedCue))
+            {
+                selectedMusic = selectedCue;
+            }
+            else
+            {
+                selectedMusic = music[0];
+            }
+        }
+
+        public SoundManager(SoundBank soundBank)
+        {
+            LoadMusic(soundBank);
+        }
+
+        private void LoadMusic(SoundBank soundBank)
+        {
+            music.Add(SongTypes.BouncyLoop1, soundBank.GetCue("BouncyLoop1"));
+            music.Add(SongTypes.SpaceLoop1, soundBank.GetCue("SpaceLoop1"));
+            music.Add(SongTypes.SpaceLoop2, soundBank.GetCue("SpaceLoop2"));
+        }
+    }
+
+    public enum SongTypes
+    {
+        BouncyLoop1,
+        SpaceLoop1,
+        SpaceLoop2
     }
 }
