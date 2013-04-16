@@ -7,6 +7,7 @@ namespace SpoidaGamesArcadeLibrary.Settings
     {
         public static Dictionary<SongTypes,Cue> music = new Dictionary<SongTypes, Cue>();
         public static Dictionary<int, SongTypes> musicSelection = new Dictionary<int, SongTypes>();
+        public static SoundBank soundBank;
 
         public static void PlaySoundEffect(SoundEffect soundEffect, float volume, float pitch, float pan)
         {
@@ -18,7 +19,14 @@ namespace SpoidaGamesArcadeLibrary.Settings
 
         public static void PlayBackgroundMusic()
         {
-                selectedMusic.Play();
+            if (SelectedMusic.IsStopped)
+            {
+                SelectedMusic.Play();
+            }
+            else if (!SelectedMusic.IsPlaying)
+            {
+                SelectedMusic.Play();
+            }
         }
 
         public static void PauseBackgroundMusic(Cue cueToPause)
@@ -77,12 +85,13 @@ namespace SpoidaGamesArcadeLibrary.Settings
             }
         }
 
-        public SoundManager(SoundBank soundBank)
+        public SoundManager(SoundBank bank  )
         {
-            LoadMusic(soundBank);
+            soundBank = bank;
+            LoadMusic();
         }
 
-        private void LoadMusic(SoundBank soundBank)
+        private static void LoadMusic()
         {
             music.Add(SongTypes.BouncyLoop1, soundBank.GetCue("BouncyLoop1"));
             music.Add(SongTypes.SpaceLoop1, soundBank.GetCue("SpaceLoop1"));

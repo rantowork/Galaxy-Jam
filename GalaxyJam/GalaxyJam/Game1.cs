@@ -146,14 +146,24 @@ namespace GalaxyJam
             string fullpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
             if (!File.Exists(fullpath))
             {
+
                 //If the file doesn't exist, make a fake one...
                 // Create the data to save
-                HighScoreManager.HighScoreData data = new HighScoreManager.HighScoreData(10);
-                data.playerName[0] = "Null Man";
-                data.streak[0] = 1;
-                data.score[0] = 100;
+                //HighScoreManager.HighScoreData data = new HighScoreManager.HighScoreData(10);
+                //data.playerName[0] = "Null Man";
+                //data.streak[0] = 1;
+                //data.score[0] = 100;
 
-                HighScoreManager.SaveHighScores(data, HIGH_SCORES_FILENAME);
+                //HighScoreManager.SaveHighScores(data, HIGH_SCORES_FILENAME);
+                using (BinaryWriter b = new BinaryWriter(File.Open(fullpath, FileMode.Create)))
+                {
+                    b.Write("Hello!");
+                }
+
+                using (BinaryReader b = new BinaryReader(File.Open(fullpath, FileMode.Open)))
+                {
+                    string stuff = b.ReadString();
+                }
             }
 
             audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");

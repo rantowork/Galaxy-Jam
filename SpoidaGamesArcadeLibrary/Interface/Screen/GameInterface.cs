@@ -20,6 +20,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         //Options Interface
         const string INSTRUCTIONS = "Input your name and hit enter to begin";
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
+        private static Cue previousCue;
 
         public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
         {
@@ -64,9 +65,20 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             Cue cue;
             if (SoundManager.music.TryGetValue(songType, out cue))
             {
-                SoundManager.SelectedMusic.Stop(AudioStopOptions.Immediate);
-                SoundManager.SelectedMusic = cue;
-                SoundManager.PlayBackgroundMusic();
+                if (previousCue == null)
+                {
+                    previousCue = cue;
+                    SoundManager.PlayBackgroundMusic();
+                }
+                if (cue != previousCue)
+                {
+                    previousCue = cue;
+                    SoundManager.SelectedMusic.Stop(AudioStopOptions.Immediate);
+                    SoundManager.SelectedMusic.Dispose();
+                    Cue newCue = SoundManager.soundBank.GetCue(cue.Name);
+                    SoundManager.SelectedMusic = newCue;
+                    SoundManager.SelectedMusic.Play();
+                }
             }
 
             BasketballTypes basketballTypes;
