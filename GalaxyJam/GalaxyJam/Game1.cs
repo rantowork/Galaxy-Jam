@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Web.Script.Serialization;
 using FarseerPhysics.Dynamics;
@@ -92,15 +91,17 @@ namespace GalaxyJam
 
         //Game goals
         private GoalManager goalManager = new GoalManager(100, true, new Rectangle(85, 208, 76, 1));
-        private const string HIGH_SCORES_FILENAME = "highscores.lst";
-        private HighScoreManager.HighScoreData highScoreData;
+        
         private bool highScoresLoaded;
         private StringBuilder highScoresPlayers = new StringBuilder();
         private StringBuilder highScoresScore = new StringBuilder();
         private StringBuilder highScoresStreak = new StringBuilder();
         private StringBuilder playerName = new StringBuilder();
         private bool nameToShort;
+
+        private const string HIGH_SCORES_FILENAME = "highscores.lst";
         private HighScoreManager highScoreManager;
+        string fullHighScorePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
 
         private PlayerOptions playerOptions = new PlayerOptions();
         private int currentlySelectedBasketballKey;
@@ -146,17 +147,17 @@ namespace GalaxyJam
             IsMouseVisible = true;
             input.GetKeyboard().CharacterEntered += GamePlayInput;
 
-            highScoreManager = new HighScoreManager();
-            string fullpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
-            if (!File.Exists(fullpath))
+            highScoreManager = new HighScoreManager(fullHighScorePath);
+            
+            if (!File.Exists(highScoreManager.HighScoreFilePath))
             {
-                List<HighScore> tempList = new List<HighScore> { new HighScore("Jerry Rice", 1000, 1, 5), new HighScore("Glen Rice", 2000, 1, 5) };
+                List<HighScore> tempList = new List<HighScore> { new HighScore("Jerry Rice", 2000, 1, 5), new HighScore("Glen Rice", 1000, 1, 5) };
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string json = serializer.Serialize(tempList);
                 string encryptedJson = highScoreManager.EncodeHighScores(json);
-                
-                using (FileStream fileStream = File.Create(fullpath))
+
+                using (FileStream fileStream = File.Create(highScoreManager.HighScoreFilePath))
                 {
                     using (StreamWriter streamWriter = new StreamWriter(fileStream))
                     {
@@ -167,16 +168,7 @@ namespace GalaxyJam
             }
             else
             {
-                using (FileStream fileStream = File.Open(fullpath, FileMode.Open))
-                {
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    using (StreamReader streamReader = new StreamReader(fileStream))
-                    {
-                        string encryptedScoreData = streamReader.ReadToEnd();
-                        string decryptedScoreData = highScoreManager.DecodeHighScores(encryptedScoreData);
-                        highScoreManager.HighScores = serializer.Deserialize<List<HighScore>>(decryptedScoreData);
-                    }
-                }
+                highScoreManager.LoadHighScoresFromDisk();
             }
 
             audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");
@@ -351,8 +343,7 @@ namespace GalaxyJam
                         GameTimer.StopGameTimer();
                         if (basketballManager.BasketballBody.Awake == false)
                         {
-                            HighScoreManager.SaveHighScore(goalManager.GameScore, HIGH_SCORES_FILENAME, playerOptions.PlayerName, goalManager.TopStreak);
-                            highScoreData = HighScoreManager.LoadHighScores(HIGH_SCORES_FILENAME);
+                            highScoreManager.SaveHighScore(playerOptions.PlayerName, goalManager.GameScore, goalManager.TopStreak, goalManager.ScoreMulitplier);
                             highScoresPlayers.Clear();
                             highScoresScore.Clear();
                             highScoresStreak.Clear();
@@ -367,14 +358,11 @@ namespace GalaxyJam
                     starField.Update(gameTime);
                     if (!highScoresLoaded)
                     {
-                        for (int i = 0; i < highScoreData.count; i++)
+                        foreach (HighScore highScore in highScoreManager.HighScores)
                         {
-                            if (highScoreData.playerName[i] != null)
-                            {
-                                highScoresPlayers.AppendLine(String.Format("{0}", highScoreData.playerName[i]));
-                                highScoresScore.AppendLine(String.Format("{0}", highScoreData.score[i]));
-                                highScoresStreak.AppendLine(String.Format("{0}", highScoreData.streak[i]));
-                            }
+                            highScoresPlayers.AppendLine(String.Format("{0}", highScore.CurrentPlayerName));
+                            highScoresScore.AppendLine(String.Format("{0}", highScore.PlayerScore));
+                            highScoresStreak.AppendLine(String.Format("{0}", highScore.PlayerTopStreak));
                         }
 
                         highScoresLoaded = true;
