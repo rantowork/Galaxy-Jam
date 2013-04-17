@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Web.Script.Serialization;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using Microsoft.Xna.Framework;
@@ -14,7 +16,6 @@ using SpoidaGamesArcadeLibrary.Effects.Environment;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.GameOptions;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
-using SpoidaGamesArcadeLibrary.Resources;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -99,6 +100,7 @@ namespace GalaxyJam
         private StringBuilder highScoresStreak = new StringBuilder();
         private StringBuilder playerName = new StringBuilder();
         private bool nameToShort;
+        private HighScoreManager highScoreManager;
 
         private PlayerOptions playerOptions = new PlayerOptions();
         private int currentlySelectedBasketballKey;
@@ -143,26 +145,37 @@ namespace GalaxyJam
         {
             IsMouseVisible = true;
             input.GetKeyboard().CharacterEntered += GamePlayInput;
+
+            highScoreManager = new HighScoreManager();
             string fullpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
             if (!File.Exists(fullpath))
             {
+                List<HighScore> tempList = new List<HighScore> { new HighScore("Jerry Rice", 1000, 1, 5), new HighScore("Glen Rice", 2000, 1, 5) };
 
-                //If the file doesn't exist, make a fake one...
-                // Create the data to save
-                //HighScoreManager.HighScoreData data = new HighScoreManager.HighScoreData(10);
-                //data.playerName[0] = "Null Man";
-                //data.streak[0] = 1;
-                //data.score[0] = 100;
-
-                //HighScoreManager.SaveHighScores(data, HIGH_SCORES_FILENAME);
-                using (BinaryWriter b = new BinaryWriter(File.Open(fullpath, FileMode.Create)))
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                string json = serializer.Serialize(tempList);
+                string encryptedJson = highScoreManager.EncodeHighScores(json);
+                
+                using (FileStream fileStream = File.Create(fullpath))
                 {
-                    b.Write("Hello!");
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                    {
+                        streamWriter.Write(encryptedJson);
+                    }
                 }
-
-                using (BinaryReader b = new BinaryReader(File.Open(fullpath, FileMode.Open)))
+                highScoreManager.HighScores = tempList;
+            }
+            else
+            {
+                using (FileStream fileStream = File.Open(fullpath, FileMode.Open))
                 {
-                    string stuff = b.ReadString();
+                    JavaScriptSerializer serializer = new JavaScriptSerializer();
+                    using (StreamReader streamReader = new StreamReader(fileStream))
+                    {
+                        string encryptedScoreData = streamReader.ReadToEnd();
+                        string decryptedScoreData = highScoreManager.DecodeHighScores(encryptedScoreData);
+                        highScoreManager.HighScores = serializer.Deserialize<List<HighScore>>(decryptedScoreData);
+                    }
                 }
             }
 

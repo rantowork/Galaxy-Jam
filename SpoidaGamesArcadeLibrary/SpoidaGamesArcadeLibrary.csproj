@@ -10,7 +10,8 @@
     <RootNamespace>SpoidaGamesArcadeLibrary</RootNamespace>
     <AssemblyName>SpoidaGamesArcadeLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
@@ -76,6 +77,10 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -103,6 +108,7 @@
     <Compile Include="Effects\Environment\Stars.cs" />
     <Compile Include="Interface\GameGoals\GameTimer.cs" />
     <Compile Include="Interface\GameGoals\GoalManager.cs" />
+    <Compile Include="Interface\GameGoals\HighScore.cs" />
     <Compile Include="Interface\GameGoals\HighScoreManager.cs" />
     <Compile Include="Interface\GameOptions\PlayerOptions.cs" />
     <Compile Include="Interface\Screen\Camera.cs" />
@@ -120,7 +126,6 @@
       <Name>Farseer Physics XNA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

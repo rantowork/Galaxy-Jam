@@ -1,11 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
 {
     public class HighScoreManager
     {
+        private List<HighScore> highScores = new List<HighScore>();
+        public List<HighScore> HighScores
+        {
+            get { return highScores; }
+            set { highScores = value; }
+        }
+
+        public string EncodeHighScores(string scores)
+        {
+            byte[] toBytes = Encoding.ASCII.GetBytes(scores);
+            return Convert.ToBase64String(toBytes);
+        }
+
+        public string DecodeHighScores(string encodedScores)
+        {
+            byte[] data = Convert.FromBase64String(encodedScores);
+            return Encoding.ASCII.GetString(data);
+        }
+
         [Serializable]
         public struct HighScoreData
         {
