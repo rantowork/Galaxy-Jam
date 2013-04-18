@@ -94,6 +94,9 @@ namespace SpoidaGamesArcadeLibrary.Settings
         private static void LoadMusic()
         {
             music.Add(SongTypes.BouncyLoop1, soundBank.GetCue("BouncyLoop1"));
+            music.Add(SongTypes.BouncyLoop2, soundBank.GetCue("BouncyLoop2"));
+            music.Add(SongTypes.DeepSpace1, soundBank.GetCue("DeepSpace1"));
+            music.Add(SongTypes.DeepSpace2, soundBank.GetCue("DeepSpace2"));
             music.Add(SongTypes.SpaceLoop1, soundBank.GetCue("SpaceLoop1"));
             music.Add(SongTypes.SpaceLoop2, soundBank.GetCue("SpaceLoop2"));
         }
@@ -102,6 +105,9 @@ namespace SpoidaGamesArcadeLibrary.Settings
     public enum SongTypes
     {
         BouncyLoop1,
+        BouncyLoop2,
+        DeepSpace1,
+        DeepSpace2,
         SpaceLoop1,
         SpaceLoop2
     }

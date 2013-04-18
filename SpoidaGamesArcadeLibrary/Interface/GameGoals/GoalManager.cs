@@ -169,26 +169,18 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 if (Streak >= 3 && Streak < 6)
                 {
                     ScoreMulitplier++;
-                    DrawStreakMessage = "Good streak!";
                 }
 
                 //Adds bonus multiplier based on awesome streak!
                 if (Streak >= 6 && Streak < 9)
                 {
                     ScoreMulitplier += 2;
-                    DrawStreakMessage = "Mega streak!";
                 }
 
                 //Adds bonus multiplier based on godly streak!
                 if (Streak >= 9)
                 {
                     ScoreMulitplier += 3;
-                    DrawStreakMessage = "ULTRA Streak!";
-                }
-
-                if (Streak == 0)
-                {
-                    DrawStreakMessage = string.Empty;
                 }
 
                 scoredOnShot = true;
@@ -200,6 +192,26 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 AddPointsForScoredGoal();
 
                 camera.Shaking = true;
+            }
+
+            if (Streak >= 3 && Streak < 6)
+            {
+                DrawStreakMessage = "Good streak!";
+            }
+
+            if (Streak >= 6 && Streak < 9)
+            {
+                DrawStreakMessage = "Mega streak!";
+            }
+
+            if (Streak >= 9)
+            {
+                DrawStreakMessage = "ULTRA Streak!";
+            }
+
+            if (Streak == 0)
+            {
+                DrawStreakMessage = string.Empty;
             }
 
             if (camera.Shaking)

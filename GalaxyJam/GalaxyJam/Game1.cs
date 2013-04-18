@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
@@ -84,6 +85,7 @@ namespace GalaxyJam
         private SoundEffect basketBallShotSoundEffect;
         private SoundEffect basketScoredSoundEffect;
         private SoundEffect collisionSoundEffect;
+        private Song ambientSpaceSong;
         private SoundManager soundManager;
 
         //Particles
@@ -203,7 +205,7 @@ namespace GalaxyJam
 
         private void LoadTextures()
         {
-            galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamLogo");
+            galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
             backboardSprite = Content.Load<Texture2D>(@"Textures/Backboard2");
             backboardSpriteGlow = Content.Load<Texture2D>(@"Textures/Backboard2Glow");
             rimSprite = Content.Load<Texture2D>(@"Textures/Rim2");
@@ -226,6 +228,9 @@ namespace GalaxyJam
             basketBallShotSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketballShot");
             basketScoredSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketScored");
             collisionSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Collision");
+            ambientSpaceSong = Content.Load<Song>(@"Audio/Music/AmbientSpace");
+            MediaPlayer.Play(ambientSpaceSong);
+            MediaPlayer.IsRepeating = true;
             soundManager.SelectMusic(SongTypes.BouncyLoop1);
         }
 
@@ -234,7 +239,7 @@ namespace GalaxyJam
             //Load Starfield
             List<Texture2D> starTextures = new List<Texture2D> { twopxsolidstar, fourpxblurstar, onepxsolidstar };
             starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 1000, starTextures);
-
+            starField.StarSpeedModifier = 1;
             basketballSparkle = new SparkleEmitter(new List<Texture2D> { twopxsolidstar }, new Vector2(-40, -40));
         }
 
@@ -268,10 +273,9 @@ namespace GalaxyJam
             switch (gameState)
             {
                 case GameStates.StartScreen:
-
+                    starField.Update(gameTime);
                     break;
                 case GameStates.OptionsScreen:
-                    starField.StarSpeedModifier = 1;
                     starField.Update(gameTime);
 
                     if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
@@ -387,6 +391,7 @@ namespace GalaxyJam
             {
                 case GameStates.StartScreen:
                     spriteBatch.Begin();
+                    starField.Draw(spriteBatch);
                     GameInterface.DrawTitleScreen(spriteBatch, galaxyJamLogo);
                     spriteBatch.End();
                     break;
@@ -579,6 +584,7 @@ namespace GalaxyJam
             {
                 if (character == 13)
                 {
+                    MediaPlayer.Stop();
                     gameState = GameStates.OptionsScreen;
                 }
                 if (character == 27)

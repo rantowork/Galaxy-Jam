@@ -118,6 +118,18 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             {
                 return "Bouncy Loop";
             }
+            if (type == SongTypes.BouncyLoop2)
+            {
+                return "Bouncy Loop 2";
+            }
+            if (type == SongTypes.DeepSpace1)
+            {
+                return "Deep Space 1";
+            }
+            if (type == SongTypes.DeepSpace2)
+            {
+                return "Deep Space 2";
+            }
             if (type == SongTypes.SpaceLoop1)
             {
                 return "Spacey Loop 1";
