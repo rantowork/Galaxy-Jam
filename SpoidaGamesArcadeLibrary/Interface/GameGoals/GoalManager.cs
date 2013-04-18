@@ -58,6 +58,20 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             set { topStreak = value; }
         }
 
+        private bool drawSwish;
+        public bool DrawSwish
+        {
+            get { return drawSwish; }
+            set { drawSwish = value; }
+        }
+
+        private bool drawCleanShot;
+        public bool DrawCleanShot
+        {
+            get { return drawCleanShot; }
+            set { drawCleanShot = value; }
+        }
+
         /// <summary>
         /// The base value that the score added to the total game score is multiplied by.
         /// </summary>
@@ -129,17 +143,19 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             if (IsGoalScored(shotCenterRectangle) && !GoalScored)
             {
                 GoalScored = true;
-
+                
                 SoundManager.PlaySoundEffect(goalScoredSoundEffect, 0.5f, 0.0f, 0.0f);
 
-                if (!backboardHit && !rimHit)
+                if (!BackboardHit && !RimHit)
                 {
                     ScoreMulitplier += 2;
+                    DrawSwish = true;
                 }
 
-                if (!backboardHit && rimHit)
+                if (!BackboardHit && RimHit)
                 {
                     ScoreMulitplier++;
+                    DrawCleanShot = true;
                 }
 
                 //Adds bonus multiplier based on streak
@@ -167,6 +183,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                     TopStreak = streak;
                 }
                 AddPointsForScoredGoal();
+
                 camera.Shaking = true;
             }
 
@@ -205,7 +222,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             }
         }
 
-        protected bool IsGoalScored(Rectangle basketball)
+        private bool IsGoalScored(Rectangle basketball)
         {
             return basketLocation.Intersects(basketball);
         }

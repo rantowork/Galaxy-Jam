@@ -29,27 +29,27 @@ namespace SpoidaGamesArcadeLibrary.Settings
             }
         }
 
-        public static void PauseBackgroundMusic(Cue cueToPause)
+        public static void PauseBackgroundMusic()
         {
             if (!InterfaceOptions.BackgroundMusicMuted)
             {
-                cueToPause.Pause();
+                selectedMusic.Pause();
                 InterfaceOptions.BackgroundMusicMuted = !InterfaceOptions.BackgroundMusicMuted;
             }
             else
             {
-                cueToPause.Resume();
+                selectedMusic.Resume();
                 InterfaceOptions.BackgroundMusicMuted = !InterfaceOptions.BackgroundMusicMuted;
             }
         }
 
-        public static void MuteSounds(Cue cueToPause)
+        public static void MuteSounds()
         {
             if (!InterfaceOptions.AllSoundsMuted)
             {
                 if (!InterfaceOptions.BackgroundMusicMuted)
                 {
-                    cueToPause.Pause();
+                    selectedMusic.Pause();
                     InterfaceOptions.BackgroundMusicMuted = true;
                 }
                 InterfaceOptions.AllSoundsMuted = !InterfaceOptions.AllSoundsMuted;
@@ -58,7 +58,7 @@ namespace SpoidaGamesArcadeLibrary.Settings
             {
                 if (InterfaceOptions.BackgroundMusicMuted)
                 {
-                    cueToPause.Resume();
+                    selectedMusic.Resume();
                     InterfaceOptions.BackgroundMusicMuted = false;
                 }
                 InterfaceOptions.AllSoundsMuted = !InterfaceOptions.AllSoundsMuted;

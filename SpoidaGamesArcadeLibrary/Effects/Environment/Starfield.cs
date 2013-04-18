@@ -39,7 +39,7 @@ namespace SpoidaGamesArcadeLibrary.Effects.Environment
         {
             foreach (Stars star in stars)
             {
-                star.Update(gameTime, starSpeedModifier);
+                star.Update(gameTime, StarSpeedModifier);
                 if (star.Location.Y > height)
                 {
                     star.Location = new Vector2(rand.Next(0, width), 0);

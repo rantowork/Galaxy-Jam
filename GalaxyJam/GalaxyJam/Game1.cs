@@ -271,6 +271,8 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.OptionsScreen:
+                    starField.StarSpeedModifier = 1;
+                    starField.Update(gameTime);
 
                     if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
                     {
@@ -306,6 +308,7 @@ namespace GalaxyJam
                     
                     break;
                 case GameStates.GetReadyState:
+                    starField.StarSpeedModifier = 1;
                     starField.Update(gameTime);
                     break;
                 case GameStates.Playing:
@@ -313,8 +316,8 @@ namespace GalaxyJam
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                     
-                    HandleInput();
-                    HandlePosition();
+                    HandlePlayerInput();
+                    HandleBasketballPosition();
 
                     basketballSparkle.EmitterLocation = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     basketballSparkle.Update();
@@ -322,7 +325,7 @@ namespace GalaxyJam
                     Vector2 basketballCenter = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
                     goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle, starField);
-                    
+
                     if (backboardCollisionHappened)
                     {
                         GlowBackboard(gameTime);
@@ -390,18 +393,19 @@ namespace GalaxyJam
                 case GameStates.OptionsScreen:
                     spriteBatch.Begin();
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
+                    starField.Draw(spriteBatch);
                     GetPlayerName(gameTime);
                     GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
-                    DrawGameWorld();
+                    DrawGameWorld(gameTime);
                     break;
                 case GameStates.Playing:
-                    DrawGameWorld();
+                    DrawGameWorld(gameTime);
                     break;
                 case GameStates.Paused:
-                    DrawGameWorld();
+                    DrawGameWorld(gameTime);
                     spriteBatch.Begin();
                     GameInterface.DrawPausedInterface(spriteBatch, pixel, pixelGlowFont);
                     spriteBatch.End();
@@ -414,7 +418,9 @@ namespace GalaxyJam
             base.Draw(gameTime);
         }
 
-        private void DrawGameWorld()
+        private const double EFFECT_TIME = 1000;
+        private double effectTimer;
+        private void DrawGameWorld(GameTime gameTime)
         {
             Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
             Vector2 backboardOrigin = new Vector2(backboardSprite.Width / 2f, backboardSprite.Height / 2f);
@@ -448,8 +454,31 @@ namespace GalaxyJam
 
             GameInterface.DrawPlayingInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
 
+            if (goalManager.DrawSwish)
+            {
+                effectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                spriteBatch.DrawString(pixelGlowFont, "SWISH!", new Vector2(1280 / 2, 720 / 2), Color.White);
+                if (EFFECT_TIME < effectTimer)
+                {
+                    effectTimer = 0;
+                    goalManager.DrawSwish = false;
+                }
+            }
+
+            if (goalManager.DrawCleanShot)
+            {
+                effectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                spriteBatch.DrawString(pixelGlowFont, "Clean Shot!", new Vector2(1280 / 2, 720 / 2), Color.White);
+                if (EFFECT_TIME < effectTimer)
+                {
+                    effectTimer = 0;
+                    goalManager.DrawCleanShot = false;
+                }
+            }
+            
             spriteBatch.End();
         }
+
         private void DrawGameEnd()
         {
             //Draw a full black background.  This helps with rendering the stars in front of it as the cleared viewport renders 3d space and we force it into 2d space with this.
@@ -470,7 +499,7 @@ namespace GalaxyJam
             spriteBatch.End();
         }
 
-        private void HandleInput()
+        private void HandlePlayerInput()
         {
             MouseState state = input.GetMouse().GetState();
             if (basketballManager.BasketballBody.Awake == false)
@@ -485,7 +514,7 @@ namespace GalaxyJam
             }
         }
 
-        private void HandlePosition()
+        private void HandleBasketballPosition()
         {
             if (basketballManager.BasketballBody.Position.Y > 720 / PhysicalWorld.MetersInPixels)
             {
@@ -595,18 +624,18 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Paused;
-                    SoundManager.MuteSounds(selectedSong);
+                    SoundManager.MuteSounds();
                     GameTimer.StopGameTimer();
                 }
 
                 if (character == 112)
                 {
-                    SoundManager.PauseBackgroundMusic(selectedSong);
+                    SoundManager.PauseBackgroundMusic();
                 }
 
                 if (character == 109)
                 {
-                    SoundManager.MuteSounds(selectedSong);
+                    SoundManager.MuteSounds();
                 }
             }
             else if (gameState == GameStates.Paused)
@@ -614,7 +643,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     gameState = GameStates.Playing;
-                    SoundManager.MuteSounds(selectedSong);
+                    SoundManager.MuteSounds();
                     GameTimer.StartGameTimer();
                 }
             }
