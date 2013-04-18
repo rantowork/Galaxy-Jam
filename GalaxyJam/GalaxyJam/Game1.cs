@@ -475,7 +475,12 @@ namespace GalaxyJam
                     goalManager.DrawCleanShot = false;
                 }
             }
-            
+
+            if (!String.IsNullOrEmpty(goalManager.DrawStreakMessage))
+            {
+                spriteBatch.DrawString(pixelGlowFont, goalManager.DrawStreakMessage, new Vector2(1280 / 2, 620), Color.White);
+            }
+
             spriteBatch.End();
         }
 

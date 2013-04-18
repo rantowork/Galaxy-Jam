@@ -72,6 +72,13 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             set { drawCleanShot = value; }
         }
 
+        private string drawStreakMessage;
+        public string DrawStreakMessage
+        {
+            get { return drawStreakMessage; }
+            set { drawStreakMessage = value; }
+        }
+
         /// <summary>
         /// The base value that the score added to the total game score is multiplied by.
         /// </summary>
@@ -162,18 +169,26 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 if (Streak >= 3 && Streak < 6)
                 {
                     ScoreMulitplier++;
+                    DrawStreakMessage = "Good streak!";
                 }
 
                 //Adds bonus multiplier based on awesome streak!
                 if (Streak >= 6 && Streak < 9)
                 {
                     ScoreMulitplier += 2;
+                    DrawStreakMessage = "Mega streak!";
                 }
 
                 //Adds bonus multiplier based on godly streak!
                 if (Streak >= 9)
                 {
                     ScoreMulitplier += 3;
+                    DrawStreakMessage = "ULTRA Streak!";
+                }
+
+                if (Streak == 0)
+                {
+                    DrawStreakMessage = string.Empty;
                 }
 
                 scoredOnShot = true;
