@@ -22,7 +22,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
         private static Cue previousCue;
 
-        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
+        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
         {
             Vector2 instructionsOrigin = pixelFont.MeasureString(INSTRUCTIONS) / 2;
             Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
@@ -84,14 +84,31 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             BasketballTypes basketballTypes;
             if (BasketballManager.basketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
             {
-                spriteBatch.DrawString(pixelFont, GetBasketballTypeString(basketballTypes), new Vector2(500, 500), Color.White);
+                if (basketballTypes == BasketballTypes.PurpleSkullBall && highScoreManager.BestScore() < 100000)
+                {
+                    Vector2 middle = pixelFont.MeasureString("Basketball locked!  Score 100,000 points to unlock.");
+                    spriteBatch.DrawString(pixelFont, "Basketball locked!  Score 100,000 points to unlock.", new Vector2(1280/2, 500), Color.White, 0f, middle/2, 1f, SpriteEffects.None, 1f);
+                }
+                else
+                {
+                    string stringToDraw = GetBasketballTypeString(basketballTypes);
+                    Vector2 middle = pixelFont.MeasureString(stringToDraw);
+                    spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280/2, 500), Color.White, 0f, middle/2, 1f, SpriteEffects.None, 1f);
+                }
             }
 
             Basketball basketball;
             if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
             {
-                spriteBatch.Draw(basketball.BasketballTexture, new Vector2(740, 508), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
-                BasketballManager.SelectedBasketball = basketball;
+                if (basketballTypes == BasketballTypes.PurpleSkullBall && highScoreManager.BestScore() < 100000)
+                {
+                    spriteBatch.Draw(BasketballManager.lockedBasketballTextures[0], new Vector2(1280/2, 540), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
+                }
+                else
+                {
+                    spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280/2, 540), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
+                    BasketballManager.SelectedBasketball = basketball;
+                }
             }
         }
         

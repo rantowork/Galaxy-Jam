@@ -87,5 +87,10 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         {
             filePath = highScoreFilePath;
         }
+
+        public double BestScore()
+        {
+            return HighScores[0].PlayerScore;
+        }
     }
 }

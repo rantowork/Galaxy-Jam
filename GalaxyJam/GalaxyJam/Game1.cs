@@ -400,7 +400,7 @@ namespace GalaxyJam
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     starField.Draw(spriteBatch);
                     GetPlayerName(gameTime);
-                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
+                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
