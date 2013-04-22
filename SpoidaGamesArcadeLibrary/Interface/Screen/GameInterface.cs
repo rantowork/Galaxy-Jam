@@ -88,12 +88,14 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 {
                     Vector2 middle = pixelFont.MeasureString("Basketball locked!  Score 100,000 points to unlock.");
                     spriteBatch.DrawString(pixelFont, "Basketball locked!  Score 100,000 points to unlock.", new Vector2(1280/2, 500), Color.White, 0f, middle/2, 1f, SpriteEffects.None, 1f);
+                    highScoreManager.LockedBasketballSelection = true;
                 }
                 else
                 {
                     string stringToDraw = GetBasketballTypeString(basketballTypes);
                     Vector2 middle = pixelFont.MeasureString(stringToDraw);
                     spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280/2, 500), Color.White, 0f, middle/2, 1f, SpriteEffects.None, 1f);
+                    highScoreManager.LockedBasketballSelection = false;
                 }
             }
 

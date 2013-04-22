@@ -616,6 +616,9 @@ namespace GalaxyJam
                     {
                         nameToShort = true;
                     }
+                    else if (highScoreManager.LockedBasketballSelection)
+                    {
+                    }
                     else
                     {
                         playerOptions.PlayerName = playerName.ToString();

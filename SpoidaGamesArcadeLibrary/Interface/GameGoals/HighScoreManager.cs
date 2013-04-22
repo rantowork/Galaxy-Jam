@@ -92,5 +92,12 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         {
             return HighScores[0].PlayerScore;
         }
+
+        private bool lockedBasketballSelection;
+        public bool LockedBasketballSelection
+        {
+            get { return lockedBasketballSelection; }
+            set { lockedBasketballSelection = value; }
+        }
     }
 }
