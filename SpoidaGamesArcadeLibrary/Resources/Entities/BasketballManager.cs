@@ -54,7 +54,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
         private static void LoadBasketballs(ContentManager content)
         {
-            basketballs.Add(BasketballTypes.RedGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 48, 48)}, false));
+            basketballs.Add(BasketballTypes.RedGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false));
             basketballs.Add(BasketballTypes.GreenGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/GreenGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));
             basketballs.Add(BasketballTypes.YellowGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/YellowGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));
             basketballs.Add(BasketballTypes.PurpleSkullBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/PurpleSkull"), new List<Rectangle> { new Rectangle(0, 0, 64, 64), new Rectangle(64,0,64,64) }, true));

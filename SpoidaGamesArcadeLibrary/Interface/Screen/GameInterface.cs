@@ -59,7 +59,9 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             SongTypes songType;
             if (SoundManager.musicSelection.TryGetValue(currentSongSelection, out songType))
             {
-                spriteBatch.DrawString(pixelFont, GetSongTypeString(songType), new Vector2(500, 600), Color.White);
+                string songName = GetSongTypeString(songType);
+                Vector2 songOrigin = pixelFont.MeasureString(songName);
+                spriteBatch.DrawString(pixelFont, songName, new Vector2(1280/2, 600), Color.White, 0f, songOrigin/2, 1.0f, SpriteEffects.None, 1f);
             }
 
             Cue cue;
@@ -135,25 +137,25 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         {
             if (type == SongTypes.BouncyLoop1)
             {
-                return "Bouncy Loop";
+                return "Bouncy";
             }
             if (type == SongTypes.BouncyLoop2)
             {
-                return "Bouncy Loop 2";
+                return "Grunge";
             }
             if (type == SongTypes.DeepSpace1)
             {
-                return "Deep Space 1";
+                return "Space";
             }
             if (type == SongTypes.DeepSpace2)
             {
-                return "Deep Space 2";
+                return "Funky";
             }
             if (type == SongTypes.SpaceLoop1)
             {
-                return "Spacey Loop 1";
+                return "Chilly";
             }
-            return "Spacey Loop 2";
+            return "Smooth";
         }
 
         //Playing Interface

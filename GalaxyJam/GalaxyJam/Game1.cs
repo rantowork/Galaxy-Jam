@@ -77,6 +77,7 @@ namespace GalaxyJam
         //Fonts
         private SpriteFont pixel;
         private SpriteFont pixelGlowFont;
+        private SpriteFont giantRedPixelFont;
 
         //Starfield
         private Starfield starField;
@@ -85,6 +86,8 @@ namespace GalaxyJam
         private SoundEffect basketBallShotSoundEffect;
         private SoundEffect basketScoredSoundEffect;
         private SoundEffect collisionSoundEffect;
+        private SoundEffect countdownGoSoundEffect;
+        private SoundEffect countdownBeep;
         private Song ambientSpaceSong;
         private SoundManager soundManager;
 
@@ -110,6 +113,12 @@ namespace GalaxyJam
         private int currentlySelectedSongKey;
         private KeyboardState cachedUpDownKeyboardState;
         private KeyboardState cachedRightLeftKeyboardState;
+
+        private const double GAME_START_COUNTDOWN_LENGTH = 4000;
+        private double gameStartCountdownTimer;
+        private double gameStartAlphaTimer;
+        private float gameStartAlphaFade = 255;
+        private int soundEffectCounter = 1;
 
         //Shot Constants
         private const double TEXT_FADE_TIME = 2000;
@@ -221,6 +230,7 @@ namespace GalaxyJam
         {
             pixel = Content.Load<SpriteFont>(@"Fonts/PixelFont");
             pixelGlowFont = Content.Load<SpriteFont>(@"Fonts/PixelScoreGlow");
+            giantRedPixelFont = Content.Load<SpriteFont>(@"Fonts/GiantRedPixelFont");
         }
 
         private void LoadSoundEffectsAndSounds()
@@ -228,6 +238,8 @@ namespace GalaxyJam
             basketBallShotSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketballShot");
             basketScoredSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketScored");
             collisionSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Collision");
+            countdownBeep = Content.Load<SoundEffect>(@"Audio/SoundEffects/Countdown");
+            countdownGoSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Go");
             ambientSpaceSong = Content.Load<Song>(@"Audio/Music/AmbientSpace");
             MediaPlayer.Play(ambientSpaceSong);
             MediaPlayer.IsRepeating = true;
@@ -314,6 +326,27 @@ namespace GalaxyJam
                 case GameStates.GetReadyState:
                     starField.StarSpeedModifier = 1;
                     starField.Update(gameTime);
+
+                    gameStartCountdownTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    gameStartAlphaTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                    float amountToFade = MathHelper.Clamp((float) gameStartAlphaTimer/1000, 0, 1);
+                    float value = MathHelper.Lerp(255, 0, amountToFade);
+                    gameStartAlphaFade = value;
+
+                    if (gameStartAlphaTimer >= 1000)
+                    {
+                        gameStartAlphaTimer = 0;
+                        gameStartAlphaFade = 255;
+                    }
+
+                    if (gameStartCountdownTimer >= GAME_START_COUNTDOWN_LENGTH)
+                    {
+                        gameState = GameStates.Playing;
+                        GameTimer.StartGameTimer();
+                        gameStartCountdownTimer = 0;
+                    }
+
                     break;
                 case GameStates.Playing:
                     starField.Update(gameTime);
@@ -404,7 +437,54 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
-                    DrawGameWorld(gameTime);
+                    spriteBatch.Begin();
+                    starField.Draw(spriteBatch);
+                    spriteBatch.End();
+
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+
+                    if (gameStartCountdownTimer < 1000)
+                    {
+                        Vector2 threeOrigin = giantRedPixelFont.MeasureString("3");
+                        spriteBatch.DrawString(giantRedPixelFont, "3", new Vector2(1280 / 2, 720 / 2), new Color(255, 255, 255, (byte)gameStartAlphaFade), 0f, threeOrigin / 2, 1.0f, SpriteEffects.None, 1.0f);
+                        if (soundEffectCounter == 1)
+                        {
+                            SoundManager.PlaySoundEffect(countdownBeep, .9f, 0f, 0f);
+                            soundEffectCounter++;
+                        }
+                    }
+                    else if (gameStartCountdownTimer < 2000)
+                    {
+                        Vector2 twoOrigin = giantRedPixelFont.MeasureString("2");
+                        spriteBatch.DrawString(giantRedPixelFont, "2", new Vector2(1280 / 2, 720 / 2), new Color(255, 255, 255, (byte)gameStartAlphaFade), 0f, twoOrigin / 2, 1.0f, SpriteEffects.None, 1.0f);
+                        if (soundEffectCounter == 2)
+                        {
+                            SoundManager.PlaySoundEffect(countdownBeep, .9f, 0f, 0f);
+                            soundEffectCounter++;
+                        }
+                    }
+                    else if (gameStartCountdownTimer < 3000)
+                    {
+                        Vector2 oneOrigin = giantRedPixelFont.MeasureString("1");
+                        spriteBatch.DrawString(giantRedPixelFont, "1", new Vector2(1280 / 2, 720 / 2), new Color(255, 255, 255, (byte)gameStartAlphaFade), 0f, oneOrigin / 2, 1.0f, SpriteEffects.None, 1.0f);
+                        if (soundEffectCounter == 3)
+                        {
+                            SoundManager.PlaySoundEffect(countdownBeep, .9f, 0f, 0f);
+                            soundEffectCounter++;
+                        }
+                    }
+                    else
+                    {
+                        Vector2 goOrigin = giantRedPixelFont.MeasureString("Go!");
+                        spriteBatch.DrawString(giantRedPixelFont, "Go!", new Vector2(1280 / 2, 720 / 2), new Color(255, 255, 255, (byte)gameStartAlphaFade), 0f, goOrigin / 2, 1.0f, SpriteEffects.None, 1.0f);
+                        if (soundEffectCounter == 4)
+                        {
+                            SoundManager.PlaySoundEffect(countdownGoSoundEffect, .9f, 0f, 0f);
+                            soundEffectCounter++;
+                        }
+                    }
+
+                    spriteBatch.End();
                     break;
                 case GameStates.Playing:
                     DrawGameWorld(gameTime);
@@ -509,21 +589,7 @@ namespace GalaxyJam
             spriteBatch.End();
         }
 
-        private void HandlePlayerInput()
-        {
-            MouseState state = input.GetMouse().GetState();
-            if (basketballManager.BasketballBody.Awake == false)
-            {
-                if (state.LeftButton == ButtonState.Pressed)
-                {
-                    PhysicalWorld.World.Gravity.Y = 25;
-                    basketballManager.BasketballBody.Awake = true;
-                    HandleShotAngle(state);
-                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 0.3f, 0.0f, 0.0f);
-                }
-            }
-        }
-
+        #region Basketball Position
         private void HandleBasketballPosition()
         {
             if (basketballManager.BasketballBody.Position.Y > 720 / PhysicalWorld.MetersInPixels)
@@ -555,6 +621,23 @@ namespace GalaxyJam
         private Vector2 RandomizePosition()
         {
             return new Vector2((rand.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (rand.Next(310, 680)) / PhysicalWorld.MetersInPixels);
+        }
+        #endregion
+
+        #region PlayerInput
+        private void HandlePlayerInput()
+        {
+            MouseState state = input.GetMouse().GetState();
+            if (basketballManager.BasketballBody.Awake == false)
+            {
+                if (state.LeftButton == ButtonState.Pressed)
+                {
+                    PhysicalWorld.World.Gravity.Y = 25;
+                    basketballManager.BasketballBody.Awake = true;
+                    HandleShotAngle(state);
+                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, 0.3f, 0.0f, 0.0f);
+                }
+            }
         }
 
         private void HandleShotAngle(MouseState state)
@@ -624,8 +707,7 @@ namespace GalaxyJam
                         playerOptions.PlayerName = playerName.ToString();
                         camera.Limits = new Rectangle(0, 0, 1280, 720);
                         camera.ResetCamera();
-                        gameState = GameStates.Playing;
-                        GameTimer.StartGameTimer();   
+                        gameState = GameStates.GetReadyState;
                     }
                 }
                 if (character == 27)
@@ -660,6 +742,22 @@ namespace GalaxyJam
                     SoundManager.MuteSounds();
                     GameTimer.StartGameTimer();
                 }
+
+                if (character == 113)
+                {
+                    Exit();
+                }
+
+                if (character == 114)
+                {
+                    ResetPosition();
+                    goalManager.ResetGoalManager();
+                    highScoresLoaded = false;
+                    SoundManager.MuteSounds();
+                    soundEffectCounter = 1;
+                    gameState = GameStates.GetReadyState;
+                    GameTimer.ResetTimer();
+                }
             }
             else if (gameState == GameStates.GameEnd)
             {
@@ -673,9 +771,9 @@ namespace GalaxyJam
                     ResetPosition();
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
-                    gameState = GameStates.Playing;
+                    soundEffectCounter = 1;
+                    gameState = GameStates.GetReadyState;
                     GameTimer.ResetTimer();
-                    GameTimer.StartGameTimer();
                 }
             }
         }
@@ -694,6 +792,7 @@ namespace GalaxyJam
                 spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 1280 / 2 - 180, 200), Color.White);
             }
         }
+        #endregion
 
         #region Glow Events
         private void GlowBackboard(GameTime gameTime)
