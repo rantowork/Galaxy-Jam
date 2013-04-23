@@ -131,13 +131,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\SoundEffects\Collision.wav">
-      <Name>Collision</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\PixelFont.spritefont">
       <Name>PixelFont</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -306,6 +299,13 @@
   <ItemGroup>
     <Compile Include="Audio\SoundEffects\Countdown.wav">
       <Name>Countdown</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\SoundEffects\Thud.wav">
+      <Name>Thud</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>

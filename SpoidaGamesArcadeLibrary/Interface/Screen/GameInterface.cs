@@ -191,6 +191,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             spriteBatch.DrawString(pixelFont, "Player", new Vector2(10, 50), Color.White);
             spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(170, 50), Color.White);
             spriteBatch.DrawString(pixelFont, "Score", new Vector2(340, 50), Color.White);
+            spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(480, 50), Color.White);
         }
 
         //Paused Interface

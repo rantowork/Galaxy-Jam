@@ -101,6 +101,7 @@ namespace GalaxyJam
         private StringBuilder highScoresPlayers = new StringBuilder();
         private StringBuilder highScoresScore = new StringBuilder();
         private StringBuilder highScoresStreak = new StringBuilder();
+        private StringBuilder highScoresMultiplier = new StringBuilder();
         private StringBuilder playerName = new StringBuilder();
         private bool nameToShort;
 
@@ -237,7 +238,7 @@ namespace GalaxyJam
         {
             basketBallShotSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketballShot");
             basketScoredSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/BasketScored");
-            collisionSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Collision");
+            collisionSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Thud");
             countdownBeep = Content.Load<SoundEffect>(@"Audio/SoundEffects/Countdown");
             countdownGoSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Go");
             ambientSpaceSong = Content.Load<Song>(@"Audio/Music/AmbientSpace");
@@ -387,6 +388,7 @@ namespace GalaxyJam
                             highScoresPlayers.Clear();
                             highScoresScore.Clear();
                             highScoresStreak.Clear();
+                            highScoresMultiplier.Clear();
                             gameState = GameStates.GameEnd;
                         }
                     }
@@ -403,6 +405,7 @@ namespace GalaxyJam
                             highScoresPlayers.AppendLine(String.Format("{0}", highScore.CurrentPlayerName));
                             highScoresScore.AppendLine(String.Format("{0}", highScore.PlayerScore));
                             highScoresStreak.AppendLine(String.Format("{0}", highScore.PlayerTopStreak));
+                            highScoresMultiplier.AppendLine(String.Format("{0}", highScore.PlayerMultiplier));
                         }
 
                         highScoresLoaded = true;
@@ -585,6 +588,7 @@ namespace GalaxyJam
             spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(170, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresScore, new Vector2(340, 74), Color.White);
+            spriteBatch.DrawString(pixel, highScoresMultiplier, new Vector2(480, 74), Color.White);
 
             spriteBatch.End();
         }
