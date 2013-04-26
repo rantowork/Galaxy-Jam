@@ -42,36 +42,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\FakeGround.png">
-      <Name>FakeGround</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Fonts\Segoe.spritefont">
-      <Name>Segoe</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\LineSprite.png">
       <Name>LineSprite</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Backboard.png">
-      <Name>Backboard</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Rim.png">
-      <Name>Rim</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -81,13 +53,6 @@
       <Name>BasketballShot</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\ExampleFire.png">
-      <Name>ExampleFire</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -124,32 +89,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\SimpleParticle12px.png">
-      <Name>SimpleParticle12px</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\PixelFont.spritefont">
       <Name>PixelFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <SubType>Designer</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\CometTail.png">
-      <Name>CometTail</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\fire.png">
-      <Name>fire</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -181,13 +125,6 @@
   <ItemGroup>
     <Compile Include="Textures\Basketballs\RedGlowBall.png">
       <Name>RedGlowBall</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\GalaxyJamLogo.png">
-      <Name>GalaxyJamLogo</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -308,6 +245,13 @@
       <Name>Thud</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\OptionsScreenPrototypeWorking.png">
+      <Name>OptionsScreenPrototypeWorking</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

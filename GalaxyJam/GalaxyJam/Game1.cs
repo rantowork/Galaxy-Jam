@@ -55,6 +55,7 @@ namespace GalaxyJam
         private Texture2D fourpxblurstar;
         private Texture2D onepxsolidstar;
         private Texture2D cursor;
+        private Texture2D optionsScreen;
 
         //Sounds
         private AudioEngine audioEngine;
@@ -225,6 +226,7 @@ namespace GalaxyJam
             fourpxblurstar = Content.Load<Texture2D>(@"Textures/4x4BlurStar");
             onepxsolidstar = Content.Load<Texture2D>(@"Textures/1x1SolidStar");
             cursor = Content.Load<Texture2D>(@"Textures/Cursor");
+            optionsScreen = Content.Load<Texture2D>(@"Textures/OptionsScreenPrototypeWorking");
         }
 
         private void LoadFonts()
@@ -435,6 +437,7 @@ namespace GalaxyJam
                     spriteBatch.Begin();
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     starField.Draw(spriteBatch);
+                    spriteBatch.Draw(optionsScreen, new Rectangle(0, 0, 1280, 720), Color.White);
                     GetPlayerName(gameTime);
                     GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
                     spriteBatch.End();

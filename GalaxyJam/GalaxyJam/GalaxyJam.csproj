@@ -92,7 +92,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Nuclex.Input">
-      <HintPath>C:\Users\Admin\Downloads\nuclex-framework-r1404-binaries\xna-4.0-x86\Nuclex.Input.dll</HintPath>
+      <HintPath>C:\Users\Admin\Downloads\Nuclex Binaries\xna-4.0-x86\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -121,6 +121,10 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Farseer Physics Engine 3.3 XNA\Farseer Physics XNA.csproj">
+      <Project>{0A850700-1ABB-4288-A391-6726B90EBEB9}</Project>
+      <Name>Farseer Physics XNA</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SpoidaGamesArcadeLibrary\SpoidaGamesArcadeLibrary.csproj">
       <Project>{D13A2A74-6D18-4EE3-9F15-8CDB90B2A27F}</Project>
       <Name>SpoidaGamesArcadeLibrary</Name>
@@ -128,10 +132,6 @@
     <ProjectReference Include="..\GalaxyJamContent\GalaxyJamContent.contentproj">
       <Name>GalaxyJamContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
-    </ProjectReference>
-    <ProjectReference Include="C:\Users\Admin\Downloads\Farseer Physics Engine 3.3.1 Samples XNA\Farseer Physics Engine 3.3.1 Samples XNA\Farseer Physics Engine 3.3 XNA\Farseer Physics XNA.csproj">
-      <Project>{0A850700-1ABB-4288-A391-6726B90EBEB9}</Project>
-      <Name>Farseer Physics XNA</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
