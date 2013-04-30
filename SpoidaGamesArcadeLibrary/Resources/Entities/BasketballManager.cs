@@ -58,6 +58,12 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             basketballs.Add(BasketballTypes.GreenGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/GreenGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));
             basketballs.Add(BasketballTypes.YellowGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/YellowGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));
             basketballs.Add(BasketballTypes.PurpleSkullBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/PurpleSkull"), new List<Rectangle> { new Rectangle(0, 0, 64, 64), new Rectangle(64,0,64,64) }, true));
+            basketballs.Add(BasketballTypes.SlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> { new Rectangle(0,0,96,96) }, false));
+            basketballs.Add(BasketballTypes.RedSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false));
+            basketballs.Add(BasketballTypes.BlueSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false));
+            basketballs.Add(BasketballTypes.BrokenPlanet, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false));
+            basketballs.Add(BasketballTypes.ThatsNoMoon, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false));
+            basketballs.Add(BasketballTypes.EarthDay, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false));
         }
 
         private static void LoadLockedBasketballs(ContentManager content)
@@ -72,5 +78,11 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         GreenGlowBall,
         YellowGlowBall,
         PurpleSkullBall,
+        SlimeBall,
+        RedSlimeBall,
+        BlueSlimeBall,
+        BrokenPlanet,
+        ThatsNoMoon,
+        EarthDay
     }
 }

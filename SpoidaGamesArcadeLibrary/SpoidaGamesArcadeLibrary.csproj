@@ -97,9 +97,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\2D\CometTailEmitter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Effects\2D\Particle.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -225,7 +225,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
 
             if (Streak >= 3 && Streak < 6)
             {
-                sparkleEmitter.Colors = new List<Color> { Color.Tomato, Color.DarkOrange, Color.OrangeRed, Color.IndianRed};
+                sparkleEmitter.Colors = new List<Color> { Color.Purple, Color.Plum, Color.Orchid};
                 sparkleEmitter.ParticleCount = 100;
                 starfield.StarSpeedModifier = 6;
             }

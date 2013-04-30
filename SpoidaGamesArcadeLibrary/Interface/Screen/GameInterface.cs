@@ -130,6 +130,30 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             {
                 return "Yellow Glow Ball";
             }
+            if (type == BasketballTypes.SlimeBall)
+            {
+                return "Green Slime Ball";
+            }
+            if (type == BasketballTypes.RedSlimeBall)
+            {
+                return "Red Slime Ball";
+            }
+            if (type == BasketballTypes.BlueSlimeBall)
+            {
+                return "Blue Slime Ball";
+            }
+            if (type == BasketballTypes.BrokenPlanet)
+            {
+                return "Broken Planet";
+            }
+            if (type == BasketballTypes.ThatsNoMoon)
+            {
+                return "That's No Moon!";
+            }
+            if (type == BasketballTypes.EarthDay)
+            {
+                return "Earth Day";
+            }
             return "Puple Skull Ball";
         }
 
