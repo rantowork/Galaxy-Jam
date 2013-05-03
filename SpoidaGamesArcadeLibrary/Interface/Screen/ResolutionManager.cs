@@ -34,6 +34,16 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             get { return device.GraphicsDevice.Viewport.Height; }
         }
 
+        public static int GetViewportX
+        {
+            get { return device.GraphicsDevice.Viewport.X; }
+        }
+
+        public static int GetViewportY
+        {
+            get { return device.GraphicsDevice.Viewport.Y; }
+        }
+
         public static Matrix GetTransformationMatrix()
         {
             if (dirtyMatrix) RecreateScaleMatrix();

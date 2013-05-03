@@ -144,7 +144,7 @@ namespace GalaxyJam
             graphics = new GraphicsDeviceManager(this);
             ResolutionManager.Init(ref graphics);
             ResolutionManager.SetVirtualResolution(1280, 720);
-            ResolutionManager.SetResolution(800, 600, false);
+            ResolutionManager.SetResolution(1920, 1080, true);
 
             Content.RootDirectory = "Content";
             input = new InputManager(Services, Window.Handle);
@@ -659,7 +659,11 @@ namespace GalaxyJam
         {
             Vector2 basketballLocation = new Vector2(basketballManager.BasketballBody.Position.X * PhysicalWorld.MetersInPixels,
                                                      basketballManager.BasketballBody.Position.Y * PhysicalWorld.MetersInPixels);
-            Vector2 mouseLocation = new Vector2(state.X, state.Y);
+            Vector2 mouseLocation =
+                Vector2.Transform(
+                    new Vector2(state.X, state.Y) -
+                    new Vector2(ResolutionManager.GetViewportX, ResolutionManager.GetViewportY),
+                    Matrix.Invert(ResolutionManager.GetTransformationMatrix()));
 
             double radians = MouseAngle(basketballLocation, mouseLocation);
             Vector2 pointingAt = new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
