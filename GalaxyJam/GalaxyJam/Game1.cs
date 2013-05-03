@@ -80,6 +80,7 @@ namespace GalaxyJam
         private SpriteFont pixel;
         private SpriteFont pixelGlowFont;
         private SpriteFont giantRedPixelFont;
+        private SpriteFont streakFont;
 
         //Starfield
         private Starfield starField;
@@ -140,7 +141,10 @@ namespace GalaxyJam
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this) { PreferredBackBufferWidth = 1280, PreferredBackBufferHeight = 720 };
+            graphics = new GraphicsDeviceManager(this);
+            ResolutionManager.Init(ref graphics);
+            ResolutionManager.SetVirtualResolution(1280, 720);
+            ResolutionManager.SetResolution(800, 600, false);
 
             Content.RootDirectory = "Content";
             input = new InputManager(Services, Window.Handle);
@@ -235,6 +239,7 @@ namespace GalaxyJam
             pixel = Content.Load<SpriteFont>(@"Fonts/PixelFont");
             pixelGlowFont = Content.Load<SpriteFont>(@"Fonts/PixelScoreGlow");
             giantRedPixelFont = Content.Load<SpriteFont>(@"Fonts/GiantRedPixelFont");
+            streakFont = Content.Load<SpriteFont>(@"Fonts/StreakText");
         }
 
         private void LoadSoundEffectsAndSounds()
@@ -254,7 +259,7 @@ namespace GalaxyJam
         {
             //Load Starfield
             List<Texture2D> starTextures = new List<Texture2D> { twopxsolidstar, fourpxblurstar, onepxsolidstar };
-            starField = new Starfield(Window.ClientBounds.Width, Window.ClientBounds.Height, 1000, starTextures);
+            starField = new Starfield(1280, 720, 1000, starTextures);
             starField.StarSpeedModifier = 1;
             basketballSparkle = new SparkleEmitter(new List<Texture2D> { twopxsolidstar }, new Vector2(-40, -40));
         }
@@ -429,13 +434,13 @@ namespace GalaxyJam
             switch (gameState)
             {
                 case GameStates.StartScreen:
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
                     GameInterface.DrawTitleScreen(spriteBatch, galaxyJamLogo);
                     spriteBatch.End();
                     break;
                 case GameStates.OptionsScreen:
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
                     starField.Draw(spriteBatch);
                     spriteBatch.Draw(optionsScreen, new Rectangle(0, 0, 1280, 720), Color.White);
@@ -445,11 +450,11 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
                     spriteBatch.End();
 
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
 
                     if (gameStartCountdownTimer < 1000)
                     {
@@ -499,7 +504,7 @@ namespace GalaxyJam
                     break;
                 case GameStates.Paused:
                     DrawGameWorld(gameTime);
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     GameInterface.DrawPausedInterface(spriteBatch, pixel, pixelGlowFont);
                     spriteBatch.End();
                     break;
@@ -525,17 +530,17 @@ namespace GalaxyJam
             Vector2 rightRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
 
             //draw starfield separate from other draw methods to keep it simple
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
             starField.Draw(spriteBatch);
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             basketballSparkle.Draw(spriteBatch);
             spriteBatch.End();
 
             //draw objects which contain a body that can have forces applied to it
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             //draw basketball
             spriteBatch.Draw(BasketballManager.SelectedBasketball.BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.SelectedBasketball.Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.SelectedBasketball.Origin, 1f, SpriteEffects.None, 0f);
             //draw backboard
@@ -571,7 +576,8 @@ namespace GalaxyJam
 
             if (!String.IsNullOrEmpty(goalManager.DrawStreakMessage))
             {
-                spriteBatch.DrawString(pixelGlowFont, goalManager.DrawStreakMessage, new Vector2(1280 / 2, 620), Color.White);
+                Vector2 streakCenter = streakFont.MeasureString(goalManager.DrawStreakMessage) / 2;
+                spriteBatch.DrawString(streakFont, goalManager.DrawStreakMessage, new Vector2(1280 / 2, 696), Color.White, 0f, streakCenter, 1.0f, SpriteEffects.None, 0f);
             }
 
             spriteBatch.End();
@@ -580,7 +586,7 @@ namespace GalaxyJam
         private void DrawGameEnd()
         {
             //Draw a full black background.  This helps with rendering the stars in front of it as the cleared viewport renders 3d space and we force it into 2d space with this.
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
 
             spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black); //background
             starField.Draw(spriteBatch); //stars!
@@ -588,7 +594,7 @@ namespace GalaxyJam
 
             spriteBatch.End();
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
 
             spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(170, 74), Color.White);

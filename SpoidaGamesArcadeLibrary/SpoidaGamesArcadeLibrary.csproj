@@ -110,6 +110,7 @@
     <Compile Include="Interface\GameOptions\PlayerOptions.cs" />
     <Compile Include="Interface\Screen\Camera.cs" />
     <Compile Include="Interface\Screen\GameInterface.cs" />
+    <Compile Include="Interface\Screen\ResolutionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Entities\Basketball.cs" />
     <Compile Include="Resources\Entities\BasketballManager.cs" />
