@@ -689,6 +689,14 @@ namespace GalaxyJam
                     MediaPlayer.Stop();
                     gameState = GameStates.OptionsScreen;
                 }
+                if (character == 122)
+                {
+                    ResolutionManager.SetResolution(1280, 720, false);
+                }
+                if (character == 120)
+                {
+                    ResolutionManager.SetResolution(1920, 1080, true);
+                }
                 if (character == 27)
                 {
                     Exit();

@@ -57,11 +57,19 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             set { animate = value; }
         }
 
-        public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated)
+        private string basketballName;
+        public string BasketballName
+        {
+            get { return basketballName; }
+            set { basketballName = value; }
+        }
+
+        public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated, string name)
         {
             BasketballTexture = texture;
             frames = framesList;
             Animate = isAnimated;
+            BasketballName = name;
         }
 
         public virtual void Update(GameTime gameTime)

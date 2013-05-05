@@ -54,35 +54,33 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
         private static void LoadBasketballs(ContentManager content)
         {
-            basketballs.Add(BasketballTypes.RedGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false));
-            basketballs.Add(BasketballTypes.GreenGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/GreenGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));
-            basketballs.Add(BasketballTypes.YellowGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/YellowGlowBall"), new List<Rectangle> { new Rectangle(0, 0, 48, 48) }, false));
-            basketballs.Add(BasketballTypes.PurpleSkullBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/PurpleSkull"), new List<Rectangle> { new Rectangle(0, 0, 64, 64), new Rectangle(64,0,64,64) }, true));
-            basketballs.Add(BasketballTypes.SlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> { new Rectangle(0,0,96,96) }, false));
-            basketballs.Add(BasketballTypes.RedSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false));
-            basketballs.Add(BasketballTypes.BlueSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false));
-            basketballs.Add(BasketballTypes.BrokenPlanet, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false));
-            basketballs.Add(BasketballTypes.ThatsNoMoon, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false));
-            basketballs.Add(BasketballTypes.EarthDay, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false));
+            basketballs.Add(BasketballTypes.RedGlowBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Red Glow Ball"));
+            basketballs.Add(BasketballTypes.SlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> { new Rectangle(0,0,96,96) }, false, "Green Slime Ball"));
+            basketballs.Add(BasketballTypes.RedSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Red Slime Ball"));
+            basketballs.Add(BasketballTypes.BlueSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Blue Slime Ball"));
+            basketballs.Add(BasketballTypes.PurpleSkullBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/PurpleSkull"), new List<Rectangle> { new Rectangle(0, 0, 64, 64), new Rectangle(64, 0, 64, 64) }, true, "Purple Skull Ball"));
+            basketballs.Add(BasketballTypes.BrokenPlanet, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Broken Planet"));
+            basketballs.Add(BasketballTypes.ThatsNoMoon, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!"));
+            basketballs.Add(BasketballTypes.EarthDay, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day"));
+            basketballs.Add(BasketballTypes.CuteInPink, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Cute In Pink"));
         }
 
         private static void LoadLockedBasketballs(ContentManager content)
         {
-            lockedBasketballTextures.Add(0, content.Load<Texture2D>(@"Textures/Basketballs/PurpleSkullLocked"));
+            lockedBasketballTextures.Add(0, content.Load<Texture2D>(@"Textures/Basketballs/Locked"));
         }
     }
 
     public enum BasketballTypes
     {
         RedGlowBall,
-        GreenGlowBall,
-        YellowGlowBall,
-        PurpleSkullBall,
         SlimeBall,
+        PurpleSkullBall,
         RedSlimeBall,
         BlueSlimeBall,
         BrokenPlanet,
         ThatsNoMoon,
-        EarthDay
+        EarthDay,
+        CuteInPink,
     }
 }

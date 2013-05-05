@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,75 +85,76 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             BasketballTypes basketballTypes;
             if (BasketballManager.basketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
             {
-                if (basketballTypes == BasketballTypes.PurpleSkullBall && highScoreManager.BestScore() < 100000)
+                Basketball basketball;
+                if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
                 {
-                    Vector2 middle = pixelFont.MeasureString("Basketball locked!  Score 100,000 points to unlock.");
-                    spriteBatch.DrawString(pixelFont, "Basketball locked!  Score 100,000 points to unlock.", new Vector2(1280/2, 500), Color.White, 0f, middle/2, 1f, SpriteEffects.None, 1f);
-                    highScoreManager.LockedBasketballSelection = true;
-                }
-                else
-                {
-                    string stringToDraw = GetBasketballTypeString(basketballTypes);
-                    Vector2 middle = pixelFont.MeasureString(stringToDraw);
-                    spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280/2, 500), Color.White, 0f, middle/2, 1f, SpriteEffects.None, 1f);
-                    highScoreManager.LockedBasketballSelection = false;
-                }
-            }
-
-            Basketball basketball;
-            if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
-            {
-                if (basketballTypes == BasketballTypes.PurpleSkullBall && highScoreManager.BestScore() < 100000)
-                {
-                    spriteBatch.Draw(BasketballManager.lockedBasketballTextures[0], new Vector2(1280/2, 540), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
-                }
-                else
-                {
-                    spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280/2, 540), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
-                    BasketballManager.SelectedBasketball = basketball;
+                    switch (basketballTypes)
+                    {
+                        case BasketballTypes.PurpleSkullBall:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        case BasketballTypes.RedSlimeBall:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        case BasketballTypes.BlueSlimeBall:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        case BasketballTypes.BrokenPlanet:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        case BasketballTypes.ThatsNoMoon:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        case BasketballTypes.EarthDay:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        case BasketballTypes.CuteInPink:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            break;
+                        default:
+                            string stringToDraw = basketball.BasketballName;
+                            Vector2 middle = pixelFont.MeasureString(stringToDraw);
+                            spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280/2, 500), Color.White, 0f,
+                                                   middle/2, 1f, SpriteEffects.None, 1f);
+                            highScoreManager.LockedBasketballSelection = false;
+                            spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280/2, 540), basketball.Source,
+                                             Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
+                            BasketballManager.SelectedBasketball = basketball;
+                            break;
+                    }
                 }
             }
         }
-        
-        private static string GetBasketballTypeString(BasketballTypes type)
+
+        private static void DrawLockedBasketball(SpriteBatch spriteBatch, SpriteFont pixelFont, HighScoreManager highScoreManager)
         {
-            if (type == BasketballTypes.RedGlowBall)
-            {
-                return "Red Glow Ball";
-            }
-            if (type == BasketballTypes.GreenGlowBall)
-            {
-                return "Green Glow Ball";
-            }
-            if (type == BasketballTypes.YellowGlowBall)
-            {
-                return "Yellow Glow Ball";
-            }
-            if (type == BasketballTypes.SlimeBall)
-            {
-                return "Green Slime Ball";
-            }
-            if (type == BasketballTypes.RedSlimeBall)
-            {
-                return "Red Slime Ball";
-            }
-            if (type == BasketballTypes.BlueSlimeBall)
-            {
-                return "Blue Slime Ball";
-            }
-            if (type == BasketballTypes.BrokenPlanet)
-            {
-                return "Broken Planet";
-            }
-            if (type == BasketballTypes.ThatsNoMoon)
-            {
-                return "That's No Moon!";
-            }
-            if (type == BasketballTypes.EarthDay)
-            {
-                return "Earth Day";
-            }
-            return "Puple Skull Ball";
+            const string locked = "Basketball Locked!";
+            Vector2 center = pixelFont.MeasureString(locked) / 2;
+            spriteBatch.DrawString(pixelFont, locked, new Vector2(1280 / 2, 500), Color.White, 0f, center, 1f, SpriteEffects.None, 1f);
+            highScoreManager.LockedBasketballSelection = true;
+            Texture2D lockedTexture = BasketballManager.lockedBasketballTextures[0];
+            spriteBatch.Draw(lockedTexture, new Vector2(1280 / 2, 540), null, Color.White, 0f, new Vector2((float)lockedTexture.Width / 2, (float)lockedTexture.Height / 2), 1.0f, SpriteEffects.None, 0f);
         }
 
         private static string GetSongTypeString(SongTypes type)
