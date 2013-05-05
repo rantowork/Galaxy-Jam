@@ -95,11 +95,19 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
                             }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
+                            }
                             break;
                         case BasketballTypes.RedSlimeBall:
                             if (highScoreManager.BestScore() < 100000)
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
                             }
                             break;
                         case BasketballTypes.BlueSlimeBall:
@@ -107,11 +115,19 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
                             }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
+                            }
                             break;
                         case BasketballTypes.BrokenPlanet:
                             if (highScoreManager.BestScore() < 100000)
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
                             }
                             break;
                         case BasketballTypes.ThatsNoMoon:
@@ -119,11 +135,19 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
                             }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
+                            }
                             break;
                         case BasketballTypes.EarthDay:
                             if (highScoreManager.BestScore() < 100000)
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
                             }
                             break;
                         case BasketballTypes.CuteInPink:
@@ -131,16 +155,13 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                             {
                                 DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
                             }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
+                            }
                             break;
                         default:
-                            string stringToDraw = basketball.BasketballName;
-                            Vector2 middle = pixelFont.MeasureString(stringToDraw);
-                            spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280/2, 500), Color.White, 0f,
-                                                   middle/2, 1f, SpriteEffects.None, 1f);
-                            highScoreManager.LockedBasketballSelection = false;
-                            spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280/2, 540), basketball.Source,
-                                             Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
-                            BasketballManager.SelectedBasketball = basketball;
+                            DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
                             break;
                     }
                 }
@@ -155,6 +176,16 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             highScoreManager.LockedBasketballSelection = true;
             Texture2D lockedTexture = BasketballManager.lockedBasketballTextures[0];
             spriteBatch.Draw(lockedTexture, new Vector2(1280 / 2, 540), null, Color.White, 0f, new Vector2((float)lockedTexture.Width / 2, (float)lockedTexture.Height / 2), 1.0f, SpriteEffects.None, 0f);
+        }
+
+        private static void DrawUnlockedBasketball(SpriteBatch spriteBatch, SpriteFont pixelFont, HighScoreManager highScoreManager, Basketball basketball)
+        {
+            string stringToDraw = basketball.BasketballName;
+            Vector2 middle = pixelFont.MeasureString(stringToDraw);
+            spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280 / 2, 500), Color.White, 0f, middle / 2, 1f, SpriteEffects.None, 1f);
+            highScoreManager.LockedBasketballSelection = false;
+            spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280 / 2, 540), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
+            BasketballManager.SelectedBasketball = basketball;
         }
 
         private static string GetSongTypeString(SongTypes type)

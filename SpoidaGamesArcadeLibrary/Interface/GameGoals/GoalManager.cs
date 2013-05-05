@@ -139,7 +139,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         /// </summary>
         public void AddPointsForScoredGoal()
         {
-            gameScore += baseScoreMultiplier*scoreMulitplier;
+            gameScore += baseScoreMultiplier*ScoreMulitplier*Streak;
         }
 
         /// <summary>
