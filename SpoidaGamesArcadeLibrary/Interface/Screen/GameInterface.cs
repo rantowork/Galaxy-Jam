@@ -21,7 +21,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
         private static Cue previousCue;
 
-        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
+        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection, Texture2D downIndicator, Texture2D upIndicator)
         {
             Vector2 instructionsOrigin = pixelFont.MeasureString(INSTRUCTIONS) / 2;
             Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
@@ -80,6 +80,20 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                     SoundManager.SelectedMusic = newCue;
                     SoundManager.SelectedMusic.Play();
                 }
+            }
+
+            if (currentBasketballSelection == 0)
+            {
+                spriteBatch.Draw(downIndicator, new Vector2(1280/2 - 52, 540), Color.White);
+            }
+            else if (currentBasketballSelection > 0 && currentBasketballSelection < (BasketballManager.basketballSelection.Count - 1))
+            {
+                spriteBatch.Draw(downIndicator, new Vector2(1280 / 2 - 52, 540), Color.White);
+                spriteBatch.Draw(upIndicator, new Vector2(1280/2 + 40, 540), Color.White);
+            }
+            else
+            {
+                spriteBatch.Draw(upIndicator, new Vector2(1280 / 2 + 40, 540), Color.White);
             }
 
             BasketballTypes basketballTypes;

@@ -6,9 +6,7 @@ Content\Textures\Rim2Glow.xnb
 Content\Textures\2x2SolidStar.xnb
 Content\Textures\4x4BlurStar.xnb
 Content\Textures\1x1SolidStar.xnb
-Content\Textures\Basketballs\GreenGlowBall.xnb
 Content\Textures\Basketballs\RedGlowBall.xnb
-Content\Textures\Basketballs\YellowGlowBall.xnb
 Content\Textures\Cursor.xnb
 Content\Fonts\PixelScoreGlow.xnb
 Content\Textures\Basketballs\PurpleSkull.xnb
@@ -39,6 +37,8 @@ Content\Textures\Basketballs\EarthDay.xnb
 Content\Fonts\StreakText.xnb
 Content\Textures\Basketballs\CuteInPink.xnb
 Content\Textures\Basketballs\Locked.xnb
+Content\Textures\Interface\DownIndicator.xnb
+Content\Textures\Interface\UpIndicator.xnb
 Content\Audio\Music\AmbientSpace.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
