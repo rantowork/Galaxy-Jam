@@ -79,6 +79,20 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             set { drawStreakMessage = value; }
         }
 
+        private bool drawNumberScrollEffect;
+        public bool DrawNumberScrollEffect
+        {
+            get { return drawNumberScrollEffect; }
+            set { drawNumberScrollEffect = value; }
+        }
+
+        private string numberScrollScore;
+        public string NumberScrollScoreToDraw
+        {
+            get { return numberScrollScore; }
+            set { numberScrollScore = value; }
+        }
+
         /// <summary>
         /// The base value that the score added to the total game score is multiplied by.
         /// </summary>
@@ -192,6 +206,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 AddPointsForScoredGoal();
 
                 camera.Shaking = true;
+                DrawNumberScrollEffect = true;
             }
 
             if (Streak >= 3 && Streak < 6)

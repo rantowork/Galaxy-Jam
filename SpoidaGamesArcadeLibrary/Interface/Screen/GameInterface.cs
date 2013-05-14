@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -230,7 +231,15 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         //Playing Interface
         public static void DrawPlayingInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
         {
-            string currentScore = String.Format("{0}", goalManager.GameScore);
+            string currentScore;
+            if (goalManager.DrawNumberScrollEffect)
+            {
+                currentScore = goalManager.NumberScrollScoreToDraw;
+            }
+            else
+            {
+                currentScore = String.Format("{0}", goalManager.GameScore);
+            }
             string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
             string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
             string timeRemaining = String.Format("{0}", GameTimer.GetElapsedGameTime());

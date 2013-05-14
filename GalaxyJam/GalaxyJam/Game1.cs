@@ -36,6 +36,8 @@ namespace GalaxyJam
         {
             IntroScreens,
             StartScreen,
+            TitleScreen,
+            SettingsScreen,
             OptionsScreen,
             GetReadyState,
             Playing,
@@ -57,6 +59,8 @@ namespace GalaxyJam
         private Texture2D cursor;
         private Texture2D upIndicator;
         private Texture2D downIndicator;
+        private Texture2D playTexture;
+        private Texture2D settingsTexture;
 
         //Sounds
         private AudioEngine audioEngine;
@@ -110,7 +114,7 @@ namespace GalaxyJam
 
         private const string HIGH_SCORES_FILENAME = "highscores.lst";
         private HighScoreManager highScoreManager;
-        string fullHighScorePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
+        private string fullHighScorePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
 
         private PlayerOptions playerOptions = new PlayerOptions();
         private int currentlySelectedBasketballKey;
@@ -123,6 +127,10 @@ namespace GalaxyJam
         private double gameStartAlphaTimer;
         private float gameStartAlphaFade = 255;
         private int soundEffectCounter = 1;
+
+        private const double NUMBER_SCROLL_EFFECT_TIME = 500;
+        private static double numberScrollEffectTimer;
+        private static StringBuilder numberScrollStringEffects = new StringBuilder();
 
         //Shot Constants
         private const double TEXT_FADE_TIME = 2000;
@@ -139,12 +147,31 @@ namespace GalaxyJam
         private bool rightRimCollisionHappened;
         private double rightrimGlowTimer;
 
+        //Settings
+        private byte titleScreenSelection;
+        private const string SETTINGS_FILENAME = "game.settings";
+        private string fullSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SETTINGS_FILENAME);
+        private GameSettings gameSettings;
+        private Dictionary<int,DisplayMode> displayModes = new Dictionary<int,DisplayMode>();
+        private int currentResolution;
+        private int currentSettingSelection;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             ResolutionManager.Init(ref graphics);
             ResolutionManager.SetVirtualResolution(1280, 720);
-            ResolutionManager.SetResolution(1920, 1080, true);
+            ResolutionManager.SetResolution(1280, 720, false);
+
+            int count = 0;
+            foreach (DisplayMode mode in graphics.GraphicsDevice.Adapter.SupportedDisplayModes)
+            {
+                if (mode.Format == SurfaceFormat.Color)
+                {
+                    displayModes.Add(count, mode);
+                    count++;
+                }
+            }
 
             Content.RootDirectory = "Content";
             input = new InputManager(Services, Window.Handle);
@@ -187,6 +214,29 @@ namespace GalaxyJam
             {
                 highScoreManager.LoadHighScoresFromDisk();
             }
+
+            if (!File.Exists(fullSettingsPath))
+            {
+                gameSettings = new GameSettings(0, false, 10, 10);
+                
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                string json = serializer.Serialize(gameSettings);
+                using (FileStream fileStream = File.Create(fullSettingsPath))
+                {
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                    {
+                        streamWriter.Write(json);
+                    }
+                }
+            }
+            else
+            {
+                gameSettings = new GameSettings(0, false, 10, 10);
+            }
+            
+            ResolutionManager.SetResolution(SettingsManager.GetResolutionWidth(gameSettings.Resolution),
+                                            SettingsManager.GetResolutionHeight(gameSettings.Resolution),
+                                            gameSettings.IsFullScreen);
 
             audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");
             waveBank = new WaveBank(audioEngine, "Content\\Audio\\Wave Bank.xwb");
@@ -232,6 +282,8 @@ namespace GalaxyJam
             cursor = Content.Load<Texture2D>(@"Textures/Cursor");
             downIndicator = Content.Load<Texture2D>(@"Textures/Interface/DownIndicator");
             upIndicator = Content.Load<Texture2D>(@"Textures/Interface/UpIndicator");
+            playTexture = Content.Load<Texture2D>(@"Textures/Interface/Play");
+            settingsTexture = Content.Load<Texture2D>(@"Textures/Interface/Settings");
         }
 
         private void LoadFonts()
@@ -296,6 +348,81 @@ namespace GalaxyJam
                 case GameStates.StartScreen:
                     starField.Update(gameTime);
                     break;
+                case GameStates.TitleScreen:
+                    starField.Update(gameTime);
+
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
+                    {
+                        if (titleScreenSelection == 0)
+                        {
+                            titleScreenSelection = 1;
+                        }
+                        else
+                        {
+                            titleScreenSelection = 0;
+                        }
+                    }
+                    else if(input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up))
+                    {
+                        if (titleScreenSelection == 0)
+                        {
+                            titleScreenSelection = 1;
+                        }
+                        else
+                        {
+                            titleScreenSelection = 0;
+                        }
+                    }
+                    cachedUpDownKeyboardState = input.GetKeyboard().GetState();
+
+                    break;
+                case GameStates.SettingsScreen:
+                    starField.Update(gameTime);
+
+                    if (currentSettingSelection == 0)
+                    {
+                        if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
+                        {
+                            if (currentResolution > 0)
+                            {
+                                currentResolution--;
+                            }
+                        }
+                        else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
+                        {
+                            if (currentResolution < displayModes.Count - 1)
+                            {
+                                currentResolution++;
+                            }
+                        }
+                        cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+                    }
+
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
+                    {
+                        if (currentSettingSelection < 6)
+                        {
+                            currentSettingSelection++;
+                        }
+                        if (currentSettingSelection == 6)
+                        {
+                            currentSettingSelection = 0;
+                        }
+                    }
+                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up))
+                    {
+                        if (currentSettingSelection == 0)
+                        {
+                            currentSettingSelection = 6;
+                        }
+                        if (currentSettingSelection > 0)
+                        {
+                            currentSettingSelection--;
+                        }
+                    }
+                    cachedUpDownKeyboardState = input.GetKeyboard().GetState();
+
+                    break;
                 case GameStates.OptionsScreen:
                     starField.Update(gameTime);
 
@@ -332,6 +459,7 @@ namespace GalaxyJam
                     cachedUpDownKeyboardState = input.GetKeyboard().GetState();
                     
                     break;
+
                 case GameStates.GetReadyState:
                     starField.StarSpeedModifier = 1;
                     starField.Update(gameTime);
@@ -357,8 +485,10 @@ namespace GalaxyJam
                     }
 
                     break;
+
                 case GameStates.Playing:
                     starField.Update(gameTime);
+
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                     
@@ -387,6 +517,23 @@ namespace GalaxyJam
                         GlowRightRim(gameTime);
                     }
 
+                    if (goalManager.DrawNumberScrollEffect)
+                    {
+                        numberScrollStringEffects.Clear();
+                        for (int i = 0; i < goalManager.GameScore.ToString().Length; i++)
+                        {
+                            int number = rand.Next(0, 9);
+                            numberScrollStringEffects.Append(number);
+                        }
+                        goalManager.NumberScrollScoreToDraw = numberScrollStringEffects.ToString();
+                        numberScrollEffectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (NUMBER_SCROLL_EFFECT_TIME < numberScrollEffectTimer)
+                        {
+                            goalManager.DrawNumberScrollEffect = false;
+                            numberScrollEffectTimer = 0;
+                        }
+                    }
+
                     if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
                     {
                         GameTimer.StopGameTimer();
@@ -402,7 +549,9 @@ namespace GalaxyJam
                     }
 
                     break;
+
                 case GameStates.Paused:
+
                     break;
                 case GameStates.GameEnd:
                     starField.Update(gameTime);
@@ -437,6 +586,71 @@ namespace GalaxyJam
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
                     GameInterface.DrawTitleScreen(spriteBatch, galaxyJamLogo);
+                    spriteBatch.End();
+                    break;
+                case GameStates.TitleScreen:
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    starField.Draw(spriteBatch);
+                    if (titleScreenSelection == 0)
+                    {
+                        spriteBatch.Draw(playTexture, new Vector2(1280/2, 720/2), null, Color.White, 0f,
+                                         new Vector2((float) playTexture.Width/2, (float) playTexture.Height/2), 1.0f,
+                                         SpriteEffects.None, 1.0f);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(settingsTexture, new Vector2(1280 / 2, 720 / 2), null, Color.White, 0f,
+                                         new Vector2((float)settingsTexture.Width / 2, (float)settingsTexture.Height / 2), 1.0f,
+                                         SpriteEffects.None, 1.0f);
+                    }
+                    spriteBatch.End();
+                    break;
+                case GameStates.SettingsScreen:
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    starField.Draw(spriteBatch);
+
+                    DisplayMode selectedMode;
+                    if (displayModes.TryGetValue(currentResolution, out selectedMode))
+                    {
+                        string resolutionText = String.Format("{0} x {1}", selectedMode.Width, selectedMode.Height);
+                        //Vector2 resolutionTextOrigin = pixel.MeasureString(resolutionText)/2;
+                        spriteBatch.DrawString(pixel, resolutionText, new Vector2(740, 300), Color.White);
+                    }
+
+                    Vector2 selectionLocation;
+                    switch(currentSettingSelection)
+                    {
+                        case 0:
+                            selectionLocation = new Vector2(300, 300);
+                            break;
+                        case 1:
+                            selectionLocation = new Vector2(300, 325);
+                            break;
+                        case 2:
+                            selectionLocation = new Vector2(300, 350);
+                            break;
+                        case 3:
+                            selectionLocation = new Vector2(300, 375);
+                            break;
+                        case 4:
+                            selectionLocation = new Vector2(520, 450);
+                            break;
+                        case 5:
+                            selectionLocation = new Vector2(620, 450);
+                            break;
+                        default:
+                            selectionLocation = new Vector2(300, 300);
+                            break;
+                    }
+
+                    spriteBatch.DrawString(pixel, ">", selectionLocation, Color.White);
+                    spriteBatch.DrawString(pixel, "  Resolution: ", new Vector2(300, 300), Color.White);
+                    spriteBatch.DrawString(pixel, "  Full Screen: ", new Vector2(300, 325), Color.White);
+                    spriteBatch.DrawString(pixel, "  Music Volume: ", new Vector2(300, 350), Color.White);
+                    spriteBatch.DrawString(pixel, "  Sound Volume: ", new Vector2(300, 375), Color.White);
+                    spriteBatch.DrawString(pixel, "  Save", new Vector2(520, 450), Color.White);
+                    spriteBatch.DrawString(pixel, "  Back", new Vector2(620, 450), Color.White);
+
                     spriteBatch.End();
                     break;
                 case GameStates.OptionsScreen:
@@ -684,8 +898,7 @@ namespace GalaxyJam
             {
                 if (character == 13)
                 {
-                    MediaPlayer.Stop();
-                    gameState = GameStates.OptionsScreen;
+                    gameState = GameStates.TitleScreen;
                 }
                 if (character == 122)
                 {
@@ -698,6 +911,33 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     Exit();
+                }
+            }
+            else if (gameState == GameStates.TitleScreen)
+            {
+                if (character == 13)
+                {
+                    if (titleScreenSelection == 0)
+                    {
+                        MediaPlayer.Stop();
+                        gameState = GameStates.OptionsScreen;
+                    }
+                    else
+                    {
+                        currentSettingSelection = 0;
+                        gameState = GameStates.SettingsScreen;
+                    }
+                }
+            }
+            else if (gameState == GameStates.SettingsScreen)
+            {
+                if (character == 13)
+                {
+                    if (currentSettingSelection == 5)
+                    {
+                        titleScreenSelection = 0;
+                        gameState = GameStates.TitleScreen;
+                    }
                 }
             }
             else if (gameState == GameStates.OptionsScreen)
@@ -797,7 +1037,7 @@ namespace GalaxyJam
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
                     soundEffectCounter = 1;
-                    gameState = GameStates.GetReadyState;
+                    gameState = GameStates.OptionsScreen;
                     GameTimer.ResetTimer();
                 }
             }
