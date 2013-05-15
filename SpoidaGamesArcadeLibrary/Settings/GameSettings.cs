@@ -1,12 +1,13 @@
 ﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SpoidaGamesArcadeLibrary.Settings
 {
     [Serializable]
     public class GameSettings
     {
-        private int resolution;
-        public int Resolution
+        private DisplayMode resolution;
+        public DisplayMode Resolution
         {
             get { return resolution; }
             set { resolution = value; }
@@ -33,7 +34,7 @@ namespace SpoidaGamesArcadeLibrary.Settings
             set { soundEffectVolume = value; }
         }
 
-        public GameSettings(int videoResolution, bool fullScreenOption, int musicLevel, int soundLevel)
+        public GameSettings(DisplayMode videoResolution, bool fullScreenOption, int musicLevel, int soundLevel)
         {
             resolution = videoResolution;
             isFullScreen = fullScreenOption;

@@ -117,7 +117,6 @@
     <Compile Include="Resources\Entities\PhysicalWorld.cs" />
     <Compile Include="Settings\GameSettings.cs" />
     <Compile Include="Settings\InterfaceOptions.cs" />
-    <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\SoundManager.cs" />
   </ItemGroup>
   <ItemGroup>

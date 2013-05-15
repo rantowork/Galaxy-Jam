@@ -152,9 +152,13 @@ namespace GalaxyJam
         private const string SETTINGS_FILENAME = "game.settings";
         private string fullSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SETTINGS_FILENAME);
         private GameSettings gameSettings;
-        private Dictionary<int,DisplayMode> displayModes = new Dictionary<int,DisplayMode>();
+        private List<DisplayMode> displayModes = new List<DisplayMode>();
         private int currentResolution;
         private int currentSettingSelection;
+        private DisplayMode defaultDisplayMode;
+        private bool fullScreenSetting;
+        private int musicVolumeSetting;
+        private int soundEffectVolumeSetting;
 
         public Game1()
         {
@@ -163,13 +167,15 @@ namespace GalaxyJam
             ResolutionManager.SetVirtualResolution(1280, 720);
             ResolutionManager.SetResolution(1280, 720, false);
 
-            int count = 0;
             foreach (DisplayMode mode in graphics.GraphicsDevice.Adapter.SupportedDisplayModes)
             {
                 if (mode.Format == SurfaceFormat.Color)
                 {
-                    displayModes.Add(count, mode);
-                    count++;
+                    displayModes.Add(mode);
+                    if (mode.Width == 1280 && mode.Height == 720)
+                    {
+                        defaultDisplayMode = mode;
+                    }
                 }
             }
 
@@ -217,7 +223,8 @@ namespace GalaxyJam
 
             if (!File.Exists(fullSettingsPath))
             {
-                gameSettings = new GameSettings(0, false, 10, 10);
+                
+                gameSettings = new GameSettings(defaultDisplayMode, false, 10, 10);
                 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string json = serializer.Serialize(gameSettings);
@@ -228,14 +235,22 @@ namespace GalaxyJam
                         streamWriter.Write(json);
                     }
                 }
+
+                currentResolution = displayModes.IndexOf(defaultDisplayMode);
+                fullScreenSetting = false;
+                musicVolumeSetting = 10;
+                soundEffectVolumeSetting = 10;
             }
             else
             {
-                gameSettings = new GameSettings(0, false, 10, 10);
+                gameSettings = new GameSettings(defaultDisplayMode, false, 10, 10);
+                currentResolution = displayModes.IndexOf(defaultDisplayMode);
+                fullScreenSetting = false;
+                musicVolumeSetting = 10;
+                soundEffectVolumeSetting = 10;
             }
             
-            ResolutionManager.SetResolution(SettingsManager.GetResolutionWidth(gameSettings.Resolution),
-                                            SettingsManager.GetResolutionHeight(gameSettings.Resolution),
+            ResolutionManager.SetResolution(gameSettings.Resolution.Width,gameSettings.Resolution.Height,
                                             gameSettings.IsFullScreen);
 
             audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");
@@ -393,6 +408,72 @@ namespace GalaxyJam
                             if (currentResolution < displayModes.Count - 1)
                             {
                                 currentResolution++;
+                            }
+                        }
+                        cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+                    }
+                    else if (currentSettingSelection == 1)
+                    {
+                        if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
+                        {
+                            if (fullScreenSetting)
+                            {
+                                fullScreenSetting = false;
+                            }
+                            else
+                            {
+                                fullScreenSetting = true;
+                            }
+                        }
+                        else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
+                        {
+                            if (fullScreenSetting)
+                            {
+                                fullScreenSetting = false;
+                            }
+                            else
+                            {
+                                fullScreenSetting = true;
+                            }
+                        }
+                        cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+                    }
+                    else if (currentSettingSelection == 2)
+                    {
+                        if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
+                        {
+                            if (musicVolumeSetting > 0)
+                            {
+                                musicVolumeSetting--;
+                                MediaPlayer.Volume = (float) musicVolumeSetting/10;
+                            }
+                        }
+                        else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
+                        {
+                            if (musicVolumeSetting < 10)
+                            {
+                                musicVolumeSetting++;
+                                MediaPlayer.Volume = (float)musicVolumeSetting / 10;
+                            }
+                        }
+                        cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+                    }
+                    else if (currentSettingSelection == 3)
+                    {
+                        if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
+                        {
+                            if (soundEffectVolumeSetting > 0)
+                            {
+                                soundEffectVolumeSetting--;
+                                collisionSoundEffect.Play((float)soundEffectVolumeSetting/10, 0f, 0f);
+                            }
+                        }
+                        else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
+                        {
+                            if (soundEffectVolumeSetting < 10)
+                            {
+                                soundEffectVolumeSetting++;
+                                collisionSoundEffect.Play((float)soundEffectVolumeSetting / 10, 0f, 0f);
                             }
                         }
                         cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
@@ -609,13 +690,14 @@ namespace GalaxyJam
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
 
-                    DisplayMode selectedMode;
-                    if (displayModes.TryGetValue(currentResolution, out selectedMode))
-                    {
-                        string resolutionText = String.Format("{0} x {1}", selectedMode.Width, selectedMode.Height);
-                        //Vector2 resolutionTextOrigin = pixel.MeasureString(resolutionText)/2;
-                        spriteBatch.DrawString(pixel, resolutionText, new Vector2(740, 300), Color.White);
-                    }
+                    DisplayMode selectedMode = displayModes[currentResolution];
+                    string resolutionText = String.Format("{0} x {1}", selectedMode.Width, selectedMode.Height);
+                    string fullScreenText = fullScreenSetting ? "Full Screen" : "Windowed";
+
+                    spriteBatch.DrawString(pixel, resolutionText, new Vector2(740, 300), Color.White);
+                    spriteBatch.DrawString(pixel, fullScreenText, new Vector2(740, 325), Color.White);
+                    spriteBatch.DrawString(pixel, musicVolumeSetting.ToString(), new Vector2(740, 350), Color.White);
+                    spriteBatch.DrawString(pixel, soundEffectVolumeSetting.ToString(), new Vector2(740, 375), Color.White);
 
                     Vector2 selectionLocation;
                     switch(currentSettingSelection)
@@ -928,6 +1010,10 @@ namespace GalaxyJam
                         gameState = GameStates.SettingsScreen;
                     }
                 }
+                if (character == 27)
+                {
+                    Exit();
+                }
             }
             else if (gameState == GameStates.SettingsScreen)
             {
@@ -938,6 +1024,10 @@ namespace GalaxyJam
                         titleScreenSelection = 0;
                         gameState = GameStates.TitleScreen;
                     }
+                }
+                if (character == 27)
+                {
+                    gameState = GameStates.TitleScreen;
                 }
             }
             else if (gameState == GameStates.OptionsScreen)
