@@ -1,16 +1,22 @@
 ﻿using System;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace SpoidaGamesArcadeLibrary.Settings
 {
     [Serializable]
     public class GameSettings
     {
-        private DisplayMode resolution;
-        public DisplayMode Resolution
+        private int displayModeWidth;
+        public int DisplayModeWidth
         {
-            get { return resolution; }
-            set { resolution = value; }
+            get { return displayModeWidth; }
+            set { displayModeWidth = value; }
+        }
+
+        private int displayModeHeight;
+        public int DisplayModeHeight
+        {
+            get { return displayModeHeight; }
+            set { displayModeHeight = value; }
         }
 
         private bool isFullScreen;
@@ -34,12 +40,17 @@ namespace SpoidaGamesArcadeLibrary.Settings
             set { soundEffectVolume = value; }
         }
 
-        public GameSettings(DisplayMode videoResolution, bool fullScreenOption, int musicLevel, int soundLevel)
+        public GameSettings(int displayWidth, int displayHeight, bool fullScreenOption, int musicLevel, int soundLevel)
         {
-            resolution = videoResolution;
+            displayModeWidth = displayWidth;
+            displayModeHeight = displayHeight;
             isFullScreen = fullScreenOption;
             musicVolume = musicLevel;
             soundEffectVolume = soundLevel;
+        }
+
+        public GameSettings()
+        {
         }
     }
 }

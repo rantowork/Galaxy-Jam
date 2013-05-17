@@ -254,7 +254,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         //Game Over Interface
         private const string GAME_OVER = "Game Over!";
-        private static string gameOverTimer = String.Format("Time Remaining: {0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
+        private static string gameOverTimer = String.Format("{0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
 
         public static void DrawGameEndInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
         {
@@ -264,7 +264,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
             spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
             spriteBatch.DrawString(pixelFont, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(pixelFont, gameOverTimer, new Vector2(10, 694), Color.White);
+            spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
             spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.White);
             spriteBatch.DrawString(pixelFont, "Player", new Vector2(10, 50), Color.White);
             spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(170, 50), Color.White);

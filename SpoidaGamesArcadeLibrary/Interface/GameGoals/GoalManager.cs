@@ -159,13 +159,13 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         /// <summary>
         /// Observes the game loop for triggers that indicate a goal has scored and sets the appropriate flags
         /// </summary>
-        public void UpdateGoalScored(GameTime gameTime, Camera camera, Rectangle shotCenterRectangle, SoundEffect goalScoredSoundEffect, SparkleEmitter sparkleEmitter, Starfield starfield)
+        public void UpdateGoalScored(GameTime gameTime, Camera camera, Rectangle shotCenterRectangle, SoundEffect goalScoredSoundEffect, SparkleEmitter sparkleEmitter, Starfield starfield, GameSettings gameSettings)
         {
             if (IsGoalScored(shotCenterRectangle) && !GoalScored)
             {
                 GoalScored = true;
-                
-                SoundManager.PlaySoundEffect(goalScoredSoundEffect, 0.5f, 0.0f, 0.0f);
+
+                SoundManager.PlaySoundEffect(goalScoredSoundEffect, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
 
                 if (!BackboardHit && !RimHit)
                 {
