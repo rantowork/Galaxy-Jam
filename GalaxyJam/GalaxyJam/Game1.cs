@@ -157,12 +157,12 @@ namespace GalaxyJam
         private int currentResolution;
         private int currentSettingSelection;
         private DisplayMode defaultDisplayMode;
-        private bool fullScreenSetting;
+        private int fullScreenSetting;
         private int musicVolumeSetting;
         private int soundEffectVolumeSetting;
 
         private DisplayMode previousDisplayMode;
-        private bool previousFullScreenSetting;
+        private int previousFullScreenSetting;
         private int previousMusicSetting;
         private int previousSoundEffectSetting;
         private bool displaySettingsSavedMessage;
@@ -232,7 +232,7 @@ namespace GalaxyJam
 
             if (!File.Exists(fullSettingsPath))
             {
-                gameSettings = new GameSettings(defaultDisplayMode.Width, defaultDisplayMode.Height, false, 10, 10);
+                gameSettings = new GameSettings(defaultDisplayMode.Width, defaultDisplayMode.Height, 0, 10, 10);
                 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string json = serializer.Serialize(gameSettings);
@@ -245,7 +245,7 @@ namespace GalaxyJam
                 }
 
                 currentResolution = displayModes.IndexOf(defaultDisplayMode);
-                fullScreenSetting = false;
+                fullScreenSetting = 0;
                 musicVolumeSetting = 10;
                 soundEffectVolumeSetting = 10;
             }
@@ -262,19 +262,38 @@ namespace GalaxyJam
                 }
                 if (gameSettings == null)
                 {
-                    gameSettings = new GameSettings(1280, 720, false, 10, 10);
+                    gameSettings = new GameSettings(1280, 720, 0, 10, 10);
                 }
                 else
                 {
                     DisplayMode currentMode = GetDisplayMode(gameSettings.DisplayModeWidth,gameSettings.DisplayModeHeight);
                     currentResolution = displayModes.IndexOf(currentMode);
-                    fullScreenSetting = gameSettings.IsFullScreen;
+                    fullScreenSetting = gameSettings.FullScreenOption;
                     musicVolumeSetting = gameSettings.MusicVolume;
                     soundEffectVolumeSetting = gameSettings.SoundEffectVolume;
                 }
             }
+            
+            bool fullScreen;
+            if (gameSettings.FullScreenOption == 0 || gameSettings.FullScreenOption == 2)
+            {
+                fullScreen = false;
+            }
+            else
+            {
+                fullScreen = true;
+            }
 
-            ResolutionManager.SetResolution(gameSettings.DisplayModeWidth, gameSettings.DisplayModeHeight, fullScreenSetting);
+            ResolutionManager.SetResolution(gameSettings.DisplayModeWidth, gameSettings.DisplayModeHeight, fullScreen);
+            
+            if (gameSettings.FullScreenOption == 2)
+            {
+                MakeGameBorderless();
+            }
+            else
+            {
+                MakeGameWindowed();
+            }
 
             audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");
             waveBank = new WaveBank(audioEngine, "Content\\Audio\\Wave Bank.xwb");
@@ -397,14 +416,13 @@ namespace GalaxyJam
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            starField.Update(gameTime);
             switch (gameState)
             {
                 case GameStates.StartScreen:
-                    starField.Update(gameTime);
+                    
                     break;
                 case GameStates.TitleScreen:
-                    starField.Update(gameTime);
-
                     if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
                     {
                         if (titleScreenSelection == 0)
@@ -431,7 +449,6 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.SettingsScreen:
-                    starField.Update(gameTime);
 
                     if (currentSettingSelection == 0)
                     {
@@ -455,24 +472,16 @@ namespace GalaxyJam
                     {
                         if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
                         {
-                            if (fullScreenSetting)
+                            if (fullScreenSetting > 0)
                             {
-                                fullScreenSetting = false;
-                            }
-                            else
-                            {
-                                fullScreenSetting = true;
+                                fullScreenSetting--;
                             }
                         }
                         else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
                         {
-                            if (fullScreenSetting)
+                            if (fullScreenSetting < 2)
                             {
-                                fullScreenSetting = false;
-                            }
-                            else
-                            {
-                                fullScreenSetting = true;
+                                fullScreenSetting++;
                             }
                         }
                         cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
@@ -554,8 +563,6 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.OptionsScreen:
-                    starField.Update(gameTime);
-
                     if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
                     {
                         if (currentlySelectedSongKey > 0)
@@ -592,7 +599,6 @@ namespace GalaxyJam
 
                 case GameStates.GetReadyState:
                     starField.StarSpeedModifier = 1;
-                    starField.Update(gameTime);
 
                     gameStartCountdownTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                     gameStartAlphaTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -617,8 +623,6 @@ namespace GalaxyJam
                     break;
 
                 case GameStates.Playing:
-                    starField.Update(gameTime);
-
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                     
@@ -684,7 +688,6 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.GameEnd:
-                    starField.Update(gameTime);
                     if (!highScoresLoaded)
                     {
                         foreach (HighScore highScore in highScoreManager.HighScores)
@@ -741,8 +744,23 @@ namespace GalaxyJam
 
                     DisplayMode selectedMode = displayModes[currentResolution];
                     string resolutionText = String.Format("{0} x {1}", selectedMode.Width, selectedMode.Height);
-                    string fullScreenText = fullScreenSetting ? "Full Screen" : "Windowed";
-
+                    string fullScreenText;
+                    switch (fullScreenSetting)
+                    {
+                        case 0:
+                            fullScreenText = "Windowed";
+                            break;
+                        case 1:
+                            fullScreenText = "Full Screen";
+                            break;
+                        case 2:
+                            fullScreenText = "Full Screen Borderless";
+                            break;
+                        default:
+                            fullScreenText = "Windowed";
+                            break;
+                    }
+                    
                     spriteBatch.DrawString(pixel, resolutionText, new Vector2(740, 300), Color.White);
                     spriteBatch.DrawString(pixel, fullScreenText, new Vector2(740, 325), Color.White);
                     spriteBatch.DrawString(pixel, musicVolumeSetting.ToString(), new Vector2(740, 350), Color.White);
@@ -1035,14 +1053,6 @@ namespace GalaxyJam
                 {
                     gameState = GameStates.TitleScreen;
                 }
-                if (character == 122)
-                {
-                    ResolutionManager.SetResolution(1280, 720, false);
-                }
-                if (character == 120)
-                {
-                    ResolutionManager.SetResolution(1920, 1080, true);
-                }
                 if (character == 27)
                 {
                     Exit();
@@ -1085,6 +1095,7 @@ namespace GalaxyJam
 
                             JavaScriptSerializer serializer = new JavaScriptSerializer();
                             string json = serializer.Serialize(gameSettings);
+                            
                             using (FileStream fileStream = File.Create(fullSettingsPath))
                             {
                                 using(StreamWriter streamWriter = new StreamWriter(fileStream))
@@ -1092,8 +1103,27 @@ namespace GalaxyJam
                                     streamWriter.Write(json);
                                 }
                             }
-
-                            ResolutionManager.SetResolution(mode.Width, mode.Height, fullScreenSetting);
+                            
+                            bool fullScreen;
+                            if (gameSettings.FullScreenOption == 0 || gameSettings.FullScreenOption == 2)
+                            {
+                                fullScreen = false;
+                            }
+                            else
+                            {
+                                fullScreen = true;
+                            }
+                            
+                            ResolutionManager.SetResolution(mode.Width, mode.Height, fullScreen);
+                            
+                            if (gameSettings.FullScreenOption == 2)
+                            {
+                                MakeGameBorderless();
+                            }
+                            else
+                            {
+                                MakeGameWindowed();
+                            }
 
                             displaySettingsSavedMessage = true;
                             previousDisplayMode = mode;
@@ -1289,5 +1319,29 @@ namespace GalaxyJam
             return true;
         }
         #endregion
+
+        private void MakeGameBorderless()
+        {
+            IntPtr windowHandle = Window.Handle;
+            var control = System.Windows.Forms.Control.FromHandle(windowHandle);
+            var form = control.FindForm();
+            if (form != null)
+            {
+                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            }
+        }
+
+        private void MakeGameWindowed()
+        {
+            IntPtr windowHandle = Window.Handle;
+            var control = System.Windows.Forms.Control.FromHandle(windowHandle);
+            var form = control.FindForm();
+            if (form != null)
+            {
+                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+                form.WindowState = System.Windows.Forms.FormWindowState.Normal;
+            }
+        }
     }
 }

@@ -19,11 +19,11 @@ namespace SpoidaGamesArcadeLibrary.Settings
             set { displayModeHeight = value; }
         }
 
-        private bool isFullScreen;
-        public bool IsFullScreen
+        private int fullScreenOption;
+        public int FullScreenOption
         {
-            get { return isFullScreen; }
-            set { isFullScreen = value; }
+            get { return fullScreenOption; }
+            set { fullScreenOption = value; }
         }
 
         private int musicVolume;
@@ -40,11 +40,11 @@ namespace SpoidaGamesArcadeLibrary.Settings
             set { soundEffectVolume = value; }
         }
 
-        public GameSettings(int displayWidth, int displayHeight, bool fullScreenOption, int musicLevel, int soundLevel)
+        public GameSettings(int displayWidth, int displayHeight, int fullScreen, int musicLevel, int soundLevel)
         {
             displayModeWidth = displayWidth;
             displayModeHeight = displayHeight;
-            isFullScreen = fullScreenOption;
+            fullScreenOption = fullScreen;
             musicVolume = musicLevel;
             soundEffectVolume = soundLevel;
         }
