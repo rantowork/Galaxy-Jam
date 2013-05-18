@@ -1341,6 +1341,8 @@ namespace GalaxyJam
             {
                 form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 form.WindowState = System.Windows.Forms.FormWindowState.Normal;
+                form.Width = gameSettings.DisplayModeWidth;
+                form.Height = gameSettings.DisplayModeHeight;
             }
         }
     }
