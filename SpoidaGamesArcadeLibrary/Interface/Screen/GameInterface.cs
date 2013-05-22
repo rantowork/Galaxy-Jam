@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -240,15 +239,17 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             {
                 currentScore = String.Format("{0}", goalManager.GameScore);
             }
-            string currentMultiplier = String.Format("Score Multiplier: {0}", goalManager.ScoreMulitplier);
-            string currentStreak = String.Format("Streak: {0}", goalManager.Streak);
+            string currentMultiplier = String.Format("x{0}", goalManager.ScoreMulitplier);
+            string currentStreak = String.Format("+{0}", goalManager.Streak);
             string timeRemaining = String.Format("{0}", GameTimer.GetElapsedGameTime());
 
             Vector2 currentScoreOrigin = pixelGlowFont.MeasureString(currentScore) / 2;
+            Vector2 multiplierOrigin = pixelGlowFont.MeasureString(currentMultiplier);
+            Vector2 currentStreakOrigin = pixelGlowFont.MeasureString(currentStreak);
 
-            spriteBatch.DrawString(pixelGlowFont, currentScore, new Vector2(1280 / 2, 30), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 0f);
-            spriteBatch.DrawString(pixelFont, currentMultiplier, new Vector2(1020, 694), Color.White);
-            spriteBatch.DrawString(pixelFont, currentStreak, new Vector2(1100, 22), Color.White);
+            spriteBatch.DrawString(pixelGlowFont, currentScore, new Vector2(1280 / 2, 30), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelGlowFont, currentMultiplier, new Vector2(1260, 720), Color.White, 0f, multiplierOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelGlowFont, currentStreak, new Vector2(1260, 60), Color.White, 0f, currentStreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelGlowFont, timeRemaining, new Vector2(10, 664), Color.White);
         }
 
@@ -274,10 +275,13 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         //Paused Interface
         const string PAUSED = "Paused!";
+        private const string QUIT_RESTART_TEXT = "(Q)uit | (R)etry";
         public static void DrawPausedInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont)
         {
             Vector2 pausedOrigin = pixelFont.MeasureString(PAUSED) / 2;
+            Vector2 quitRestartOrigin = pixelFont.MeasureString(QUIT_RESTART_TEXT)/2;
             spriteBatch.DrawString(pixelFont, PAUSED, new Vector2(1280 / 2, 720 / 2), Color.White, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 360 + 40), Color.White, 0f, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
         }
     }
 }

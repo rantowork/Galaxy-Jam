@@ -868,8 +868,9 @@ namespace GalaxyJam
                     DrawGameWorld(gameTime);
                     break;
                 case GameStates.Paused:
-                    DrawGameWorld(gameTime);
+                    //DrawGameWorld(gameTime);
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    starField.Draw(spriteBatch);
                     GameInterface.DrawPausedInterface(spriteBatch, pixel, pixelGlowFont);
                     spriteBatch.End();
                     break;
@@ -881,7 +882,7 @@ namespace GalaxyJam
             base.Draw(gameTime);
         }
 
-        private const double EFFECT_TIME = 1000;
+        private const double EFFECT_TIME = 1500;
         private double effectTimer;
         private void DrawGameWorld(GameTime gameTime)
         {
@@ -920,7 +921,9 @@ namespace GalaxyJam
             if (goalManager.DrawSwish)
             {
                 effectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                spriteBatch.DrawString(pixelGlowFont, "SWISH!", new Vector2(1280 / 2, 720 / 2), Color.White);
+                const string swishText = "SWISH!";
+                Vector2 swishOrigin = pixelGlowFont.MeasureString(swishText)/2;
+                spriteBatch.DrawString(pixelGlowFont, swishText, new Vector2(1280/2, 70), Color.White, 0f, swishOrigin,1.0f, SpriteEffects.None, 1.0f);
                 if (EFFECT_TIME < effectTimer)
                 {
                     effectTimer = 0;
@@ -931,7 +934,9 @@ namespace GalaxyJam
             if (goalManager.DrawCleanShot)
             {
                 effectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                spriteBatch.DrawString(pixelGlowFont, "Clean Shot!", new Vector2(1280 / 2, 720 / 2), Color.White);
+                const string niceShotText = "Nice Shot!";
+                Vector2 niceShotOrigin = pixelGlowFont.MeasureString(niceShotText)/2;
+                spriteBatch.DrawString(pixelGlowFont, niceShotText, new Vector2(1280/2, 70), Color.White, 0f, niceShotOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 if (EFFECT_TIME < effectTimer)
                 {
                     effectTimer = 0;
