@@ -35,10 +35,10 @@ namespace GalaxyJam
         //Game State
         private enum GameStates
         {
-            IntroScreens,
             StartScreen,
             TitleScreen,
             SettingsScreen,
+            TutorialScreen,
             OptionsScreen,
             GetReadyState,
             Playing,
@@ -60,8 +60,6 @@ namespace GalaxyJam
         private Texture2D cursor;
         private Texture2D upIndicator;
         private Texture2D downIndicator;
-        private Texture2D playTexture;
-        private Texture2D settingsTexture;
 
         //Sounds
         private AudioEngine audioEngine;
@@ -149,7 +147,7 @@ namespace GalaxyJam
         private double rightrimGlowTimer;
 
         //Settings
-        private byte titleScreenSelection;
+        private short titleScreenSelection;
         private const string SETTINGS_FILENAME = "game.settings";
         private string fullSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SETTINGS_FILENAME);
         private GameSettings gameSettings;
@@ -168,6 +166,9 @@ namespace GalaxyJam
         private bool displaySettingsSavedMessage;
         private const double SAVE_TIME = 2000;
         private double displaySaveMessageTimer;
+
+        //Tutorial
+        private short currentTutorialScreen;
 
         public Game1()
         {
@@ -354,8 +355,6 @@ namespace GalaxyJam
             cursor = Content.Load<Texture2D>(@"Textures/Cursor");
             downIndicator = Content.Load<Texture2D>(@"Textures/Interface/DownIndicator");
             upIndicator = Content.Load<Texture2D>(@"Textures/Interface/UpIndicator");
-            playTexture = Content.Load<Texture2D>(@"Textures/Interface/Play");
-            settingsTexture = Content.Load<Texture2D>(@"Textures/Interface/Settings");
         }
 
         private void LoadFonts()
@@ -425,24 +424,24 @@ namespace GalaxyJam
                 case GameStates.TitleScreen:
                     if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
                     {
-                        if (titleScreenSelection == 0)
+                        if (titleScreenSelection >= 0 && titleScreenSelection < 3)
                         {
-                            titleScreenSelection = 1;
+                            titleScreenSelection++;
                         }
-                        else
+                        else if (titleScreenSelection == 3)
                         {
                             titleScreenSelection = 0;
                         }
                     }
                     else if(input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up))
                     {
-                        if (titleScreenSelection == 0)
+                        if (titleScreenSelection > 0 && titleScreenSelection <= 3)
                         {
-                            titleScreenSelection = 1;
+                            titleScreenSelection--;
                         }
-                        else
+                        else if (titleScreenSelection == 0)
                         {
-                            titleScreenSelection = 0;
+                            titleScreenSelection = 3;
                         }
                     }
                     cachedUpDownKeyboardState = input.GetKeyboard().GetState();
@@ -621,7 +620,19 @@ namespace GalaxyJam
                     }
 
                     break;
+                case GameStates.TutorialScreen:
+                    if (currentTutorialScreen == 0)
+                    {
+                        BasketballManager.basketballs[0].Update(gameTime);
+                        PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
 
+                        HandlePlayerInput();
+                        HandleBasketballPosition();
+
+                        basketballSparkle.EmitterLocation = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                        basketballSparkle.Update();
+                    }
+                    break;
                 case GameStates.Playing:
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -722,21 +733,60 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.TitleScreen:
+                    const string playText = "Play";
+                    const string settingsText = "Settings";
+                    const string tutorialText = "How to Play";
+                    const string exitText = "Exit";
+                    const string tickerSymbol = ">";
+                    Vector2 tickerOrigin = pixel.MeasureString(tickerSymbol)/2;
+                    Vector2 playTextOrigin = pixel.MeasureString(playText) / 2;
+                    Vector2 settingsTextOrigin = pixel.MeasureString(settingsText) / 2;
+                    Vector2 tutorialTextOrigin = pixel.MeasureString(tutorialText) / 2;
+                    Vector2 exitOrigin = pixel.MeasureString(exitText)/2;
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
+                    spriteBatch.DrawString(pixel, playText, new Vector2(1280/2, 340), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 370), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280/2, 400), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 430), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     if (titleScreenSelection == 0)
                     {
-                        spriteBatch.Draw(playTexture, new Vector2(1280/2, 720/2), null, Color.White, 0f,
-                                         new Vector2((float) playTexture.Width/2, (float) playTexture.Height/2), 1.0f,
-                                         SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280/2 - 60, 340), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    }
+                    else if (titleScreenSelection == 1)
+                    {
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 90, 370), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    }
+                    else if (titleScreenSelection == 2)
+                    {
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 120, 400), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else
                     {
-                        spriteBatch.Draw(settingsTexture, new Vector2(1280 / 2, 720 / 2), null, Color.White, 0f,
-                                         new Vector2((float)settingsTexture.Width / 2, (float)settingsTexture.Height / 2), 1.0f,
-                                         SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 60, 430), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     spriteBatch.End();
+                    break;
+                case GameStates.TutorialScreen:
+                    const string escapeTutorial = "(Esc) Exit Tutorial";
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    starField.Draw(spriteBatch);
+                    spriteBatch.DrawString(pixel, escapeTutorial, new Vector2(10, 10), Color.White);
+                    spriteBatch.End();
+
+                    if (currentTutorialScreen == 0)
+                    {
+                        const string tutText01 = "Click to shoot. Try it out!";
+                        Vector2 tutText1Origin = pixel.MeasureString(tutText01)/2;
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                        spriteBatch.DrawString(pixel, tutText01, new Vector2(1280/2, 700), Color.White, 0f, tutText1Origin, 1.0f, SpriteEffects.None, 1.0f);
+                        basketballSparkle.Draw(spriteBatch);
+                        spriteBatch.End();
+                        spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                        spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
+                        spriteBatch.End();
+                    }
+
                     break;
                 case GameStates.SettingsScreen:
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
@@ -897,7 +947,6 @@ namespace GalaxyJam
 
             //draw starfield separate from other draw methods to keep it simple
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-            spriteBatch.Draw(lineSprite, new Rectangle(0, 0, 1280, 720), Color.Black);
             starField.Draw(spriteBatch);
             spriteBatch.End();
 
@@ -1069,18 +1118,35 @@ namespace GalaxyJam
                 {
                     if (titleScreenSelection == 0)
                     {
+                        basketballManager.BasketballBody.RestoreCollisionWith(backboardBody);
+                        basketballManager.BasketballBody.RestoreCollisionWith(leftRimBody);
+                        basketballManager.BasketballBody.RestoreCollisionWith(rightRimBody);
                         MediaPlayer.Stop();
                         gameState = GameStates.OptionsScreen;
                     }
-                    else
+                    else if (titleScreenSelection == 1)
                     {
                         currentSettingSelection = 0;
                         gameState = GameStates.SettingsScreen;
                     }
+                    else if (titleScreenSelection == 2)
+                    {
+                        basketballManager.BasketballBody.IgnoreCollisionWith(backboardBody);
+                        basketballManager.BasketballBody.IgnoreCollisionWith(leftRimBody);
+                        basketballManager.BasketballBody.IgnoreCollisionWith(rightRimBody);
+                        gameState = GameStates.TutorialScreen;
+                    }
+                    else
+                    {
+                        Exit();
+                    }
                 }
+            }
+            else if (gameState == GameStates.TutorialScreen)
+            {
                 if (character == 27)
                 {
-                    Exit();
+                    gameState = GameStates.TitleScreen;
                 }
             }
             else if (gameState == GameStates.SettingsScreen)
@@ -1221,6 +1287,16 @@ namespace GalaxyJam
                     Exit();
                 }
 
+                                if (character == 109)
+                {
+                    ResetPosition();
+                    goalManager.ResetGoalManager();
+                    highScoresLoaded = false;
+                    soundEffectCounter = 1;
+                    gameState = GameStates.OptionsScreen;
+                    GameTimer.ResetTimer();
+                }
+
                 if (character == 114)
                 {
                     ResetPosition();
@@ -1234,18 +1310,29 @@ namespace GalaxyJam
             }
             else if (gameState == GameStates.GameEnd)
             {
-                if (character == 27)
+                if (character == 113)
                 {
                     Exit();
                 }
 
-                if (character == 116)
+                if (character == 109)
                 {
                     ResetPosition();
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
                     soundEffectCounter = 1;
                     gameState = GameStates.OptionsScreen;
+                    GameTimer.ResetTimer();
+                }
+
+                if (character == 114)
+                {
+                    ResetPosition();
+                    goalManager.ResetGoalManager();
+                    highScoresLoaded = false;
+                    SoundManager.MuteSounds();
+                    soundEffectCounter = 1;
+                    gameState = GameStates.GetReadyState;
                     GameTimer.ResetTimer();
                 }
             }
@@ -1334,6 +1421,8 @@ namespace GalaxyJam
             {
                 form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+                form.Width = gameSettings.DisplayModeWidth;
+                form.Height = gameSettings.DisplayModeHeight;
             }
         }
 

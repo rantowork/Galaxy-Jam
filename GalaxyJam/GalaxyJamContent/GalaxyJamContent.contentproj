@@ -234,20 +234,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\TestTitle3.png">
-      <Name>TestTitle3</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Interface\SelectionBoxes.png">
-      <Name>SelectionBoxes</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Basketballs\SlimeBall.png">
       <Name>SlimeBall</Name>
       <Importer>TextureImporter</Importer>
@@ -316,18 +302,6 @@
     </Compile>
     <Compile Include="Textures\Interface\UpIndicator.png">
       <Name>UpIndicator</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Interface\Play.png">
-      <Name>Play</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Interface\Settings.png">
-      <Name>Settings</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

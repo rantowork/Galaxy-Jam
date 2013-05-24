@@ -255,6 +255,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         //Game Over Interface
         private const string GAME_OVER = "Game Over!";
+        private const string QUIT_RESTART_TEXT = "(Q)uit | (R)etry | (M)enu";
         private static string gameOverTimer = String.Format("{0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
 
         public static void DrawGameEndInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
@@ -262,9 +263,11 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             string finalScore = String.Format("Final Score: {0}!", goalManager.GameScore);
             Vector2 finalScoreOrigin = pixelFont.MeasureString(finalScore) / 2;
             Vector2 gameOverOrigin = pixelFont.MeasureString(GAME_OVER) / 2;
+            Vector2 quitRestartOrigin = pixelFont.MeasureString(QUIT_RESTART_TEXT) / 2;
 
-            spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 0);
-            spriteBatch.DrawString(pixelFont, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelFont, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 400), Color.White, 0,quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
             spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.White);
             spriteBatch.DrawString(pixelFont, "Player", new Vector2(10, 50), Color.White);
@@ -275,7 +278,6 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         //Paused Interface
         const string PAUSED = "Paused!";
-        private const string QUIT_RESTART_TEXT = "(Q)uit | (R)etry";
         public static void DrawPausedInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont)
         {
             Vector2 pausedOrigin = pixelFont.MeasureString(PAUSED) / 2;
