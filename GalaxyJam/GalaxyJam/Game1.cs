@@ -621,6 +621,14 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.TutorialScreen:
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Enter) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        if (currentTutorialScreen < 4)
+                        {
+                            currentTutorialScreen++;
+                        }
+                    }
+                    cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
                     if (currentTutorialScreen == 0)
                     {
                         BasketballManager.basketballs[0].Update(gameTime);
@@ -768,10 +776,17 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.TutorialScreen:
-                    const string escapeTutorial = "(Esc) Exit Tutorial";
+                    const string escapeTutorial = "(Esc) Exit";
+                    string enterContinue = "(Enter) Next";
+                    if (currentTutorialScreen == 4)
+                    {
+                        enterContinue = "";
+                    }
+                    
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
                     spriteBatch.DrawString(pixel, escapeTutorial, new Vector2(10, 10), Color.White);
+                    spriteBatch.DrawString(pixel, enterContinue, new Vector2(1080, 10), Color.White);
                     spriteBatch.End();
 
                     if (currentTutorialScreen == 0)
@@ -784,6 +799,49 @@ namespace GalaxyJam
                         spriteBatch.End();
                         spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                         spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
+                        spriteBatch.End();
+                    }
+                    else if (currentTutorialScreen == 1)
+                    {
+                        const string tutText02 = "Game timer.  You get only 2 minutes!";
+                        const string tutText02Timer = "2:00";
+                        Vector2 tutText02Origin = pixel.MeasureString(tutText02)/2;
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                        spriteBatch.DrawString(pixel, tutText02, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText02Origin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlowFont, tutText02Timer, new Vector2(10, 664), Color.White);
+                        spriteBatch.End();
+                    }
+                    else if (currentTutorialScreen == 2)
+                    {
+                        const string tutText03 = "Your score.  Earn new basketballs with a high score.";
+                        const string tutText03Score = "100000";
+                        Vector2 tutText03Origin = pixel.MeasureString(tutText03)/2;
+                        Vector2 tutText03ScoreOrigin = pixelGlowFont.MeasureString(tutText03Score) / 2;
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                        spriteBatch.DrawString(pixel, tutText03, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText03Origin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlowFont, tutText03Score, new Vector2(1280 / 2, 30), Color.White, 0f, tutText03ScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.End();
+                    }
+                    else if (currentTutorialScreen == 3)
+                    {
+                        const string tutText04 = "Current streak.  A higher streak means more pooints.";
+                        const string tutText04Streak = "+9";
+                        Vector2 tutText04Origin = pixel.MeasureString(tutText04) / 2;
+                        Vector2 tutText04StreakOrigin = pixelGlowFont.MeasureString(tutText04Streak);
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                        spriteBatch.DrawString(pixel, tutText04, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText04Origin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlowFont, tutText04Streak, new Vector2(1260, 100), Color.White, 0f, tutText04StreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.End();
+                    }
+                    else if (currentTutorialScreen == 4)
+                    {
+                        const string tutText05 = "Score multiplier.  Big multiplier, big points.";
+                        const string tutText05Mult = "x42";
+                        Vector2 tutText05Origin = pixel.MeasureString(tutText05) / 2;
+                        Vector2 tutText05MultOrigin = pixelGlowFont.MeasureString(tutText05Mult);
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                        spriteBatch.DrawString(pixel, tutText05, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText05Origin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlowFont, tutText05Mult, new Vector2(1260, 720), Color.White, 0f, tutText05MultOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         spriteBatch.End();
                     }
 
@@ -1134,6 +1192,8 @@ namespace GalaxyJam
                         basketballManager.BasketballBody.IgnoreCollisionWith(backboardBody);
                         basketballManager.BasketballBody.IgnoreCollisionWith(leftRimBody);
                         basketballManager.BasketballBody.IgnoreCollisionWith(rightRimBody);
+                        currentTutorialScreen = 0;
+                        cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
                         gameState = GameStates.TutorialScreen;
                     }
                     else
