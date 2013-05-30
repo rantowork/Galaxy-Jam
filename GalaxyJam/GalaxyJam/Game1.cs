@@ -38,6 +38,7 @@ namespace GalaxyJam
             StartScreen,
             TitleScreen,
             SettingsScreen,
+            PracticeScreen,
             TutorialScreen,
             OptionsScreen,
             GetReadyState,
@@ -424,24 +425,24 @@ namespace GalaxyJam
                 case GameStates.TitleScreen:
                     if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
                     {
-                        if (titleScreenSelection >= 0 && titleScreenSelection < 3)
+                        if (titleScreenSelection >= 0 && titleScreenSelection < 4)
                         {
                             titleScreenSelection++;
                         }
-                        else if (titleScreenSelection == 3)
+                        else if (titleScreenSelection == 4)
                         {
                             titleScreenSelection = 0;
                         }
                     }
                     else if(input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up))
                     {
-                        if (titleScreenSelection > 0 && titleScreenSelection <= 3)
+                        if (titleScreenSelection > 0 && titleScreenSelection <= 4)
                         {
                             titleScreenSelection--;
                         }
                         else if (titleScreenSelection == 0)
                         {
-                            titleScreenSelection = 3;
+                            titleScreenSelection = 4;
                         }
                     }
                     cachedUpDownKeyboardState = input.GetKeyboard().GetState();
@@ -641,6 +642,31 @@ namespace GalaxyJam
                         basketballSparkle.Update();
                     }
                     break;
+                case GameStates.PracticeScreen:
+                    BasketballManager.basketballs[0].Update(gameTime);
+                    PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+
+                    HandlePlayerInput();
+                    HandleBasketballPosition();
+
+                    basketballSparkle.EmitterLocation = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                    basketballSparkle.Update();
+
+                    if (backboardCollisionHappened)
+                    {
+                        GlowBackboard(gameTime);
+                    }
+
+                    if (leftRimCollisionHappened)
+                    {
+                        GlowLeftRim(gameTime);
+                    }
+
+                    if (rightRimCollisionHappened)
+                    {
+                        GlowRightRim(gameTime);
+                    }
+                    break;
                 case GameStates.Playing:
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -742,38 +768,78 @@ namespace GalaxyJam
                     break;
                 case GameStates.TitleScreen:
                     const string playText = "Play";
+                    const string practiceText = "Practice";
                     const string settingsText = "Settings";
                     const string tutorialText = "How to Play";
                     const string exitText = "Exit";
                     const string tickerSymbol = ">";
                     Vector2 tickerOrigin = pixel.MeasureString(tickerSymbol)/2;
                     Vector2 playTextOrigin = pixel.MeasureString(playText) / 2;
+                    Vector2 practiceOrigin = pixel.MeasureString(practiceText) / 2;
                     Vector2 settingsTextOrigin = pixel.MeasureString(settingsText) / 2;
                     Vector2 tutorialTextOrigin = pixel.MeasureString(tutorialText) / 2;
                     Vector2 exitOrigin = pixel.MeasureString(exitText)/2;
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     starField.Draw(spriteBatch);
-                    spriteBatch.DrawString(pixel, playText, new Vector2(1280/2, 340), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 370), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280/2, 400), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 430), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, playText, new Vector2(1280/2, 290), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280/2, 380), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     if (titleScreenSelection == 0)
                     {
-                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280/2 - 60, 340), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280/2 - 60, 290), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else if (titleScreenSelection == 1)
                     {
-                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 90, 370), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 90, 320), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else if (titleScreenSelection == 2)
                     {
-                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 120, 400), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 90, 350), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    }
+                    else if (titleScreenSelection == 3)
+                    {
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 120, 380), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else
                     {
-                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 60, 430), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 60, 410), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     spriteBatch.End();
+                    break;
+                case GameStates.PracticeScreen:
+                    const string escapePractice = "(Esc) Exit";
+                    const string practiceModeText = "Practice Mode";
+
+                    Vector2 practiceModeOrigin = pixel.MeasureString(practiceModeText)/2;
+
+                    Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
+                    Vector2 backboardOrigin = new Vector2(backboardSprite.Width / 2f, backboardSprite.Height / 2f);
+
+                    Vector2 leftRimPosition = leftRimBody.Position * PhysicalWorld.MetersInPixels;
+                    Vector2 leftRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+
+                    Vector2 rightRimPosition = rightRimBody.Position * PhysicalWorld.MetersInPixels;
+                    Vector2 rightRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    starField.Draw(spriteBatch);
+                    spriteBatch.DrawString(pixel, escapePractice, new Vector2(10, 10), Color.White);
+                    spriteBatch.DrawString(pixel, practiceModeText, new Vector2(1280/2, 18), Color.White, 0f, practiceModeOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.End();
+
+                    spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    basketballSparkle.Draw(spriteBatch);
+                    spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
+                    //draw backboard
+                    spriteBatch.Draw(backboardCollisionHappened ? backboardSpriteGlow : backboardSprite, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                    //draw left rim
+                    spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+                    //draw right rim
+                    spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.End();
+
                     break;
                 case GameStates.TutorialScreen:
                     const string escapeTutorial = "(Esc) Exit";
@@ -1184,10 +1250,18 @@ namespace GalaxyJam
                     }
                     else if (titleScreenSelection == 1)
                     {
+                        basketballManager.BasketballBody.RestoreCollisionWith(backboardBody);
+                        basketballManager.BasketballBody.RestoreCollisionWith(leftRimBody);
+                        basketballManager.BasketballBody.RestoreCollisionWith(rightRimBody);
+                        cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+                        gameState = GameStates.PracticeScreen;
+                    }
+                    else if (titleScreenSelection == 2)
+                    {
                         currentSettingSelection = 0;
                         gameState = GameStates.SettingsScreen;
                     }
-                    else if (titleScreenSelection == 2)
+                    else if (titleScreenSelection == 3)
                     {
                         basketballManager.BasketballBody.IgnoreCollisionWith(backboardBody);
                         basketballManager.BasketballBody.IgnoreCollisionWith(leftRimBody);
@@ -1203,6 +1277,13 @@ namespace GalaxyJam
                 }
             }
             else if (gameState == GameStates.TutorialScreen)
+            {
+                if (character == 27)
+                {
+                    gameState = GameStates.TitleScreen;
+                }
+            }
+            else if (gameState == GameStates.PracticeScreen)
             {
                 if (character == 27)
                 {
@@ -1311,7 +1392,9 @@ namespace GalaxyJam
                 }
                 if (character == 27)
                 {
-                    Exit();
+                    MediaPlayer.Resume();
+                    gameState = GameStates.TitleScreen;
+                    //Exit();
                 }
             }
             else if (gameState == GameStates.Playing)
