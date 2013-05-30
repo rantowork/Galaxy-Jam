@@ -63,20 +63,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Backboard2.png">
-      <Name>Backboard2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Backboard2Glow.png">
-      <Name>Backboard2Glow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Rim2.png">
       <Name>Rim2</Name>
       <Importer>TextureImporter</Importer>
@@ -295,18 +281,6 @@
     </Compile>
     <Compile Include="Textures\Interface\UpIndicator.png">
       <Name>UpIndicator</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\RedOrangeBoard.png">
-      <Name>RedOrangeBoard</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\RedOrangeBoardContact.png">
-      <Name>RedOrangeBoardContact</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
