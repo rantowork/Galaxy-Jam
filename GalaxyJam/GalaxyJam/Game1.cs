@@ -340,8 +340,8 @@ namespace GalaxyJam
         private void LoadTextures()
         {
             galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
-            backboardSprite = Content.Load<Texture2D>(@"Textures/Backboard2");
-            backboardSpriteGlow = Content.Load<Texture2D>(@"Textures/Backboard2Glow");
+            backboardSprite = Content.Load<Texture2D>(@"Textures/RedOrangeBoard2");
+            backboardSpriteGlow = Content.Load<Texture2D>(@"Textures/RedOrangeBoardContact2");
             rimSprite = Content.Load<Texture2D>(@"Textures/Rim2");
             rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Rim2Glow");
             lineSprite = Content.Load<Texture2D>(@"Textures/LineSprite");
@@ -1221,6 +1221,14 @@ namespace GalaxyJam
                         basketballManager.BasketballBody.RestoreCollisionWith(leftRimBody);
                         basketballManager.BasketballBody.RestoreCollisionWith(rightRimBody);
                         MediaPlayer.Stop();
+                        playerName.Clear();
+                        if (SoundManager.SelectedMusic != null)
+                        {
+                            if (SoundManager.SelectedMusic.IsPaused)
+                            {
+                                SoundManager.PauseBackgroundMusic();
+                            }
+                        }
                         gameState = GameStates.OptionsScreen;
                     }
                     else if (titleScreenSelection == 1)
@@ -1367,6 +1375,7 @@ namespace GalaxyJam
                 }
                 if (character == 27)
                 {
+                    SoundManager.PauseBackgroundMusic();
                     MediaPlayer.Resume();
                     gameState = GameStates.TitleScreen;
                     //Exit();

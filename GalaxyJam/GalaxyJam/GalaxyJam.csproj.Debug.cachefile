@@ -9,7 +9,6 @@ Content\Textures\1x1SolidStar.xnb
 Content\Textures\Basketballs\RedGlowBall.xnb
 Content\Textures\Cursor.xnb
 Content\Fonts\PixelScoreGlow.xnb
-Content\Textures\Basketballs\PurpleSkull.xnb
 Content\Textures\GalaxyJamConcept.xnb
 Content\Fonts\GiantRedPixelFont.xnb
 Content\Textures\OptionsScreenPrototypeWorking.xnb
@@ -26,8 +25,6 @@ Content\Audio\SoundEffects\Countdown.xnb
 Content\Audio\SoundEffects\Thud.xnb
 Content\Fonts\PixelFont.xnb
 Content\Audio\Music\AmbientSpace.xnb
-Content\Textures\TestTitle3.xnb
-Content\Textures\Interface\SelectionBoxes.xnb
 Content\Textures\Basketballs\SlimeBall.xnb
 Content\Textures\Basketballs\BlueSlimeBall.xnb
 Content\Textures\Basketballs\RedSlimeBall.xnb
@@ -39,8 +36,10 @@ Content\Textures\Basketballs\CuteInPink.xnb
 Content\Textures\Basketballs\Locked.xnb
 Content\Textures\Interface\DownIndicator.xnb
 Content\Textures\Interface\UpIndicator.xnb
-Content\Textures\Interface\Play.xnb
-Content\Textures\Interface\Settings.xnb
+Content\Textures\RedOrangeBoard.xnb
+Content\Textures\RedOrangeBoardContact.xnb
+Content\Textures\RedOrangeBoard2.xnb
+Content\Textures\RedOrangeBoardContact2.xnb
 Content\Audio\Music\AmbientSpace.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb

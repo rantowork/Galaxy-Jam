@@ -19,6 +19,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         //Options Interface
         const string INSTRUCTIONS = "Input your name and hit enter to begin";
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
+        private const string GO_BACK_TEXT = "(Esc) Back";
         private static Cue previousCue;
 
         public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection, Texture2D downIndicator, Texture2D upIndicator)
@@ -27,6 +28,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
             
             spriteBatch.DrawString(pixelFont, INSTRUCTIONS, new Vector2(1280 / 2, 180), Color.White, 0.0f, instructionsOrigin, 1f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelFont, GO_BACK_TEXT, new Vector2(10, 10), Color.White);
 
             if (nameToShort)
             {
