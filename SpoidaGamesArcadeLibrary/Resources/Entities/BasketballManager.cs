@@ -58,7 +58,6 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             basketballs.Add(BasketballTypes.SlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> { new Rectangle(0,0,96,96) }, false, "Green Slime Ball"));
             basketballs.Add(BasketballTypes.RedSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Red Slime Ball"));
             basketballs.Add(BasketballTypes.BlueSlimeBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Blue Slime Ball"));
-            basketballs.Add(BasketballTypes.PurpleSkullBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/PurpleSkull"), new List<Rectangle> { new Rectangle(0, 0, 64, 64), new Rectangle(64, 0, 64, 64) }, true, "Purple Skull Ball"));
             basketballs.Add(BasketballTypes.BrokenPlanet, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Broken Planet"));
             basketballs.Add(BasketballTypes.ThatsNoMoon, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!"));
             basketballs.Add(BasketballTypes.EarthDay, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day"));
@@ -75,7 +74,6 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
     {
         RedGlowBall,
         SlimeBall,
-        PurpleSkullBall,
         RedSlimeBall,
         BlueSlimeBall,
         BrokenPlanet,

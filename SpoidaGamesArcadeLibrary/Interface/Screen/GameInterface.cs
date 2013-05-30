@@ -104,16 +104,6 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 {
                     switch (basketballTypes)
                     {
-                        case BasketballTypes.PurpleSkullBall:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
                         case BasketballTypes.RedSlimeBall:
                             if (highScoreManager.BestScore() < 100000)
                             {

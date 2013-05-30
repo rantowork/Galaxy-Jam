@@ -161,13 +161,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Basketballs\PurpleSkull.png">
-      <Name>PurpleSkull</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Audio\Music\AmbientSpace.mp3">
       <Name>AmbientSpace</Name>
       <Importer>Mp3Importer</Importer>
