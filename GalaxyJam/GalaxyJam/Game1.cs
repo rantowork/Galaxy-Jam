@@ -101,7 +101,7 @@ namespace GalaxyJam
         private SparkleEmitter basketballSparkle;
 
         //Game goals
-        private GoalManager goalManager = new GoalManager(100, true, new Rectangle(85, 208, 76, 1));
+        private GoalManager goalManager = new GoalManager(100, true, new Rectangle(85, 208, 76, 4));
         
         private bool highScoresLoaded;
         private StringBuilder highScoresPlayers = new StringBuilder();
@@ -718,6 +718,7 @@ namespace GalaxyJam
                             highScoresScore.Clear();
                             highScoresStreak.Clear();
                             highScoresMultiplier.Clear();
+                            basketballSparkle.CleanUpParticles();
                             gameState = GameStates.GameEnd;
                         }
                     }
@@ -1107,7 +1108,6 @@ namespace GalaxyJam
 
         private void DrawGameEnd()
         {
-            //Draw a full black background.  This helps with rendering the stars in front of it as the cleared viewport renders 3d space and we force it into 2d space with this.
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             GameInterface.DrawGameEndInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
             spriteBatch.End();
@@ -1153,7 +1153,7 @@ namespace GalaxyJam
 
         private Vector2 RandomizePosition()
         {
-            return new Vector2((rand.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (rand.Next(310, 680)) / PhysicalWorld.MetersInPixels);
+            return new Vector2((rand.Next(400, 1200)) / PhysicalWorld.MetersInPixels, (rand.Next(310, 650)) / PhysicalWorld.MetersInPixels);
         }
         #endregion
 
@@ -1191,6 +1191,7 @@ namespace GalaxyJam
             Vector2 shotVector = new Vector2(MathHelper.Clamp((pointingAt.X * distance) / (PhysicalWorld.MetersInPixels * 1.5f), -3, 3), MathHelper.Clamp(((pointingAt.Y * distance) / (PhysicalWorld.MetersInPixels)), -4, 3));
 
             basketballManager.BasketballBody.ApplyLinearImpulse(shotVector);
+            basketballManager.BasketballBody.ApplyAngularImpulse(.2f);
         }
 
         private static double MouseAngle(Vector2 spriteLocation, Vector2 mouseLocation)
@@ -1222,13 +1223,7 @@ namespace GalaxyJam
                         basketballManager.BasketballBody.RestoreCollisionWith(rightRimBody);
                         MediaPlayer.Stop();
                         playerName.Clear();
-                        if (SoundManager.SelectedMusic != null)
-                        {
-                            if (SoundManager.SelectedMusic.IsPaused)
-                            {
-                                SoundManager.PauseBackgroundMusic();
-                            }
-                        }
+                        SoundManager.SelectedMusic.Resume();
                         gameState = GameStates.OptionsScreen;
                     }
                     else if (titleScreenSelection == 1)
@@ -1263,6 +1258,8 @@ namespace GalaxyJam
             {
                 if (character == 27)
                 {
+                    ResetPosition();
+                    basketballSparkle.CleanUpParticles();
                     gameState = GameStates.TitleScreen;
                 }
             }
@@ -1270,6 +1267,8 @@ namespace GalaxyJam
             {
                 if (character == 27)
                 {
+                    ResetPosition();
+                    basketballSparkle.CleanUpParticles();
                     gameState = GameStates.TitleScreen;
                 }
             }
@@ -1351,7 +1350,7 @@ namespace GalaxyJam
                 {
                     if (playerName.Length != 12)
                     {
-                        if (character != 13)
+                        if (character != 13 && character != '\t')
                             playerName.Append(character);
                     }
                 }
@@ -1375,7 +1374,7 @@ namespace GalaxyJam
                 }
                 if (character == 27)
                 {
-                    SoundManager.PauseBackgroundMusic();
+                    SoundManager.SelectedMusic.Pause();
                     MediaPlayer.Resume();
                     gameState = GameStates.TitleScreen;
                     //Exit();
@@ -1388,16 +1387,6 @@ namespace GalaxyJam
                     gameState = GameStates.Paused;
                     SoundManager.MuteSounds();
                     GameTimer.StopGameTimer();
-                }
-
-                if (character == 112)
-                {
-                    SoundManager.PauseBackgroundMusic();
-                }
-
-                if (character == 109)
-                {
-                    SoundManager.MuteSounds();
                 }
             }
             else if (gameState == GameStates.Paused)
@@ -1414,12 +1403,15 @@ namespace GalaxyJam
                     Exit();
                 }
 
-                                if (character == 109)
+                if (character == 109)
                 {
                     ResetPosition();
+                    basketballSparkle.CleanUpParticles();
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
                     soundEffectCounter = 1;
+                    SoundManager.MuteSounds();
+                    SoundManager.SelectedMusic.Resume();
                     gameState = GameStates.OptionsScreen;
                     GameTimer.ResetTimer();
                 }
@@ -1427,6 +1419,7 @@ namespace GalaxyJam
                 if (character == 114)
                 {
                     ResetPosition();
+                    basketballSparkle.CleanUpParticles();
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
                     SoundManager.MuteSounds();
@@ -1445,9 +1438,11 @@ namespace GalaxyJam
                 if (character == 109)
                 {
                     ResetPosition();
+                    basketballSparkle.CleanUpParticles();
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
                     soundEffectCounter = 1;
+                    SoundManager.SelectedMusic.Resume();
                     gameState = GameStates.OptionsScreen;
                     GameTimer.ResetTimer();
                 }
@@ -1455,9 +1450,9 @@ namespace GalaxyJam
                 if (character == 114)
                 {
                     ResetPosition();
+                    basketballSparkle.CleanUpParticles();
                     goalManager.ResetGoalManager();
                     highScoresLoaded = false;
-                    SoundManager.MuteSounds();
                     soundEffectCounter = 1;
                     gameState = GameStates.GetReadyState;
                     GameTimer.ResetTimer();

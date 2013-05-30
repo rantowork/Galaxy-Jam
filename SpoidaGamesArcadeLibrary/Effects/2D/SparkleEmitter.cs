@@ -70,7 +70,12 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
  
             return new Particle(texture, position, velocity, angle, angularVelocity, color, size, ttl);
         }
- 
+
+        public void CleanUpParticles()
+        {
+            particles.Clear();
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (Particle t in particles)
