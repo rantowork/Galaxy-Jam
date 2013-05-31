@@ -1,6 +1,4 @@
 Content\Textures\LineSprite.xnb
-Content\Textures\Backboard2.xnb
-Content\Textures\Backboard2Glow.xnb
 Content\Textures\Rim2.xnb
 Content\Textures\Rim2Glow.xnb
 Content\Textures\2x2SolidStar.xnb
@@ -24,7 +22,6 @@ Content\Audio\SoundEffects\Go.xnb
 Content\Audio\SoundEffects\Countdown.xnb
 Content\Audio\SoundEffects\Thud.xnb
 Content\Fonts\PixelFont.xnb
-Content\Audio\Music\AmbientSpace.xnb
 Content\Textures\Basketballs\SlimeBall.xnb
 Content\Textures\Basketballs\BlueSlimeBall.xnb
 Content\Textures\Basketballs\RedSlimeBall.xnb
@@ -36,11 +33,12 @@ Content\Textures\Basketballs\CuteInPink.xnb
 Content\Textures\Basketballs\Locked.xnb
 Content\Textures\Interface\DownIndicator.xnb
 Content\Textures\Interface\UpIndicator.xnb
-Content\Textures\RedOrangeBoard.xnb
-Content\Textures\RedOrangeBoardContact.xnb
 Content\Textures\RedOrangeBoard2.xnb
 Content\Textures\RedOrangeBoardContact2.xnb
-Content\Audio\Music\AmbientSpace.wma
+Content\Audio\Music\IntroAmbientCreativeZero.xnb
+Content\Audio\SoundEffects\wub.xnb
+Content\Audio\SoundEffects\laserboom.xnb
+Content\Audio\Music\IntroAmbientCreativeZero.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
 Content\Audio\Sound Bank.xsb

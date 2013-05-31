@@ -94,6 +94,8 @@ namespace GalaxyJam
         private SoundEffect collisionSoundEffect;
         private SoundEffect countdownGoSoundEffect;
         private SoundEffect countdownBeep;
+        private SoundEffect streakWub;
+        private SoundEffect laserBoom;
         private Song ambientSpaceSong;
         private SoundManager soundManager;
 
@@ -368,7 +370,9 @@ namespace GalaxyJam
             collisionSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Thud");
             countdownBeep = Content.Load<SoundEffect>(@"Audio/SoundEffects/Countdown");
             countdownGoSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Go");
-            ambientSpaceSong = Content.Load<Song>(@"Audio/Music/AmbientSpace");
+            streakWub = Content.Load<SoundEffect>(@"Audio/SoundEffects/wub");
+            laserBoom = Content.Load<SoundEffect>(@"Audio/SoundEffects/laserboom");
+            ambientSpaceSong = Content.Load<Song>(@"Audio/Music/IntroAmbientCreativeZero");
             MediaPlayer.Play(ambientSpaceSong);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = (float)gameSettings.MusicVolume/10;
@@ -590,6 +594,11 @@ namespace GalaxyJam
                     }
                     cachedUpDownKeyboardState = input.GetKeyboard().GetState();
                     
+                    if (playerName.Length >= 3)
+                    {
+                        nameToShort = false;
+                    }
+
                     break;
 
                 case GameStates.GetReadyState:
@@ -674,7 +683,7 @@ namespace GalaxyJam
 
                     Vector2 basketballCenter = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
-                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, basketballSparkle, starField, gameSettings);
+                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, streakWub, laserBoom, basketballSparkle, starField, gameSettings);
 
                     if (backboardCollisionHappened)
                     {
@@ -1223,6 +1232,7 @@ namespace GalaxyJam
                         basketballManager.BasketballBody.RestoreCollisionWith(rightRimBody);
                         MediaPlayer.Stop();
                         playerName.Clear();
+                        nameToShort = false;
                         SoundManager.SelectedMusic.Resume();
                         gameState = GameStates.OptionsScreen;
                     }

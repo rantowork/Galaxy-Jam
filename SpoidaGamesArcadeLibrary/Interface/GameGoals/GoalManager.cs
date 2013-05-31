@@ -159,24 +159,27 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         /// <summary>
         /// Observes the game loop for triggers that indicate a goal has scored and sets the appropriate flags
         /// </summary>
-        public void UpdateGoalScored(GameTime gameTime, Camera camera, Rectangle shotCenterRectangle, SoundEffect goalScoredSoundEffect, SparkleEmitter sparkleEmitter, Starfield starfield, GameSettings gameSettings)
+        public void UpdateGoalScored(GameTime gameTime, Camera camera, Rectangle shotCenterRectangle, SoundEffect goalScoredSoundEffect, SoundEffect streakObtained, SoundEffect laserBoom, SparkleEmitter sparkleEmitter, Starfield starfield, GameSettings gameSettings)
         {
             if (IsGoalScored(shotCenterRectangle) && !GoalScored)
             {
                 GoalScored = true;
 
-                SoundManager.PlaySoundEffect(goalScoredSoundEffect, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
-
-                if (!BackboardHit && !RimHit)
-                {
-                    ScoreMulitplier += 2;
-                    DrawSwish = true;
-                }
-
                 if (!BackboardHit && RimHit)
                 {
                     ScoreMulitplier++;
                     DrawCleanShot = true;
+                    SoundManager.PlaySoundEffect(goalScoredSoundEffect, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
+                }
+                else if (!BackboardHit && !RimHit)
+                {
+                    ScoreMulitplier += 2;
+                    DrawSwish = true;
+                    SoundManager.PlaySoundEffect(laserBoom, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
+                }
+                else
+                {
+                    SoundManager.PlaySoundEffect(goalScoredSoundEffect, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
                 }
 
                 //Adds bonus multiplier based on streak
@@ -203,6 +206,10 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 {
                     TopStreak = streak;
                 }
+                if (Streak == 3 || Streak == 6 || Streak == 9 || Streak == 15)
+                {
+                    SoundManager.PlaySoundEffect(streakObtained, (float)gameSettings.SoundEffectVolume / 10, 0f, 0f);
+                }
                 AddPointsForScoredGoal();
 
                 camera.Shaking = true;
@@ -222,6 +229,11 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             if (Streak >= 9)
             {
                 DrawStreakMessage = "ULTRA Streak!";
+            }
+
+            if (Streak >= 15)
+            {
+                DrawStreakMessage = "INHUMAN STREAK!";
             }
 
             if (Streak == 0)
@@ -252,14 +264,20 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             }
             else if (Streak >= 9)
             {
-                sparkleEmitter.Colors = new List<Color> {Color.Thistle, Color.BlueViolet, Color.RoyalBlue};
+                sparkleEmitter.Colors = new List<Color> { Color.DarkRed, Color.Red, Color.IndianRed };
+                sparkleEmitter.ParticleCount = 150;
+                starfield.StarSpeedModifier = 12;
+            }
+            else if (Streak >= 15)
+            {
+                sparkleEmitter.Colors = new List<Color> { Color.Thistle, Color.BlueViolet, Color.RoyalBlue };
                 sparkleEmitter.ParticleCount = 150;
                 starfield.StarSpeedModifier = 12;
             }
             else
             {
                 sparkleEmitter.Colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
-                sparkleEmitter.ParticleCount = 50;
+                sparkleEmitter.ParticleCount = 150;
                 starfield.StarSpeedModifier = 1;
             }
         }
@@ -273,6 +291,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         {
             gameScore = 0;
             streak = 0;
+            topStreak = 0;
             scoreMulitplier = 1;
             goalScored = false;
             scoredOnShot = false;
