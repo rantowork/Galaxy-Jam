@@ -56,6 +56,10 @@ namespace GalaxyJam
         private Texture2D backboard2Glow;
         private Texture2D backboard3;
         private Texture2D backboard3Glow;
+        private Texture2D backboard4;
+        private Texture2D backboard4Glow;
+        private Texture2D backboard5;
+        private Texture2D backboard5Glow;
         private Texture2D rimSprite;
         private Texture2D rimSpriteGlow;
         private Texture2D galaxyJamLogo;
@@ -352,6 +356,10 @@ namespace GalaxyJam
             backboard2Glow = Content.Load<Texture2D>(@"Textures/PurplePlumBackboardContact2");
             backboard3 = Content.Load<Texture2D>(@"Textures/TealLimeGreen2");
             backboard3Glow = Content.Load<Texture2D>(@"Textures/TealLimeGreenContact2");
+            backboard4 = Content.Load<Texture2D>(@"Textures/DarkRedRed2");
+            backboard4Glow = Content.Load<Texture2D>(@"Textures/DarkRedRedContact2");
+            backboard5 = Content.Load<Texture2D>(@"Textures/RoyalBlueVioletBackBoard2");
+            backboard5Glow = Content.Load<Texture2D>(@"Textures/RoyalBlueVioletContact2");
             rimSprite = Content.Load<Texture2D>(@"Textures/Rim2");
             rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Rim2Glow");
             lineSprite = Content.Load<Texture2D>(@"Textures/LineSprite");
@@ -1092,6 +1100,18 @@ namespace GalaxyJam
             else if (goalManager.Streak >= 6 && goalManager.Streak < 9)
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard3Glow : backboard3, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+            }
+            else if (goalManager.Streak >= 9 && goalManager.Streak < 15)
+            {
+                spriteBatch.Draw(backboardCollisionHappened ? backboard4Glow : backboard4, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+            }
+            else if (goalManager.Streak >= 15)
+            {
+                spriteBatch.Draw(backboardCollisionHappened ? backboard5Glow : backboard5, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+            }
+            else
+            {
+                spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
             }
             //draw left rim
             spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
