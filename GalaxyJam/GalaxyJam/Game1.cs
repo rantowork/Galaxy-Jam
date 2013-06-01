@@ -367,8 +367,8 @@ namespace GalaxyJam
             backboard5Glow = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContact2");
             rimSprite = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
             rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
-            leftRim1 = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
-            leftRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
+            leftRim1 = Content.Load<Texture2D>(@"Textures/Backboard/RimBaseRedOrange");
+            leftRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/RimBaseRedOrangeContact");
             rightRim1 = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
             rightRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
 
@@ -862,7 +862,7 @@ namespace GalaxyJam
                     spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
                     
                     //draw backboard
-                    spriteBatch.Draw(backboardCollisionHappened ? backboard3Glow : backboard3, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
                     //draw left rim
                     spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
                     //draw right rim
@@ -1086,7 +1086,7 @@ namespace GalaxyJam
             backboardBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(64f / PhysicalWorld.MetersInPixels, 116f / PhysicalWorld.MetersInPixels), 6f, 140f, 1f, .3f, .1f);
             backboardBody.OnCollision += BackboardCollision;
 
-            leftRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(80f / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, .1f);
+            leftRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(80f / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 22f, 56f, 1f, .3f, .1f);
             leftRimBody.OnCollision += LeftRimCollision;
 
             rightRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(166 / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, 1f);
@@ -1100,7 +1100,7 @@ namespace GalaxyJam
             Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
             Vector2 backboardOrigin = new Vector2(backboard1.Width, backboard1.Height)/2;
 
-            Vector2 leftRimPosition = leftRimBody.Position * PhysicalWorld.MetersInPixels;
+            Vector2 leftRimPosition = (leftRimBody.Position*PhysicalWorld.MetersInPixels)/2;
             Vector2 leftRimOrigin = new Vector2(leftRim1.Width, leftRim1Glow.Height)/2;
 
             Vector2 rightRimPosition = rightRimBody.Position * PhysicalWorld.MetersInPixels;
@@ -1140,7 +1140,8 @@ namespace GalaxyJam
                 spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
             }
             //draw left rim
-            spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+            //spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(leftRim1, new Vector2(50, 176), null, Color.White, 0f, rightRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
             //draw right rim
             spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
 

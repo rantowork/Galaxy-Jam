@@ -351,20 +351,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Backboard\TestLeftRim1.png">
-      <Name>TestLeftRim1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Backboard\TestLeftRim1Glow.png">
-      <Name>TestLeftRim1Glow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Backboard\RimBaseRedOrange.png">
       <Name>RimBaseRedOrange</Name>
       <Importer>TextureImporter</Importer>
@@ -384,13 +370,6 @@
     </Compile>
     <Compile Include="Textures\Backboard\RimBaseRedOrangeFlip.png">
       <Name>RimBaseRedOrangeFlip</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Backboard\TestRim.png">
-      <Name>TestRim</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
