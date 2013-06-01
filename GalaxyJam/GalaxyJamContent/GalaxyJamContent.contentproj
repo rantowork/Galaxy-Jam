@@ -63,12 +63,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Rim2.png">
+    <Compile Include="Textures\Backboard\Rim2.png">
       <Name>Rim2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Rim2Glow.png">
+    <Compile Include="Textures\Backboard\Rim2Glow.png">
       <Name>Rim2Glow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -199,13 +199,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\OptionsScreenPrototypeWorking.png">
-      <Name>OptionsScreenPrototypeWorking</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Basketballs\SlimeBall.png">
       <Name>SlimeBall</Name>
       <Importer>TextureImporter</Importer>
@@ -279,14 +272,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\RedOrangeBoard2.png">
+    <Compile Include="Textures\Backboard\RedOrangeBoard2.png">
       <Name>RedOrangeBoard2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\RedOrangeBoardContact2.png">
+    <Compile Include="Textures\Backboard\RedOrangeBoardContact2.png">
       <Name>RedOrangeBoardContact2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -314,45 +307,90 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\PurplePlumBackboard2.png">
+    <Compile Include="Textures\Backboard\PurplePlumBackboard2.png">
       <Name>PurplePlumBackboard2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\PurplePlumBackboardContact2.png">
+    <Compile Include="Textures\Backboard\PurplePlumBackboardContact2.png">
       <Name>PurplePlumBackboardContact2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\TealLimeGreen2.png">
+    <Compile Include="Textures\Backboard\TealLimeGreen2.png">
       <Name>TealLimeGreen2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\TealLimeGreenContact2.png">
+    <Compile Include="Textures\Backboard\TealLimeGreenContact2.png">
       <Name>TealLimeGreenContact2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\DarkRedRed2.png">
+    <Compile Include="Textures\Backboard\DarkRedRed2.png">
       <Name>DarkRedRed2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\DarkRedRedContact2.png">
+    <Compile Include="Textures\Backboard\DarkRedRedContact2.png">
       <Name>DarkRedRedContact2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\RoyalBlueVioletBackBoard2.png">
+    <Compile Include="Textures\Backboard\RoyalBlueVioletBackBoard2.png">
       <Name>RoyalBlueVioletBackBoard2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\RoyalBlueVioletContact2.png">
+    <Compile Include="Textures\Backboard\RoyalBlueVioletContact2.png">
       <Name>RoyalBlueVioletContact2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\TestLeftRim1.png">
+      <Name>TestLeftRim1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\TestLeftRim1Glow.png">
+      <Name>TestLeftRim1Glow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\RimBaseRedOrange.png">
+      <Name>RimBaseRedOrange</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\RimBaseRedOrangeContact.png">
+      <Name>RimBaseRedOrangeContact</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\RimBaseRedOrangeContactFlip.png">
+      <Name>RimBaseRedOrangeContactFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\RimBaseRedOrangeFlip.png">
+      <Name>RimBaseRedOrangeFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\TestRim.png">
+      <Name>TestRim</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

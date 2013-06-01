@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web.Script.Serialization;
 using FarseerPhysics.Dynamics;
@@ -62,6 +61,10 @@ namespace GalaxyJam
         private Texture2D backboard5Glow;
         private Texture2D rimSprite;
         private Texture2D rimSpriteGlow;
+        private Texture2D leftRim1;
+        private Texture2D leftRim1Glow;
+        private Texture2D rightRim1;
+        private Texture2D rightRim1Glow;
         private Texture2D galaxyJamLogo;
         private Texture2D twopxsolidstar;
         private Texture2D fourpxblurstar;
@@ -305,7 +308,6 @@ namespace GalaxyJam
             audioEngine = new AudioEngine("Content\\Audio\\GalaxyJamAudio.xgs");
             waveBank = new WaveBank(audioEngine, "Content\\Audio\\Wave Bank.xwb");
             soundBank = new SoundBank(audioEngine, "Content\\Audio\\Sound Bank.xsb");
-
             base.Initialize();
         }
 
@@ -349,24 +351,39 @@ namespace GalaxyJam
 
         private void LoadTextures()
         {
+            //Title Screen
             galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
-            backboard1 = Content.Load<Texture2D>(@"Textures/RedOrangeBoard2");
-            backboard1Glow = Content.Load<Texture2D>(@"Textures/RedOrangeBoardContact2");
-            backboard2 = Content.Load<Texture2D>(@"Textures/PurplePlumBackboard2");
-            backboard2Glow = Content.Load<Texture2D>(@"Textures/PurplePlumBackboardContact2");
-            backboard3 = Content.Load<Texture2D>(@"Textures/TealLimeGreen2");
-            backboard3Glow = Content.Load<Texture2D>(@"Textures/TealLimeGreenContact2");
-            backboard4 = Content.Load<Texture2D>(@"Textures/DarkRedRed2");
-            backboard4Glow = Content.Load<Texture2D>(@"Textures/DarkRedRedContact2");
-            backboard5 = Content.Load<Texture2D>(@"Textures/RoyalBlueVioletBackBoard2");
-            backboard5Glow = Content.Load<Texture2D>(@"Textures/RoyalBlueVioletContact2");
-            rimSprite = Content.Load<Texture2D>(@"Textures/Rim2");
-            rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Rim2Glow");
+
+            //Backboards
+            backboard1 = Content.Load<Texture2D>(@"Textures/Backboard/RedOrangeBoard2");
+            backboard1Glow = Content.Load<Texture2D>(@"Textures/Backboard/RedOrangeBoardContact2");
+            backboard2 = Content.Load<Texture2D>(@"Textures/Backboard/PurplePlumBackboard2");
+            backboard2Glow = Content.Load<Texture2D>(@"Textures/Backboard/PurplePlumBackboardContact2");
+            backboard3 = Content.Load<Texture2D>(@"Textures/Backboard/TealLimeGreen2");
+            backboard3Glow = Content.Load<Texture2D>(@"Textures/Backboard/TealLimeGreenContact2");
+            backboard4 = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRed2");
+            backboard4Glow = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRedContact2");
+            backboard5 = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletBackBoard2");
+            backboard5Glow = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContact2");
+            rimSprite = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
+            rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
+            leftRim1 = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
+            leftRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
+            rightRim1 = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
+            rightRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
+
+            //Empty Sprite 1px
             lineSprite = Content.Load<Texture2D>(@"Textures/LineSprite");
+
+            //Stars
             twopxsolidstar = Content.Load<Texture2D>(@"Textures/2x2SolidStar");
             fourpxblurstar = Content.Load<Texture2D>(@"Textures/4x4BlurStar");
             onepxsolidstar = Content.Load<Texture2D>(@"Textures/1x1SolidStar");
+
+            //Keyboard Curso
             cursor = Content.Load<Texture2D>(@"Textures/Cursor");
+
+            //Up Down Indicators
             downIndicator = Content.Load<Texture2D>(@"Textures/Interface/DownIndicator");
             upIndicator = Content.Load<Texture2D>(@"Textures/Interface/UpIndicator");
         }
@@ -392,6 +409,8 @@ namespace GalaxyJam
             MediaPlayer.Play(ambientSpaceSong);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = (float)gameSettings.MusicVolume/10;
+            AudioCategory category = audioEngine.GetCategory("Music");
+            category.SetVolume((float)gameSettings.MusicVolume/10);
             soundManager.SelectMusic(SongTypes.BouncyLoop1);
         }
 
@@ -402,18 +421,6 @@ namespace GalaxyJam
             starField = new Starfield(1280, 720, 1000, starTextures);
             starField.StarSpeedModifier = 1;
             basketballSparkle = new SparkleEmitter(new List<Texture2D> { twopxsolidstar }, new Vector2(-40, -40));
-        }
-
-        private void LoadPhysicalWorldEntities()
-        {
-            backboardBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(64f / PhysicalWorld.MetersInPixels, 116f / PhysicalWorld.MetersInPixels), 6f, 140f, 1f, .3f, .1f);
-            backboardBody.OnCollision += BackboardCollision;
-
-            leftRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(80f / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, .1f);
-            leftRimBody.OnCollision += LeftRimCollision;
-
-            rightRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(166 / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, 1f);
-            rightRimBody.OnCollision += RightRimCollision;
         }
 
         /// <summary>
@@ -996,6 +1003,13 @@ namespace GalaxyJam
                     spriteBatch.DrawString(pixel, "Save", new Vector2(1280/2, 450), Color.White, 0f, saveOrigin, 1.0f,SpriteEffects.None, 1.0f);
                     spriteBatch.DrawString(pixel, "Back", new Vector2(1280/2, 475), Color.White, 0f, saveOrigin, 1.0f, SpriteEffects.None, 1.0f);
 
+                    if (displaySettingsSavedMessage)
+                    {
+                        const string savedText = "Settings Saved";
+                        Vector2 savedTextOrigin = pixel.MeasureString(savedText)/2;
+                        spriteBatch.DrawString(pixel, savedText, new Vector2(1280/2, 680), Color.Red, 0f, savedTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    }
+
                     spriteBatch.End();
                     break;
                 case GameStates.OptionsScreen:
@@ -1067,18 +1081,30 @@ namespace GalaxyJam
             base.Draw(gameTime);
         }
 
+        private void LoadPhysicalWorldEntities()
+        {
+            backboardBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(64f / PhysicalWorld.MetersInPixels, 116f / PhysicalWorld.MetersInPixels), 6f, 140f, 1f, .3f, .1f);
+            backboardBody.OnCollision += BackboardCollision;
+
+            leftRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(80f / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, .1f);
+            leftRimBody.OnCollision += LeftRimCollision;
+
+            rightRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(166 / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, 1f);
+            rightRimBody.OnCollision += RightRimCollision;
+        }
+
         private const double EFFECT_TIME = 1500;
         private double effectTimer;
         private void DrawGameWorld(GameTime gameTime)
         {
             Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
-            Vector2 backboardOrigin = new Vector2(backboard1.Width / 2f, backboard1.Height / 2f);
+            Vector2 backboardOrigin = new Vector2(backboard1.Width, backboard1.Height)/2;
 
             Vector2 leftRimPosition = leftRimBody.Position * PhysicalWorld.MetersInPixels;
-            Vector2 leftRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+            Vector2 leftRimOrigin = new Vector2(leftRim1.Width, leftRim1Glow.Height)/2;
 
             Vector2 rightRimPosition = rightRimBody.Position * PhysicalWorld.MetersInPixels;
-            Vector2 rightRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+            Vector2 rightRimOrigin = new Vector2(rightRim1.Width, rightRim1.Height)/2;
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             basketballSparkle.Draw(spriteBatch);
@@ -1114,9 +1140,9 @@ namespace GalaxyJam
                 spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
             }
             //draw left rim
-            spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
             //draw right rim
-            spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
 
             GameInterface.DrawPlayingInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
 
@@ -1368,6 +1394,9 @@ namespace GalaxyJam
                             {
                                 MakeGameWindowed();
                             }
+
+                            AudioCategory category = audioEngine.GetCategory("Music");
+                            category.SetVolume(gameSettings.MusicVolume / 10f);
 
                             displaySettingsSavedMessage = true;
                             previousDisplayMode = mode;
