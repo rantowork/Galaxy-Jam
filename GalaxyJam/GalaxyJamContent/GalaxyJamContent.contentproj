@@ -63,18 +63,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Backboard\Rim2.png">
-      <Name>Rim2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Backboard\Rim2Glow.png">
-      <Name>Rim2Glow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\PixelFont.spritefont">
       <Name>PixelFont</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -370,6 +358,101 @@
     </Compile>
     <Compile Include="Textures\Backboard\RimBaseRedOrangeFlip.png">
       <Name>RimBaseRedOrangeFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Basketballs\MagmaBall.png">
+      <Name>MagmaBall</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\PurplePlumContactFlip.png">
+      <Name>PurplePlumContactFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\PurplePlumFlip.png">
+      <Name>PurplePlumFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\PurplePlumRegular.png">
+      <Name>PurplePlumRegular</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\PurplePlumRegularContact.png">
+      <Name>PurplePlumRegularContact</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\GreenLime.png">
+      <Name>GreenLime</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\GreenLimeConract.png">
+      <Name>GreenLimeConract</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\GreenLimeConractFlip.png">
+      <Name>GreenLimeConractFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\GreenLimeFlip.png">
+      <Name>GreenLimeFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\DarkRedRed3.png">
+      <Name>DarkRedRed3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\DarkRedRedContact3.png">
+      <Name>DarkRedRedContact3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\DarkRedRedFlip3.png">
+      <Name>DarkRedRedFlip3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\DarkRedRedFlipContact3.png">
+      <Name>DarkRedRedFlipContact3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Backboard\RoyalBlueViolet.png">
+      <Name>RoyalBlueViolet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\RoyalBlueVioletContact.png">
+      <Name>RoyalBlueVioletContact</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\RoyalBlueVioletContactFlip.png">
+      <Name>RoyalBlueVioletContactFlip</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Backboard\RoyalBlueVioletFlip.png">
+      <Name>RoyalBlueVioletFlip</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

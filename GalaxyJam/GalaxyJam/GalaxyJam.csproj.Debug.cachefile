@@ -33,8 +33,6 @@ Content\Textures\Interface\UpIndicator.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.xnb
 Content\Audio\SoundEffects\wub.xnb
 Content\Audio\SoundEffects\laserboom.xnb
-Content\Textures\Backboard\Rim2.xnb
-Content\Textures\Backboard\Rim2Glow.xnb
 Content\Textures\Backboard\RedOrangeBoard2.xnb
 Content\Textures\Backboard\RedOrangeBoardContact2.xnb
 Content\Textures\Backboard\PurplePlumBackboard2.xnb
@@ -49,6 +47,23 @@ Content\Textures\Backboard\RimBaseRedOrange.xnb
 Content\Textures\Backboard\RimBaseRedOrangeContact.xnb
 Content\Textures\Backboard\RimBaseRedOrangeContactFlip.xnb
 Content\Textures\Backboard\RimBaseRedOrangeFlip.xnb
+Content\Textures\Basketballs\MagmaBall.xnb
+Content\Textures\Backboard\PurplePlumContactFlip.xnb
+Content\Textures\Backboard\PurplePlumFlip.xnb
+Content\Textures\Backboard\PurplePlumRegular.xnb
+Content\Textures\Backboard\PurplePlumRegularContact.xnb
+Content\Textures\Backboard\GreenLime.xnb
+Content\Textures\Backboard\GreenLimeConract.xnb
+Content\Textures\Backboard\GreenLimeConractFlip.xnb
+Content\Textures\Backboard\GreenLimeFlip.xnb
+Content\Textures\Backboard\DarkRedRed3.xnb
+Content\Textures\Backboard\DarkRedRedContact3.xnb
+Content\Textures\Backboard\DarkRedRedFlip3.xnb
+Content\Textures\Backboard\DarkRedRedFlipContact3.xnb
+Content\Textures\Backboard\RoyalBlueViolet.xnb
+Content\Textures\Backboard\RoyalBlueVioletContact.xnb
+Content\Textures\Backboard\RoyalBlueVioletContactFlip.xnb
+Content\Textures\Backboard\RoyalBlueVioletFlip.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb

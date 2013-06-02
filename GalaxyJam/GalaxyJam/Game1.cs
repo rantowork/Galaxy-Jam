@@ -59,12 +59,26 @@ namespace GalaxyJam
         private Texture2D backboard4Glow;
         private Texture2D backboard5;
         private Texture2D backboard5Glow;
-        private Texture2D rimSprite;
-        private Texture2D rimSpriteGlow;
         private Texture2D leftRim1;
         private Texture2D leftRim1Glow;
         private Texture2D rightRim1;
         private Texture2D rightRim1Glow;
+        private Texture2D leftRim2;
+        private Texture2D leftRim2Glow;
+        private Texture2D rightRim2;
+        private Texture2D rightRim2Glow;
+        private Texture2D leftRim3;
+        private Texture2D leftRim3Glow;
+        private Texture2D rightRim3;
+        private Texture2D rightRim3Glow;
+        private Texture2D leftRim4;
+        private Texture2D leftRim4Glow;
+        private Texture2D rightRim4;
+        private Texture2D rightRim4Glow;
+        private Texture2D leftRim5;
+        private Texture2D leftRim5Glow;
+        private Texture2D rightRim5;
+        private Texture2D rightRim5Glow;
         private Texture2D galaxyJamLogo;
         private Texture2D twopxsolidstar;
         private Texture2D fourpxblurstar;
@@ -365,12 +379,26 @@ namespace GalaxyJam
             backboard4Glow = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRedContact2");
             backboard5 = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletBackBoard2");
             backboard5Glow = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContact2");
-            rimSprite = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
-            rimSpriteGlow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
             leftRim1 = Content.Load<Texture2D>(@"Textures/Backboard/RimBaseRedOrange");
             leftRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/RimBaseRedOrangeContact");
-            rightRim1 = Content.Load<Texture2D>(@"Textures/Backboard/Rim2");
-            rightRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/Rim2Glow");
+            rightRim1 = Content.Load<Texture2D>(@"Textures/Backboard/RimBaseRedOrangeFlip");
+            rightRim1Glow = Content.Load<Texture2D>(@"Textures/Backboard/RimBaseRedOrangeContactFlip");
+            leftRim2 = Content.Load<Texture2D>(@"Textures/Backboard/PurplePlumRegular"); ;
+            leftRim2Glow = Content.Load<Texture2D>(@"Textures/Backboard/PurplePlumRegularContact"); ;
+            rightRim2 = Content.Load<Texture2D>(@"Textures/Backboard/PurplePlumFlip"); ;
+            rightRim2Glow = Content.Load<Texture2D>(@"Textures/Backboard/PurplePlumContactFlip"); ;
+            leftRim3 = Content.Load<Texture2D>(@"Textures/Backboard/GreenLime"); ;
+            leftRim3Glow = Content.Load<Texture2D>(@"Textures/Backboard/GreenLimeConract"); ;
+            rightRim3 = Content.Load<Texture2D>(@"Textures/Backboard/GreenLimeFlip"); ;
+            rightRim3Glow = Content.Load<Texture2D>(@"Textures/Backboard/GreenLimeConractFlip"); ;
+            leftRim4 = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRed3"); ;
+            leftRim4Glow = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRedContact3"); ;
+            rightRim4 = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRedFlip3"); ;
+            rightRim4Glow = Content.Load<Texture2D>(@"Textures/Backboard/DarkRedRedFlipContact3"); ;
+            leftRim5 = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueViolet"); ;
+            leftRim5Glow = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContact"); ;
+            rightRim5 = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletFlip"); ;
+            rightRim5Glow = Content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContactFlip"); ;
 
             //Empty Sprite 1px
             lineSprite = Content.Load<Texture2D>(@"Textures/LineSprite");
@@ -845,12 +873,9 @@ namespace GalaxyJam
 
                     Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
                     Vector2 backboardOrigin = new Vector2(backboard1.Width / 2f, backboard1.Height / 2f);
-
-                    Vector2 leftRimPosition = leftRimBody.Position * PhysicalWorld.MetersInPixels;
-                    Vector2 leftRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
-
-                    Vector2 rightRimPosition = rightRimBody.Position * PhysicalWorld.MetersInPixels;
-                    Vector2 rightRimOrigin = new Vector2(rimSprite.Width / 2f, rimSprite.Height / 2f);
+                    
+                    Vector2 leftRimOrigin = new Vector2(leftRim1.Width, leftRim1.Height)/2;
+                    Vector2 rightRimOrigin2 = new Vector2(rightRim1.Width, rightRim1.Height)/2;
 
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     spriteBatch.DrawString(pixel, escapePractice, new Vector2(10, 10), Color.White);
@@ -864,9 +889,9 @@ namespace GalaxyJam
                     //draw backboard
                     spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
                     //draw left rim
-                    spriteBatch.Draw(leftRimCollisionHappened ? rimSpriteGlow : rimSprite, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     //draw right rim
-                    spriteBatch.Draw(rightRimCollisionHappened ? rimSpriteGlow : rimSprite, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
                     spriteBatch.End();
 
                     break;
@@ -1086,10 +1111,10 @@ namespace GalaxyJam
             backboardBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(64f / PhysicalWorld.MetersInPixels, 116f / PhysicalWorld.MetersInPixels), 6f, 140f, 1f, .3f, .1f);
             backboardBody.OnCollision += BackboardCollision;
 
-            leftRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(80f / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 22f, 56f, 1f, .3f, .1f);
+            leftRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(80f / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, .1f);
             leftRimBody.OnCollision += LeftRimCollision;
 
-            rightRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(166 / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 10f, 16f, 1f, .3f, 1f);
+            rightRimBody = PhysicalWorld.CreateStaticRectangleBody(new Vector2(188 / PhysicalWorld.MetersInPixels, 206 / PhysicalWorld.MetersInPixels), 54, 16f, 1f, .3f, 1f);
             rightRimBody.OnCollision += RightRimCollision;
         }
 
@@ -1100,11 +1125,8 @@ namespace GalaxyJam
             Vector2 backboardPosition = backboardBody.Position * PhysicalWorld.MetersInPixels;
             Vector2 backboardOrigin = new Vector2(backboard1.Width, backboard1.Height)/2;
 
-            Vector2 leftRimPosition = (leftRimBody.Position*PhysicalWorld.MetersInPixels)/2;
-            Vector2 leftRimOrigin = new Vector2(leftRim1.Width, leftRim1Glow.Height)/2;
-
-            Vector2 rightRimPosition = rightRimBody.Position * PhysicalWorld.MetersInPixels;
-            Vector2 rightRimOrigin = new Vector2(rightRim1.Width, rightRim1.Height)/2;
+            Vector2 leftRimOrigin = new Vector2(leftRim1.Width, leftRim1.Height) / 2;
+            Vector2 rightRimOrigin2 = new Vector2(rightRim1.Width, rightRim1.Height) / 2;
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             basketballSparkle.Draw(spriteBatch);
@@ -1118,32 +1140,39 @@ namespace GalaxyJam
             if (goalManager.Streak < 3)
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
             else if (goalManager.Streak >= 3 && goalManager.Streak < 6)
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard2Glow : backboard2, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(leftRimCollisionHappened ? leftRim2Glow : leftRim2, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(rightRimCollisionHappened ? rightRim2Glow : rightRim2, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
             else if (goalManager.Streak >= 6 && goalManager.Streak < 9)
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard3Glow : backboard3, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(leftRimCollisionHappened ? leftRim3Glow : leftRim3, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(rightRimCollisionHappened ? rightRim3Glow : rightRim3, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
             else if (goalManager.Streak >= 9 && goalManager.Streak < 15)
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard4Glow : backboard4, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(leftRimCollisionHappened ? leftRim4Glow : leftRim4, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(rightRimCollisionHappened ? rightRim4Glow : rightRim4, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
             else if (goalManager.Streak >= 15)
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard5Glow : backboard5, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(leftRimCollisionHappened ? leftRim5Glow : leftRim5, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(rightRimCollisionHappened ? rightRim5Glow : rightRim5, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
             else
             {
                 spriteBatch.Draw(backboardCollisionHappened ? backboard1Glow : backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, new Vector2(54, 208), null, Color.White, 0f, leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            //draw left rim
-            //spriteBatch.Draw(leftRimCollisionHappened ? leftRim1Glow : leftRim1, leftRimPosition, null, Color.White, 0f, leftRimOrigin, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(leftRim1, new Vector2(50, 176), null, Color.White, 0f, rightRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
-            //draw right rim
-            spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, rightRimPosition, null, Color.White, 0f, rightRimOrigin, 1f, SpriteEffects.None, 0f);
 
             GameInterface.DrawPlayingInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
 

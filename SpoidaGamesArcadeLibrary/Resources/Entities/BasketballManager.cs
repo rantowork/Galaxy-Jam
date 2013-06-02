@@ -62,6 +62,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             basketballs.Add(BasketballTypes.ThatsNoMoon, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!"));
             basketballs.Add(BasketballTypes.EarthDay, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day"));
             basketballs.Add(BasketballTypes.CuteInPink, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Cute In Pink"));
+            basketballs.Add(BasketballTypes.MagmaBall, new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> {new Rectangle(0,0,64,64)}, false, "Magma Ball"));
         }
 
         private static void LoadLockedBasketballs(ContentManager content)
@@ -80,5 +81,6 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         ThatsNoMoon,
         EarthDay,
         CuteInPink,
+        MagmaBall
     }
 }

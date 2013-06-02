@@ -166,6 +166,16 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                                 DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
                             }
                             break;
+                        case BasketballTypes.MagmaBall:
+                            if (highScoreManager.BestScore() < 100000)
+                            {
+                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
+                            }
+                            else
+                            {
+                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
+                            }
+                            break;
                         default:
                             DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
                             break;
