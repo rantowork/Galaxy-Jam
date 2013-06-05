@@ -17,7 +17,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         
         public static Body CreateStaticRectangleBody(Vector2 position, float height, float width, float density, float restitution, float friction)
         {
-            Body staticBody = BodyFactory.CreateRectangle(world, height / MetersInPixels, width / MetersInPixels, density, position);
+            Body staticBody = BodyFactory.CreateRectangle(world, width / MetersInPixels, height / MetersInPixels, density, position);
             staticBody.BodyType = BodyType.Static;
             staticBody.Restitution = restitution;
             staticBody.Friction = friction;

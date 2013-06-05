@@ -7,7 +7,6 @@ Content\Textures\Cursor.xnb
 Content\Fonts\PixelScoreGlow.xnb
 Content\Textures\GalaxyJamConcept.xnb
 Content\Fonts\GiantRedPixelFont.xnb
-Content\Audio\SoundEffects\BasketballShot.xnb
 Content\Audio\SoundEffects\BasketScored.xnb
 Content\Audio\Music\BouncyLoop1.xnb
 Content\Audio\Music\SpaceLoop1.xnb
@@ -32,7 +31,6 @@ Content\Textures\Interface\DownIndicator.xnb
 Content\Textures\Interface\UpIndicator.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.xnb
 Content\Audio\SoundEffects\wub.xnb
-Content\Audio\SoundEffects\laserboom.xnb
 Content\Textures\Backboard\RedOrangeBoard2.xnb
 Content\Textures\Backboard\RedOrangeBoardContact2.xnb
 Content\Textures\Backboard\PurplePlumBackboard2.xnb
@@ -64,6 +62,8 @@ Content\Textures\Backboard\RoyalBlueViolet.xnb
 Content\Textures\Backboard\RoyalBlueVioletContact.xnb
 Content\Textures\Backboard\RoyalBlueVioletContactFlip.xnb
 Content\Textures\Backboard\RoyalBlueVioletFlip.xnb
+Content\Audio\SoundEffects\pulse.xnb
+Content\Audio\SoundEffects\explosion2.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb

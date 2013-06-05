@@ -262,7 +262,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 sparkleEmitter.ParticleCount = 150;
                 starfield.StarSpeedModifier = 9;
             }
-            else if (Streak >= 9)
+            else if (Streak >= 9 && Streak < 15)
             {
                 sparkleEmitter.Colors = new List<Color> { Color.DarkRed, Color.Red, Color.IndianRed };
                 sparkleEmitter.ParticleCount = 150;
