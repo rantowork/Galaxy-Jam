@@ -74,6 +74,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FarseerPhysicsXNA, Version=3.3.4863.36575, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\Fenix\Downloads\Farseer Physics Engine 3.3.1 XNA\Farseer Physics Engine 3.3.1 XNA\bin\x86\Debug\FarseerPhysicsXNA.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
@@ -136,10 +140,6 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Farseer Physics Engine 3.3 XNA\Farseer Physics XNA.csproj">
-      <Project>{0A850700-1ABB-4288-A391-6726B90EBEB9}</Project>
-      <Name>Farseer Physics XNA</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\SpoidaGamesArcadeLibrary\SpoidaGamesArcadeLibrary.csproj">
       <Project>{D13A2A74-6D18-4EE3-9F15-8CDB90B2A27F}</Project>
       <Name>SpoidaGamesArcadeLibrary</Name>
