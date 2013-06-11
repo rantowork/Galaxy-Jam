@@ -86,6 +86,7 @@ namespace GalaxyJam
         private Texture2D cursor;
         private Texture2D upIndicator;
         private Texture2D downIndicator;
+        private Texture2D galaxyJamText;
 
         //Sounds
         private AudioEngine audioEngine;
@@ -368,6 +369,7 @@ namespace GalaxyJam
         {
             //Title Screen
             galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
+            galaxyJamText = Content.Load<Texture2D>(@"Textures/GalaxyJamText");
 
             //Backboards
             backboard1 = Content.Load<Texture2D>(@"Textures/Backboard/RedOrangeBoard2");
@@ -1041,6 +1043,7 @@ namespace GalaxyJam
                 case GameStates.OptionsScreen:
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     GetPlayerName(gameTime);
+                    spriteBatch.Draw(galaxyJamText, new Vector2(0, 10), Color.White);
                     GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey, downIndicator, upIndicator);
                     spriteBatch.End();
                     break;
