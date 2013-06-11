@@ -122,7 +122,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             get { return rimHit; }
             set { rimHit = value; }
         }
-        
+
         /// <summary>
         /// Initializes the games score, multiplier and streak manager.
         /// </summary>

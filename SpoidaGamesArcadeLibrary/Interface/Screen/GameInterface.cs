@@ -21,8 +21,11 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
         private const string GO_BACK_TEXT = "(Esc) Back";
         private static Cue previousCue;
+        private static int previousBasketballSelection;
+        private const double WEAPON_SWITCH_TIMER = 500;
+        private static double weaponSwitchElapsedTimer;
 
-        public static void DrawOptionsInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection, Texture2D downIndicator, Texture2D upIndicator)
+        public static void DrawOptionsInterface(SpriteBatch spriteBatch, GameTime gameTimer, SpriteFont pixelFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection, Texture2D downIndicator, Texture2D upIndicator)
         {
             Vector2 instructionsOrigin = pixelFont.MeasureString(INSTRUCTIONS) / 2;
             Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
@@ -62,7 +65,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             {
                 string songName = GetSongTypeString(songType);
                 Vector2 songOrigin = pixelFont.MeasureString(songName);
-                spriteBatch.DrawString(pixelFont, songName, new Vector2(1280/2, 600), Color.White, 0f, songOrigin/2, 1.0f, SpriteEffects.None, 1f);
+                spriteBatch.DrawString(pixelFont, songName, new Vector2(1280/2, 700), Color.White, 0f, songOrigin/2, 1.0f, SpriteEffects.None, 1f);
             }
 
             Cue cue;
@@ -98,110 +101,111 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 spriteBatch.Draw(upIndicator, new Vector2(1280 / 2 + 40, 540), Color.White);
             }
 
-            BasketballTypes basketballTypes;
-            if (BasketballManager.basketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
+            if (previousBasketballSelection == currentBasketballSelection)
             {
-                Basketball basketball;
-                if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
+                BasketballTypes basketballTypes;
+                if (BasketballManager.basketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
                 {
-                    switch (basketballTypes)
+                    Basketball basketball;
+                    if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
                     {
-                        case BasketballTypes.RedSlimeBall:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        case BasketballTypes.BlueSlimeBall:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        case BasketballTypes.BrokenPlanet:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        case BasketballTypes.ThatsNoMoon:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        case BasketballTypes.EarthDay:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        case BasketballTypes.CuteInPink:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        case BasketballTypes.MagmaBall:
-                            if (highScoreManager.BestScore() < 100000)
-                            {
-                                DrawLockedBasketball(spriteBatch, pixelFont, highScoreManager);
-                            }
-                            else
-                            {
-                                DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            }
-                            break;
-                        default:
-                            DrawUnlockedBasketball(spriteBatch, pixelFont, highScoreManager, basketball);
-                            break;
+                        if (IsBasketballLocked(basketball, highScoreManager))
+                        {
+                            string lockedText = String.Format("Unlock With {0} Points", basketball.BasketballUnlockScore);
+                            Vector2 lockedCenter = pixelFont.MeasureString(lockedText) / 2;
+                            spriteBatch.DrawString(pixelFont, lockedText, new Vector2(1280 / 2, 400), Color.White, 0f, lockedCenter, 1f, SpriteEffects.None, 1f);
+                            Texture2D lockedTexture = BasketballManager.lockedBasketballTextures[0];
+                            spriteBatch.Draw(lockedTexture, new Vector2(1280 / 2, 540), null, Color.White, 0f, new Vector2((float)lockedTexture.Width / 2, (float)lockedTexture.Height / 2), 1.0f, SpriteEffects.None, 1.0f);
+                        }
+                        else
+                        {
+                            Vector2 basketballTextCenter = pixelFont.MeasureString(basketball.BasketballName)/2;
+                            spriteBatch.DrawString(pixelFont, basketball.BasketballName, new Vector2(1280 / 2, 400), Color.White, 0f, basketballTextCenter, 1f, SpriteEffects.None, 1f);
+                            spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280 / 2, 540), null, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 1.0f);
+                            BasketballManager.SelectedBasketball = basketball;
+                        }
                     }
+                }
+            }
+            else
+            {
+                highScoreManager.CanChangeBasketballSelection = false;
+
+                BasketballTypes previousBasketballType = BasketballManager.basketballSelection[previousBasketballSelection];
+                BasketballTypes nextBasketballType = BasketballManager.basketballSelection[currentBasketballSelection];
+                Basketball previousBasketball = BasketballManager.basketballs[previousBasketballType];
+                Basketball nextBasketball = BasketballManager.basketballs[nextBasketballType];
+
+                Texture2D previousTexture;
+                Texture2D nextTexture;
+                Vector2 previousCenter;
+                Vector2 nextCenter;
+
+                if (IsBasketballLocked(previousBasketball, highScoreManager))
+                {
+                    previousTexture = BasketballManager.lockedBasketballTextures[0];
+                    highScoreManager.LockedBasketballSelection = true;
+                    previousCenter = new Vector2((float) previousTexture.Width/2, (float) previousTexture.Height/2);
+                }
+                else
+                {
+                    previousTexture = previousBasketball.BasketballTexture;
+                    highScoreManager.LockedBasketballSelection = false;
+                    previousCenter = previousBasketball.Origin;
+                }
+
+                if (IsBasketballLocked(nextBasketball, highScoreManager))
+                {
+                    nextTexture = BasketballManager.lockedBasketballTextures[0];
+                    highScoreManager.LockedBasketballSelection = true;
+                    nextCenter = new Vector2((float) previousTexture.Width/2, (float) previousTexture.Height/2);
+                }
+                else
+                {
+                    nextTexture = nextBasketball.BasketballTexture;
+                    highScoreManager.LockedBasketballSelection = false;
+                    nextCenter = nextBasketball.Origin;
+                }
+
+                weaponSwitchElapsedTimer += gameTimer.ElapsedGameTime.TotalMilliseconds;
+
+                float amountToFade = MathHelper.Clamp((float) weaponSwitchElapsedTimer/500, 0, 1);
+                float fadeOutValue = MathHelper.Lerp(255, 0, amountToFade);
+                float fadeInValue = MathHelper.Lerp(0, 255, amountToFade);
+                float moveUpValue1 = MathHelper.Lerp(540, 480, amountToFade);
+                float moveUpValue2 = MathHelper.Lerp(600, 540, amountToFade);
+                float moveDownValue1 = MathHelper.Lerp(540, 600, amountToFade);
+                float moveDownValue2 = MathHelper.Lerp(480, 540, amountToFade);
+
+                if (previousBasketballSelection < currentBasketballSelection)
+                {
+                    //up
+                    spriteBatch.Draw(previousTexture, new Vector2(1280 / 2, moveUpValue1), null, new Color(255, 255, 255, (byte)fadeOutValue), 0f, previousCenter, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.Draw(nextTexture, new Vector2(1280/2, moveUpValue2), null, new Color(255, 255, 255, (byte) fadeInValue), 0f, nextCenter, 1.0f, SpriteEffects.None, 1.0f);
+                }
+                else
+                {
+                    //down
+                    spriteBatch.Draw(previousTexture, new Vector2(1280 / 2, moveDownValue1), null, new Color(255, 255, 255, (byte)fadeOutValue), 0f, previousCenter, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.Draw(nextTexture, new Vector2(1280 / 2, moveDownValue2), null, new Color(255, 255, 255, (byte)fadeInValue), 0f, nextCenter, 1.0f, SpriteEffects.None, 1.0f);
+                }
+
+                if (weaponSwitchElapsedTimer >= WEAPON_SWITCH_TIMER)
+                {
+                    weaponSwitchElapsedTimer = 0;
+                    previousBasketballSelection = currentBasketballSelection;
+                    highScoreManager.CanChangeBasketballSelection = true;
                 }
             }
         }
 
-        private static void DrawLockedBasketball(SpriteBatch spriteBatch, SpriteFont pixelFont, HighScoreManager highScoreManager)
+        private static bool IsBasketballLocked(Basketball basketball, HighScoreManager highScoreManager)
         {
-            const string locked = "Basketball Locked!";
-            Vector2 center = pixelFont.MeasureString(locked) / 2;
-            spriteBatch.DrawString(pixelFont, locked, new Vector2(1280 / 2, 500), Color.White, 0f, center, 1f, SpriteEffects.None, 1f);
-            highScoreManager.LockedBasketballSelection = true;
-            Texture2D lockedTexture = BasketballManager.lockedBasketballTextures[0];
-            spriteBatch.Draw(lockedTexture, new Vector2(1280 / 2, 540), null, Color.White, 0f, new Vector2((float)lockedTexture.Width / 2, (float)lockedTexture.Height / 2), 1.0f, SpriteEffects.None, 0f);
-        }
-
-        private static void DrawUnlockedBasketball(SpriteBatch spriteBatch, SpriteFont pixelFont, HighScoreManager highScoreManager, Basketball basketball)
-        {
-            string stringToDraw = basketball.BasketballName;
-            Vector2 middle = pixelFont.MeasureString(stringToDraw);
-            spriteBatch.DrawString(pixelFont, stringToDraw, new Vector2(1280 / 2, 500), Color.White, 0f, middle / 2, 1f, SpriteEffects.None, 1f);
-            highScoreManager.LockedBasketballSelection = false;
-            spriteBatch.Draw(basketball.BasketballTexture, new Vector2(1280 / 2, 540), basketball.Source, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 0f);
-            BasketballManager.SelectedBasketball = basketball;
+            if (basketball.BasketballUnlockScore <= highScoreManager.BestScore())
+            {
+                return false;
+            }
+            return true;
         }
 
         private static string GetSongTypeString(SongTypes type)

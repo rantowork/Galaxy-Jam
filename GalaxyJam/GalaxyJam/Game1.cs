@@ -231,10 +231,11 @@ namespace GalaxyJam
             input.GetKeyboard().CharacterEntered += GamePlayInput;
 
             highScoreManager = new HighScoreManager(fullHighScorePath);
+            highScoreManager.CanChangeBasketballSelection = true;
             
             if (!File.Exists(highScoreManager.HighScoreFilePath))
             {
-                List<HighScore> tempList = new List<HighScore> { new HighScore("Jerry Rice", 2000, 1, 5), new HighScore("Glen Rice", 1000, 1, 5) };
+                List<HighScore> tempList = new List<HighScore> { new HighScore("Tim Randall", 2000, 1, 5), new HighScore("Dan Randall", 1000, 1, 5) };
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string json = serializer.Serialize(tempList);
@@ -439,7 +440,7 @@ namespace GalaxyJam
             MediaPlayer.Volume = (float)gameSettings.MusicVolume/10;
             AudioCategory category = audioEngine.GetCategory("Music");
             category.SetVolume((float)gameSettings.MusicVolume/10);
-            soundManager.SelectMusic(SongTypes.BouncyLoop1);
+            soundManager.SelectMusic(SongTypes.SpaceLoop1);
         }
 
         private void LoadEffectsAndParticles()
@@ -629,14 +630,14 @@ namespace GalaxyJam
                     }
                     cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
 
-                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up))
+                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up) && highScoreManager.CanChangeBasketballSelection)
                     {
                         if (currentlySelectedBasketballKey > 0)
                         {
                             currentlySelectedBasketballKey--;
                         }
                     }
-                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down))
+                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down) && highScoreManager.CanChangeBasketballSelection)
                     {
                         if (currentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
                         {
@@ -1038,9 +1039,9 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.OptionsScreen:
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     GetPlayerName(gameTime);
-                    GameInterface.DrawOptionsInterface(spriteBatch, pixel, pixelGlowFont, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey, downIndicator, upIndicator);
+                    GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey, downIndicator, upIndicator);
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:

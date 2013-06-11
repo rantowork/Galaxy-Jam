@@ -99,5 +99,12 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             get { return lockedBasketballSelection; }
             set { lockedBasketballSelection = value; }
         }
+
+        private bool canChangeBasketballSelection;
+        public bool CanChangeBasketballSelection
+        {
+            get { return canChangeBasketballSelection; }
+            set { canChangeBasketballSelection = value; }
+        }
     }
 }
