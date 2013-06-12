@@ -139,7 +139,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 {
                     nextTexture = BasketballManager.lockedBasketballTextures[0];
                     highScoreManager.LockedBasketballSelection = true;
-                    nextCenter = new Vector2((float) previousTexture.Width/2, (float) previousTexture.Height/2);
+                    nextCenter = new Vector2((float) nextTexture.Width/2, (float) nextTexture.Height/2);
                 }
                 else
                 {
