@@ -84,9 +84,12 @@ namespace GalaxyJam
         private Texture2D fourpxblurstar;
         private Texture2D onepxsolidstar;
         private Texture2D cursor;
-        private Texture2D upIndicator;
-        private Texture2D downIndicator;
         private Texture2D galaxyJamText;
+        private Texture2D optionsScreenUi;
+        private Texture2D upArrowKey;
+        private Texture2D downArrowKey;
+        private Texture2D rightArrowKey;
+        private Texture2D leftArrowKey;
 
         //Sounds
         private AudioEngine audioEngine;
@@ -370,6 +373,11 @@ namespace GalaxyJam
             //Title Screen
             galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
             galaxyJamText = Content.Load<Texture2D>(@"Textures/GalaxyJamText");
+            optionsScreenUi = Content.Load<Texture2D>(@"Textures/Interface/OptionsUI");
+            upArrowKey = Content.Load<Texture2D>(@"Textures/Interface/UpArrowKey");
+            downArrowKey = Content.Load<Texture2D>(@"Textures/Interface/DownArrowKey");
+            rightArrowKey = Content.Load<Texture2D>(@"Textures/Interface/RightArrowKey");
+            leftArrowKey = Content.Load<Texture2D>(@"Textures/Interface/LeftArrowKey");
 
             //Backboards
             backboard1 = Content.Load<Texture2D>(@"Textures/Backboard/RedOrangeBoard2");
@@ -413,10 +421,6 @@ namespace GalaxyJam
 
             //Keyboard Curso
             cursor = Content.Load<Texture2D>(@"Textures/Cursor");
-
-            //Up Down Indicators
-            downIndicator = Content.Load<Texture2D>(@"Textures/Interface/DownIndicator");
-            upIndicator = Content.Load<Texture2D>(@"Textures/Interface/UpIndicator");
         }
 
         private void LoadFonts()
@@ -1042,9 +1046,38 @@ namespace GalaxyJam
                     break;
                 case GameStates.OptionsScreen:
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    spriteBatch.Draw(optionsScreenUi, new Vector2(726, 0), Color.White);
                     GetPlayerName(gameTime);
                     spriteBatch.Draw(galaxyJamText, new Vector2(0, 10), Color.White);
-                    GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey, downIndicator, upIndicator);
+                    GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    if (currentlySelectedBasketballKey == 0)
+                    {
+                        spriteBatch.Draw(downArrowKey, new Vector2(880, 214), Color.White);
+                    }
+                    else if (currentlySelectedBasketballKey > 0 && currentlySelectedBasketballKey < (BasketballManager.basketballSelection.Count - 1))
+                    {
+                        spriteBatch.Draw(downArrowKey, new Vector2(880, 214), Color.White);
+                        spriteBatch.Draw(upArrowKey, new Vector2(1102, 214), Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(upArrowKey, new Vector2(1102, 214), Color.White);
+                    }
+                    if (currentlySelectedSongKey == 0)
+                    {
+                        spriteBatch.Draw(rightArrowKey, new Vector2(1102, 560), Color.White);
+                    }
+                    else if (currentlySelectedSongKey > 0 && currentlySelectedSongKey < (SoundManager.music.Count - 1))
+                    {
+                        spriteBatch.Draw(rightArrowKey, new Vector2(1102, 560), Color.White);
+                        spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
+                    }
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:

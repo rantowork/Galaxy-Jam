@@ -65,6 +65,11 @@ Content\Textures\Backboard\RoyalBlueVioletFlip.xnb
 Content\Audio\SoundEffects\pulse.xnb
 Content\Audio\SoundEffects\explosion2.xnb
 Content\Textures\GalaxyJamText.xnb
+Content\Textures\Interface\OptionsUI.xnb
+Content\Textures\Interface\DownArrowKey.xnb
+Content\Textures\Interface\LeftArrowKey.xnb
+Content\Textures\Interface\RightArrowKey.xnb
+Content\Textures\Interface\UpArrowKey.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
