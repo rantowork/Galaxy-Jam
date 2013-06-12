@@ -26,12 +26,11 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         public static void DrawOptionsInterface(SpriteBatch spriteBatch, GameTime gameTimer, SpriteFont pixelFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
         {
-            Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR) / 2;
             spriteBatch.DrawString(pixelFont, GO_BACK_TEXT, new Vector2(10, 10), Color.White);
 
             if (nameToShort)
             {
-                spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(1280 / 2, 675), Color.Red, 0.0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
+                spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(30, 440), Color.Red);
             }
 
             if (BasketballManager.basketballSelection.Count == 0)

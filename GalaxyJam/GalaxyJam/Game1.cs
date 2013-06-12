@@ -1078,6 +1078,37 @@ namespace GalaxyJam
                     {
                         spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
                     }
+                    int count = 0;
+                    spriteBatch.DrawString(pixel, "Top Scores", new Vector2(105, 550), Color.OrangeRed);
+                    foreach (HighScore highScore in highScoreManager.HighScores)
+                    {
+                        if (count == 0)
+                        {
+                            spriteBatch.DrawString(pixel, "1." + highScore.CurrentPlayerName, new Vector2(15, 580), Color.Gold);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 580), Color.Gold);
+                        }
+                        else if (count == 1)
+                        {
+                            spriteBatch.DrawString(pixel, "2." + highScore.CurrentPlayerName, new Vector2(15, 610), Color.Silver);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 610), Color.Silver);
+                        }
+                        else if (count == 2)
+                        {
+                            spriteBatch.DrawString(pixel, "3." + highScore.CurrentPlayerName, new Vector2(15, 640), Color.SandyBrown);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 640), Color.SandyBrown);
+                        }
+                        else if (count == 3)
+                        {
+                            spriteBatch.DrawString(pixel, "4." + highScore.CurrentPlayerName, new Vector2(15, 670), Color.WhiteSmoke);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 670), Color.WhiteSmoke);
+                        }
+                        else if (count == 4)
+                        {
+                            spriteBatch.DrawString(pixel, "5." + highScore.CurrentPlayerName, new Vector2(15, 700), Color.WhiteSmoke);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 700), Color.WhiteSmoke);
+                        }
+                        count++;
+                    }
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
@@ -1130,7 +1161,6 @@ namespace GalaxyJam
                     DrawGameWorld(gameTime);
                     break;
                 case GameStates.Paused:
-                    //DrawGameWorld(gameTime);
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     GameInterface.DrawPausedInterface(spriteBatch, pixel, pixelGlowFont);
                     spriteBatch.End();
@@ -1610,14 +1640,14 @@ namespace GalaxyJam
         {
             bool caretVisible = (gameTime.TotalGameTime.TotalMilliseconds % 1000) >= 500;
 
-            spriteBatch.DrawString(pixel, "Player Name:", new Vector2(1280 / 2 - 180, 200), Color.White);
-            Vector2 size = pixel.MeasureString("Player Name: ");
-            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 1280 / 2 - 180, 200), Color.White);
+            spriteBatch.DrawString(pixel, "Your Name:", new Vector2(170, 410), Color.White);
+            Vector2 size = pixel.MeasureString("Your Name: ");
+            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 170, 410), Color.White);
 
             if (caretVisible)
             {
-                Vector2 inputLength = pixel.MeasureString(playerName + "Player Name: ");
-                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 1280 / 2 - 180, 200), Color.White);
+                Vector2 inputLength = pixel.MeasureString(playerName + "Your Name: ");
+                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 170, 410), Color.White);
             }
         }
         #endregion
