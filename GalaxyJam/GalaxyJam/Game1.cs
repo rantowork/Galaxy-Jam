@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web.Script.Serialization;
 using FarseerPhysics.Dynamics;
@@ -161,6 +162,15 @@ namespace GalaxyJam
         private const double NUMBER_SCROLL_EFFECT_TIME = 500;
         private static double numberScrollEffectTimer;
         private static StringBuilder numberScrollStringEffects = new StringBuilder();
+
+        private List<Basketball> oldBasketballs = new List<Basketball>();
+        private List<Basketball> newBasketballs = new List<Basketball>();
+        private List<Basketball> unlockedBalls = new List<Basketball>();
+        private bool isNewUnlockedBalls;
+        private bool unlocksCalculated;
+        private double currentBestScore;
+        private const double UNLOCK_BALL_DISPLAY_TIME = 4000;
+        private double unlockDisplayTimer;
         
         //collisions get me outta here!
         private const double GLOWTIME = 200;
@@ -730,6 +740,9 @@ namespace GalaxyJam
                     }
                     break;
                 case GameStates.Playing:
+                    currentBestScore = highScoreManager.BestScore();
+                    unlocksCalculated = false;
+                    isNewUnlockedBalls = false;
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                     
@@ -796,6 +809,44 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.GameEnd:
+                    if (currentBestScore < highScoreManager.BestScore() && !unlocksCalculated)
+                    {
+                        foreach (Basketball basketball in BasketballManager.basketballList)
+                        {
+                            if (basketball.BasketballUnlockScore <= currentBestScore)
+                            {
+                                oldBasketballs.Add(basketball);
+                            }
+
+                            if (basketball.BasketballUnlockScore <= highScoreManager.BestScore())
+                            {
+                                newBasketballs.Add(basketball);
+                            }
+                        }
+
+                        var unlocks = newBasketballs.Where(b => !oldBasketballs.Any(b2 => b2.BasketballName == b.BasketballName));
+                        
+                        if (unlocks.Count() > 0)
+                        {
+                            foreach (Basketball ball in unlocks)
+                            {
+                                unlockedBalls.Add(ball);
+                            }
+                            isNewUnlockedBalls = true;
+                        }
+                        else
+                        {
+                            unlockedBalls.Clear();
+                            isNewUnlockedBalls = false;
+                        }
+                        unlocksCalculated = true;
+                    }
+                    else
+                    {
+                        unlocksCalculated = true;
+                        unlockedBalls.Clear();
+                    }
+
                     if (!highScoresLoaded)
                     {
                         int count = 0;
@@ -1287,7 +1338,7 @@ namespace GalaxyJam
             spriteBatch.End();
         }
 
-        private void DrawGameEnd()
+        private void DrawGameEnd(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             GameInterface.DrawGameEndInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
@@ -1301,6 +1352,14 @@ namespace GalaxyJam
             spriteBatch.DrawString(pixel, highScoresMultiplier, new Vector2(625, 74), Color.White);
 
             spriteBatch.End();
+
+            if (isNewUnlockedBalls)
+            {
+                foreach (Basketball ball in unlockedBalls)
+                {
+                    
+                }
+            }
         }
 
         #region Basketball Position
