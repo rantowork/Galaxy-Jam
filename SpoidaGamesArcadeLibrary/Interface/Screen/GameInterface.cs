@@ -21,7 +21,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         private const string GO_BACK_TEXT = "(Esc) Back";
         private static Cue previousCue;
         private static int previousBasketballSelection;
-        private const double WEAPON_SWITCH_TIMER = 500;
+        private const double WEAPON_SWITCH_TIMER = 300;
         private static double weaponSwitchElapsedTimer;
 
         public static void DrawOptionsInterface(SpriteBatch spriteBatch, GameTime gameTimer, SpriteFont pixelFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
@@ -150,7 +150,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
                 weaponSwitchElapsedTimer += gameTimer.ElapsedGameTime.TotalMilliseconds;
 
-                float amountToFade = MathHelper.Clamp((float) weaponSwitchElapsedTimer/500, 0, 1);
+                float amountToFade = MathHelper.Clamp((float)weaponSwitchElapsedTimer / 300, 0, 1);
                 float fadeOutValue = MathHelper.Lerp(255, 0, amountToFade);
                 float fadeInValue = MathHelper.Lerp(0, 255, amountToFade);
                 float moveUpValue1 = MathHelper.Lerp(230, 170, amountToFade);
@@ -249,20 +249,20 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         public static void DrawGameEndInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
         {
-            string finalScore = String.Format("Final Score: {0}!", goalManager.GameScore);
-            Vector2 finalScoreOrigin = pixelFont.MeasureString(finalScore) / 2;
+            string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
+            Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
             Vector2 gameOverOrigin = pixelFont.MeasureString(GAME_OVER) / 2;
             Vector2 quitRestartOrigin = pixelFont.MeasureString(QUIT_RESTART_TEXT) / 2;
 
-            spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.White, 0, gameOverOrigin, 1f, SpriteEffects.None, 1.0f);
-            spriteBatch.DrawString(pixelFont, finalScore, new Vector2(1280 / 2, 370), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
-            spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 400), Color.White, 0,quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.OrangeRed, 0, gameOverOrigin, 1f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 420), Color.White, 0, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
-            spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.White);
-            spriteBatch.DrawString(pixelFont, "Player", new Vector2(10, 50), Color.White);
-            spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(170, 50), Color.White);
-            spriteBatch.DrawString(pixelFont, "Score", new Vector2(340, 50), Color.White);
-            spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(480, 50), Color.White);
+            spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.Gold);
+            spriteBatch.DrawString(pixelFont, "Player", new Vector2(10, 50), Color.DarkOrange);
+            spriteBatch.DrawString(pixelFont, "Score", new Vector2(290, 50), Color.DarkOrange);
+            spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(440, 50), Color.DarkOrange);
+            spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(625, 50), Color.DarkOrange);
         }
 
         //Paused Interface
@@ -271,7 +271,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         {
             Vector2 pausedOrigin = pixelFont.MeasureString(PAUSED) / 2;
             Vector2 quitRestartOrigin = pixelFont.MeasureString(QUIT_RESTART_TEXT)/2;
-            spriteBatch.DrawString(pixelFont, PAUSED, new Vector2(1280 / 2, 720 / 2), Color.White, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
+            spriteBatch.DrawString(pixelFont, PAUSED, new Vector2(1280 / 2, 720 / 2), Color.DarkOrange, 0, pausedOrigin, 1f, SpriteEffects.None, 0);
             spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 360 + 40), Color.White, 0f, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
         }
     }

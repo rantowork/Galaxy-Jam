@@ -798,12 +798,21 @@ namespace GalaxyJam
                 case GameStates.GameEnd:
                     if (!highScoresLoaded)
                     {
+                        int count = 0;
                         foreach (HighScore highScore in highScoreManager.HighScores)
                         {
-                            highScoresPlayers.AppendLine(String.Format("{0}", highScore.CurrentPlayerName));
+                            if (count == 9)
+                            {
+                                highScoresPlayers.AppendLine(String.Format("{0}. {1}", (count + 1), highScore.CurrentPlayerName));
+                            }
+                            else
+                            {
+                                highScoresPlayers.AppendLine(String.Format(" {0}. {1}", (count + 1), highScore.CurrentPlayerName));
+                            }
                             highScoresScore.AppendLine(String.Format("{0}", highScore.PlayerScore));
                             highScoresStreak.AppendLine(String.Format("{0}", highScore.PlayerTopStreak));
                             highScoresMultiplier.AppendLine(String.Format("{0}", highScore.PlayerMultiplier));
+                            count++;
                         }
 
                         highScoresLoaded = true;
@@ -929,7 +938,7 @@ namespace GalaxyJam
                     }
                     else if (currentTutorialScreen == 1)
                     {
-                        const string tutText02 = "Game timer.  You get only 2 minutes!";
+                        const string tutText02 = "Game timer.  You only get 2 minutes!";
                         const string tutText02Timer = "2:00";
                         Vector2 tutText02Origin = pixel.MeasureString(tutText02)/2;
                         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
@@ -1089,13 +1098,13 @@ namespace GalaxyJam
                         }
                         else if (count == 1)
                         {
-                            spriteBatch.DrawString(pixel, "2." + highScore.CurrentPlayerName, new Vector2(15, 610), Color.Silver);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 610), Color.Silver);
+                            spriteBatch.DrawString(pixel, "2." + highScore.CurrentPlayerName, new Vector2(15, 610), Color.Goldenrod);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 610), Color.Goldenrod);
                         }
                         else if (count == 2)
                         {
-                            spriteBatch.DrawString(pixel, "3." + highScore.CurrentPlayerName, new Vector2(15, 640), Color.SandyBrown);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 640), Color.SandyBrown);
+                            spriteBatch.DrawString(pixel, "3." + highScore.CurrentPlayerName, new Vector2(15, 640), Color.DarkGoldenrod);
+                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 640), Color.DarkGoldenrod);
                         }
                         else if (count == 3)
                         {
@@ -1287,9 +1296,9 @@ namespace GalaxyJam
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
 
             spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
-            spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(170, 74), Color.White);
-            spriteBatch.DrawString(pixel, highScoresScore, new Vector2(340, 74), Color.White);
-            spriteBatch.DrawString(pixel, highScoresMultiplier, new Vector2(480, 74), Color.White);
+            spriteBatch.DrawString(pixel, highScoresScore, new Vector2(290, 74), Color.White);
+            spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(440, 74), Color.White);
+            spriteBatch.DrawString(pixel, highScoresMultiplier, new Vector2(625, 74), Color.White);
 
             spriteBatch.End();
         }
