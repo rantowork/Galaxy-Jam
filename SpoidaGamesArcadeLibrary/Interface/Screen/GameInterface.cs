@@ -249,13 +249,10 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         public static void DrawGameEndInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
         {
-            string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
-            Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
             Vector2 gameOverOrigin = pixelFont.MeasureString(GAME_OVER) / 2;
             Vector2 quitRestartOrigin = pixelFont.MeasureString(QUIT_RESTART_TEXT) / 2;
 
             spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.OrangeRed, 0, gameOverOrigin, 1f, SpriteEffects.None, 1.0f);
-            spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 420), Color.White, 0, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
             spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.Gold);

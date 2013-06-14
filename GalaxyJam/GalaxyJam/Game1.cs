@@ -168,9 +168,17 @@ namespace GalaxyJam
         private List<Basketball> unlockedBalls = new List<Basketball>();
         private bool isNewUnlockedBalls;
         private bool unlocksCalculated;
+        private bool isNewHighScore;
         private double currentBestScore;
-        private const double UNLOCK_BALL_DISPLAY_TIME = 4000;
+        
+        private const double NEW_HIGH_SCORE_DISPLAY_TIME = 2000;
         private double unlockDisplayTimer;
+        private double newHighScoreFadeOutTimer;
+        private double showNewHighScoreTimer;
+        private double newHighScoreTimer;
+
+        private float highScoreFadeValue = 1;
+        private int unlockedBallCounter;
         
         //collisions get me outta here!
         private const double GLOWTIME = 200;
@@ -743,6 +751,18 @@ namespace GalaxyJam
                     currentBestScore = highScoreManager.BestScore();
                     unlocksCalculated = false;
                     isNewUnlockedBalls = false;
+                    isNewHighScore = false;
+
+                    unlockDisplayTimer = 0;
+                    newHighScoreFadeOutTimer = 0;
+                    showNewHighScoreTimer = 0;
+                    newHighScoreTimer = 0;
+
+                    unlockedBallCounter = 0;
+                    highScoreFadeValue = 1;
+
+                    unlockedBalls.Clear();
+
                     BasketballManager.SelectedBasketball.Update(gameTime);
                     PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
                     
@@ -811,6 +831,7 @@ namespace GalaxyJam
                 case GameStates.GameEnd:
                     if (currentBestScore < highScoreManager.BestScore() && !unlocksCalculated)
                     {
+                        isNewHighScore = true;
                         foreach (Basketball basketball in BasketballManager.basketballList)
                         {
                             if (basketball.BasketballUnlockScore <= currentBestScore)
@@ -844,7 +865,6 @@ namespace GalaxyJam
                     else
                     {
                         unlocksCalculated = true;
-                        unlockedBalls.Clear();
                     }
 
                     if (!highScoresLoaded)
@@ -1226,7 +1246,7 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.GameEnd:
-                    DrawGameEnd();
+                    DrawGameEnd(gameTime);
                     break;
             }
 
@@ -1341,25 +1361,70 @@ namespace GalaxyJam
         private void DrawGameEnd(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-            GameInterface.DrawGameEndInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
-            spriteBatch.End();
-
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-
             spriteBatch.DrawString(pixel, highScoresPlayers, new Vector2(10, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresScore, new Vector2(290, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(440, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresMultiplier, new Vector2(625, 74), Color.White);
-
+            GameInterface.DrawGameEndInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
             spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+
+            if (!isNewHighScore)
+            {
+                string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
+                Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
+                spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
+            }
+            else
+            {
+                newHighScoreTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                const string newHighScore = "New High Score!";
+                Vector2 newHighScoreOrigin = pixelGlowFont.MeasureString(newHighScore) / 2;
+                float amountToMove = MathHelper.Clamp((float)newHighScoreTimer / 2000, 0, 1);
+                float amountToMoveValue = MathHelper.Lerp(-1000, 1280 / 2, amountToMove);
+                if (newHighScoreTimer >= NEW_HIGH_SCORE_DISPLAY_TIME)
+                {
+                    newHighScoreFadeOutTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    float amountToFade = MathHelper.Clamp((float)newHighScoreFadeOutTimer / 2000, 0, 1);
+                    highScoreFadeValue = MathHelper.Lerp(1, 0, amountToFade);
+                }
+                spriteBatch.DrawString(pixelGlowFont, newHighScore, new Vector2(amountToMoveValue, 380), new Color(255, 255, 255, highScoreFadeValue), 0f, newHighScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+
+                if (newHighScoreTimer >= 4000)
+                {
+                    showNewHighScoreTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    float amountToFadeInHighScore = MathHelper.Clamp((float)showNewHighScoreTimer / 1000, 0, 1);
+                    float amountToFadeInHighScoreValue = MathHelper.Lerp(0, 1, amountToFadeInHighScore);
+                    string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
+                    Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
+                    spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), new Color(255, 255, 255, amountToFadeInHighScoreValue), 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
+                    newHighScoreTimer = 4001;
+                }
+            }
 
             if (isNewUnlockedBalls)
             {
-                foreach (Basketball ball in unlockedBalls)
+                const string unlockedText = "Basketball Unlocked!";
+                Vector2 unlockedTextOrigin = pixel.MeasureString(unlockedText)/2;
+                if (unlockedBallCounter < unlockedBalls.Count)
                 {
-                    
+                    unlockDisplayTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    float amountToFadeInBasketball = MathHelper.Clamp((float) unlockDisplayTimer/3000, 0, 1);
+                    float amountToFadeInBasketballValue = MathHelper.Lerp(0, 1, amountToFadeInBasketball);
+                    spriteBatch.DrawString(pixel, unlockedText, new Vector2(1280 / 2, 500), new Color(255, 91, 71, amountToFadeInBasketballValue), 0f, unlockedTextOrigin, 1f, SpriteEffects.None, 1.0f);
+                    Texture2D basketballTexture = unlockedBalls[unlockedBallCounter].BasketballTexture;
+                    Vector2 basketballOrigin = unlockedBalls[unlockedBallCounter].Origin;
+                    spriteBatch.Draw(basketballTexture, new Vector2(1280 /2, 540), null, new Color(255,255,255,amountToFadeInBasketballValue), 0f, basketballOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    if (unlockDisplayTimer >= 5000)
+                    {
+                        unlockDisplayTimer = 0;
+                        unlockedBallCounter++;
+                    }
                 }
             }
+
+            spriteBatch.End();
         }
 
         #region Basketball Position

@@ -57,9 +57,9 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         {
             Basketball redGlowBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Red Glow Ball", 0);
             Basketball slimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Green Slime Ball", 0);
-            Basketball redSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedSlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Red Slime Ball", 100000);
-            Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Cute In Pink", 250000);
-            Basketball blueSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Blue Slime Ball", 350000);
+            Basketball redSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedSlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Red Slime Ball", 10000);
+            Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Cute In Pink", 20000);
+            Basketball blueSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Blue Slime Ball", 30000);
             Basketball brokenPlanet = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Broken Planet", 500000);
             Basketball thatsNoMoon = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "That's No Moon!", 750000);
             Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> {new Rectangle(0, 0, 36, 36)}, false, "Earth Day", 1000000);
