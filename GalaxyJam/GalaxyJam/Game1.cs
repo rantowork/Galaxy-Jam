@@ -1370,13 +1370,7 @@ namespace GalaxyJam
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
 
-            if (!isNewHighScore)
-            {
-                string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
-                Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
-                spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
-            }
-            else
+            if (isNewHighScore)
             {
                 newHighScoreTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 const string newHighScore = "New High Score!";
@@ -1401,6 +1395,12 @@ namespace GalaxyJam
                     spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), new Color(255, 255, 255, amountToFadeInHighScoreValue), 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
                     newHighScoreTimer = 4001;
                 }
+            }
+            else
+            {
+                string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
+                Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
+                spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
             }
 
             if (isNewUnlockedBalls)
