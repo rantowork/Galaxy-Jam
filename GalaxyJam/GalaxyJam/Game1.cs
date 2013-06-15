@@ -125,7 +125,8 @@ namespace GalaxyJam
         private SoundEffect countdownGoSoundEffect;
         private SoundEffect countdownBeep;
         private SoundEffect streakWub;
-        private SoundEffect laserBoom;
+        private SoundEffect highScoreSwoosh;
+        private SoundEffect unlockedSoundEffect;
         private Song ambientSpaceSong;
         private SoundManager soundManager;
 
@@ -457,8 +458,9 @@ namespace GalaxyJam
             countdownBeep = Content.Load<SoundEffect>(@"Audio/SoundEffects/Countdown");
             countdownGoSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/Go");
             streakWub = Content.Load<SoundEffect>(@"Audio/SoundEffects/wub");
-            laserBoom = Content.Load<SoundEffect>(@"Audio/SoundEffects/explosion2");
+            highScoreSwoosh = Content.Load<SoundEffect>(@"Audio/SoundEffects/HighScoreSwoosh");
             ambientSpaceSong = Content.Load<Song>(@"Audio/Music/IntroAmbientCreativeZero");
+            unlockedSoundEffect = Content.Load<SoundEffect>(@"Audio/SoundEffects/UnlockSound");
             MediaPlayer.Play(ambientSpaceSong);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = (float)gameSettings.MusicVolume/10;
@@ -752,6 +754,7 @@ namespace GalaxyJam
                     unlocksCalculated = false;
                     isNewUnlockedBalls = false;
                     isNewHighScore = false;
+                    isHighScoreSoundEffectPlayed = false;
 
                     unlockDisplayTimer = 0;
                     newHighScoreFadeOutTimer = 0;
@@ -774,7 +777,7 @@ namespace GalaxyJam
 
                     Vector2 basketballCenter = basketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
                     Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
-                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, streakWub, laserBoom, basketballSparkle, starField, gameSettings);
+                    goalManager.UpdateGoalScored(gameTime, camera, basketballCenterRectangle, basketScoredSoundEffect, streakWub, basketballSparkle, starField, gameSettings);
 
                     if (backboardCollisionHappened)
                     {
@@ -819,6 +822,10 @@ namespace GalaxyJam
                             highScoresStreak.Clear();
                             highScoresMultiplier.Clear();
                             basketballSparkle.CleanUpParticles();
+                            if (currentBestScore < highScoreManager.BestScore() && !unlocksCalculated)
+                            {
+                                isNewHighScore = true;
+                            }
                             gameState = GameStates.GameEnd;
                         }
                     }
@@ -831,7 +838,6 @@ namespace GalaxyJam
                 case GameStates.GameEnd:
                     if (currentBestScore < highScoreManager.BestScore() && !unlocksCalculated)
                     {
-                        isNewHighScore = true;
                         foreach (Basketball basketball in BasketballManager.basketballList)
                         {
                             if (basketball.BasketballUnlockScore <= currentBestScore)
@@ -1358,6 +1364,9 @@ namespace GalaxyJam
             spriteBatch.End();
         }
 
+
+        private bool isHighScoreSoundEffectPlayed;
+        private bool isUnlockSoundEffectPlayed;
         private void DrawGameEnd(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
@@ -1384,6 +1393,11 @@ namespace GalaxyJam
                     highScoreFadeValue = MathHelper.Lerp(1, 0, amountToFade);
                 }
                 spriteBatch.DrawString(pixelGlowFont, newHighScore, new Vector2(amountToMoveValue, 380), new Color(255, 255, 255, highScoreFadeValue), 0f, newHighScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                if (!isHighScoreSoundEffectPlayed)
+                {
+                    highScoreSwoosh.Play((float) soundEffectVolumeSetting/10, 0f, 0f);
+                    isHighScoreSoundEffectPlayed = true;
+                }
 
                 if (newHighScoreTimer >= 4000)
                 {
@@ -1396,7 +1410,7 @@ namespace GalaxyJam
                     newHighScoreTimer = 4001;
                 }
             }
-            else
+            else if (gameTime.ElapsedGameTime.TotalMilliseconds < 20 && !isNewHighScore)
             {
                 string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
                 Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
@@ -1410,16 +1424,22 @@ namespace GalaxyJam
                 if (unlockedBallCounter < unlockedBalls.Count)
                 {
                     unlockDisplayTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                    float amountToFadeInBasketball = MathHelper.Clamp((float) unlockDisplayTimer/3000, 0, 1);
+                    float amountToFadeInBasketball = MathHelper.Clamp((float) unlockDisplayTimer/1500, 0, 1);
                     float amountToFadeInBasketballValue = MathHelper.Lerp(0, 1, amountToFadeInBasketball);
                     spriteBatch.DrawString(pixel, unlockedText, new Vector2(1280 / 2, 500), new Color(255, 91, 71, amountToFadeInBasketballValue), 0f, unlockedTextOrigin, 1f, SpriteEffects.None, 1.0f);
                     Texture2D basketballTexture = unlockedBalls[unlockedBallCounter].BasketballTexture;
                     Vector2 basketballOrigin = unlockedBalls[unlockedBallCounter].Origin;
                     spriteBatch.Draw(basketballTexture, new Vector2(1280 /2, 540), null, new Color(255,255,255,amountToFadeInBasketballValue), 0f, basketballOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    if (unlockDisplayTimer >= 5000)
+                    if (!isUnlockSoundEffectPlayed)
+                    {
+                        unlockedSoundEffect.Play((float)soundEffectVolumeSetting / 10, 0f, 0f);
+                        isUnlockSoundEffectPlayed = true;
+                    }
+                    if (unlockDisplayTimer >= 3000)
                     {
                         unlockDisplayTimer = 0;
                         unlockedBallCounter++;
+                        isUnlockSoundEffectPlayed = false;
                     }
                 }
             }

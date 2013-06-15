@@ -70,6 +70,8 @@ Content\Textures\Interface\DownArrowKey.xnb
 Content\Textures\Interface\LeftArrowKey.xnb
 Content\Textures\Interface\RightArrowKey.xnb
 Content\Textures\Interface\UpArrowKey.xnb
+Content\Audio\SoundEffects\HighScoreSwoosh.xnb
+Content\Audio\SoundEffects\UnlockSound.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb

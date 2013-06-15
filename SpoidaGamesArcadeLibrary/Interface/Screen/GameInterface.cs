@@ -256,7 +256,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 420), Color.White, 0, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
             spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.Gold);
-            spriteBatch.DrawString(pixelFont, "Player", new Vector2(10, 50), Color.DarkOrange);
+            spriteBatch.DrawString(pixelFont, "Player", new Vector2(76, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Score", new Vector2(290, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(440, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(625, 50), Color.DarkOrange);
