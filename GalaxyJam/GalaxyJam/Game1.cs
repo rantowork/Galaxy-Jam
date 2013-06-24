@@ -111,7 +111,8 @@ namespace GalaxyJam
 
         //Fonts
         private SpriteFont pixel;
-        private SpriteFont pixelGlowFont;
+        private SpriteFont pixelGlow;
+        private SpriteFont orangePixelGlowFont;
         private SpriteFont giantRedPixelFont;
         private SpriteFont streakFont;
 
@@ -444,8 +445,9 @@ namespace GalaxyJam
 
         private void LoadFonts()
         {
-            pixel = Content.Load<SpriteFont>(@"Fonts/PixelFont");
-            pixelGlowFont = Content.Load<SpriteFont>(@"Fonts/PixelScoreGlow");
+            pixel = Content.Load<SpriteFont>(@"Fonts/SpriteFont");
+            pixelGlow = Content.Load<SpriteFont>(@"Fonts/SpriteFontGlow");
+            orangePixelGlowFont = Content.Load<SpriteFont>(@"Fonts/PixelScoreGlow");
             giantRedPixelFont = Content.Load<SpriteFont>(@"Fonts/GiantRedPixelFont");
             streakFont = Content.Load<SpriteFont>(@"Fonts/StreakText");
         }
@@ -931,30 +933,55 @@ namespace GalaxyJam
                     Vector2 tutorialTextOrigin = pixel.MeasureString(tutorialText) / 2;
                     Vector2 exitOrigin = pixel.MeasureString(exitText)/2;
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-                    spriteBatch.DrawString(pixel, playText, new Vector2(1280/2, 290), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280/2, 380), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     if (titleScreenSelection == 0)
                     {
                         spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280/2 - 60, 290), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        Vector2 playTextGlowOrigin = pixelGlow.MeasureString(playText) / 2;
+                        spriteBatch.DrawString(pixelGlow, playText, new Vector2(1280 / 2, 290), Color.White, 0f, playTextGlowOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280 / 2, 380), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else if (titleScreenSelection == 1)
                     {
                         spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 90, 320), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        Vector2 practiceGlowOrigin = pixelGlow.MeasureString(practiceText) / 2;
+                        spriteBatch.DrawString(pixel, playText, new Vector2(1280 / 2, 290), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlow, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceGlowOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280 / 2, 380), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else if (titleScreenSelection == 2)
                     {
                         spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 90, 350), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        Vector2 settingsTextGlowOrigin = pixelGlow.MeasureString(settingsText) / 2;
+                        spriteBatch.DrawString(pixel, playText, new Vector2(1280 / 2, 290), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlow, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextGlowOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280 / 2, 380), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else if (titleScreenSelection == 3)
                     {
                         spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 120, 380), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        Vector2 tutorialTextGlowOrigin = pixelGlow.MeasureString(tutorialText) / 2;
+                        spriteBatch.DrawString(pixel, playText, new Vector2(1280 / 2, 290), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlow, tutorialText, new Vector2(1280 / 2, 380), Color.White, 0f, tutorialTextGlowOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     else
                     {
                         spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280 / 2 - 60, 410), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        Vector2 exitGlowOrigin = pixelGlow.MeasureString(exitText) / 2;
+                        spriteBatch.DrawString(pixel, playText, new Vector2(1280 / 2, 290), Color.White, 0f, playTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, practiceText, new Vector2(1280 / 2, 320), Color.White, 0f, practiceOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, settingsText, new Vector2(1280 / 2, 350), Color.White, 0f, settingsTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixel, tutorialText, new Vector2(1280 / 2, 380), Color.White, 0f, tutorialTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(pixelGlow, exitText, new Vector2(1280 / 2, 410), Color.White, 0f, exitGlowOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     }
                     spriteBatch.End();
                     break;
@@ -1020,7 +1047,7 @@ namespace GalaxyJam
                         Vector2 tutText02Origin = pixel.MeasureString(tutText02)/2;
                         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                         spriteBatch.DrawString(pixel, tutText02, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText02Origin, 1.0f, SpriteEffects.None, 1.0f);
-                        spriteBatch.DrawString(pixelGlowFont, tutText02Timer, new Vector2(10, 664), Color.White);
+                        spriteBatch.DrawString(orangePixelGlowFont, tutText02Timer, new Vector2(10, 664), Color.White);
                         spriteBatch.End();
                     }
                     else if (currentTutorialScreen == 2)
@@ -1028,10 +1055,10 @@ namespace GalaxyJam
                         const string tutText03 = "Your score.  Earn new basketballs with a high score.";
                         const string tutText03Score = "100000";
                         Vector2 tutText03Origin = pixel.MeasureString(tutText03)/2;
-                        Vector2 tutText03ScoreOrigin = pixelGlowFont.MeasureString(tutText03Score) / 2;
+                        Vector2 tutText03ScoreOrigin = orangePixelGlowFont.MeasureString(tutText03Score) / 2;
                         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                         spriteBatch.DrawString(pixel, tutText03, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText03Origin, 1.0f, SpriteEffects.None, 1.0f);
-                        spriteBatch.DrawString(pixelGlowFont, tutText03Score, new Vector2(1280 / 2, 30), Color.White, 0f, tutText03ScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(orangePixelGlowFont, tutText03Score, new Vector2(1280 / 2, 30), Color.White, 0f, tutText03ScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         spriteBatch.End();
                     }
                     else if (currentTutorialScreen == 3)
@@ -1039,10 +1066,10 @@ namespace GalaxyJam
                         const string tutText04 = "Current streak.  A higher streak means more points.";
                         const string tutText04Streak = "+9";
                         Vector2 tutText04Origin = pixel.MeasureString(tutText04) / 2;
-                        Vector2 tutText04StreakOrigin = pixelGlowFont.MeasureString(tutText04Streak);
+                        Vector2 tutText04StreakOrigin = orangePixelGlowFont.MeasureString(tutText04Streak);
                         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                         spriteBatch.DrawString(pixel, tutText04, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText04Origin, 1.0f, SpriteEffects.None, 1.0f);
-                        spriteBatch.DrawString(pixelGlowFont, tutText04Streak, new Vector2(1260, 100), Color.White, 0f, tutText04StreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(orangePixelGlowFont, tutText04Streak, new Vector2(1260, 100), Color.White, 0f, tutText04StreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         spriteBatch.End();
                     }
                     else if (currentTutorialScreen == 4)
@@ -1050,10 +1077,10 @@ namespace GalaxyJam
                         const string tutText05 = "Score multiplier.  Big multiplier, big points.";
                         const string tutText05Mult = "x42";
                         Vector2 tutText05Origin = pixel.MeasureString(tutText05) / 2;
-                        Vector2 tutText05MultOrigin = pixelGlowFont.MeasureString(tutText05Mult);
+                        Vector2 tutText05MultOrigin = orangePixelGlowFont.MeasureString(tutText05Mult);
                         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                         spriteBatch.DrawString(pixel, tutText05, new Vector2(1280 / 2, 720 / 2), Color.White, 0f, tutText05Origin, 1.0f, SpriteEffects.None, 1.0f);
-                        spriteBatch.DrawString(pixelGlowFont, tutText05Mult, new Vector2(1260, 720), Color.White, 0f, tutText05MultOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                        spriteBatch.DrawString(orangePixelGlowFont, tutText05Mult, new Vector2(1260, 720), Color.White, 0f, tutText05MultOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         spriteBatch.End();
                     }
 
@@ -1248,7 +1275,7 @@ namespace GalaxyJam
                     break;
                 case GameStates.Paused:
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-                    GameInterface.DrawPausedInterface(spriteBatch, pixel, pixelGlowFont);
+                    GameInterface.DrawPausedInterface(spriteBatch, pixel, orangePixelGlowFont);
                     spriteBatch.End();
                     break;
                 case GameStates.GameEnd:
@@ -1327,14 +1354,14 @@ namespace GalaxyJam
                 spriteBatch.Draw(rightRimCollisionHappened ? rightRim1Glow : rightRim1, new Vector2(188, 208), null, Color.White, 0f, rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
 
-            GameInterface.DrawPlayingInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
+            GameInterface.DrawPlayingInterface(spriteBatch, pixel, orangePixelGlowFont, goalManager);
 
             if (goalManager.DrawSwish)
             {
                 effectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 const string swishText = "SWISH!";
-                Vector2 swishOrigin = pixelGlowFont.MeasureString(swishText)/2;
-                spriteBatch.DrawString(pixelGlowFont, swishText, new Vector2(1280/2, 70), Color.White, 0f, swishOrigin,1.0f, SpriteEffects.None, 1.0f);
+                Vector2 swishOrigin = orangePixelGlowFont.MeasureString(swishText)/2;
+                spriteBatch.DrawString(orangePixelGlowFont, swishText, new Vector2(1280/2, 70), Color.White, 0f, swishOrigin,1.0f, SpriteEffects.None, 1.0f);
                 if (EFFECT_TIME < effectTimer)
                 {
                     effectTimer = 0;
@@ -1346,8 +1373,8 @@ namespace GalaxyJam
             {
                 effectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 const string niceShotText = "Nice Shot!";
-                Vector2 niceShotOrigin = pixelGlowFont.MeasureString(niceShotText)/2;
-                spriteBatch.DrawString(pixelGlowFont, niceShotText, new Vector2(1280/2, 70), Color.White, 0f, niceShotOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                Vector2 niceShotOrigin = orangePixelGlowFont.MeasureString(niceShotText)/2;
+                spriteBatch.DrawString(orangePixelGlowFont, niceShotText, new Vector2(1280/2, 70), Color.White, 0f, niceShotOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 if (EFFECT_TIME < effectTimer)
                 {
                     effectTimer = 0;
@@ -1374,7 +1401,7 @@ namespace GalaxyJam
             spriteBatch.DrawString(pixel, highScoresScore, new Vector2(290, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresStreak, new Vector2(440, 74), Color.White);
             spriteBatch.DrawString(pixel, highScoresMultiplier, new Vector2(625, 74), Color.White);
-            GameInterface.DrawGameEndInterface(spriteBatch, pixel, pixelGlowFont, goalManager);
+            GameInterface.DrawGameEndInterface(spriteBatch, pixel, orangePixelGlowFont, goalManager);
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
@@ -1383,7 +1410,7 @@ namespace GalaxyJam
             {
                 newHighScoreTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                 const string newHighScore = "New High Score!";
-                Vector2 newHighScoreOrigin = pixelGlowFont.MeasureString(newHighScore) / 2;
+                Vector2 newHighScoreOrigin = orangePixelGlowFont.MeasureString(newHighScore) / 2;
                 float amountToMove = MathHelper.Clamp((float)newHighScoreTimer / 2000, 0, 1);
                 float amountToMoveValue = MathHelper.Lerp(-1000, 1280 / 2, amountToMove);
                 if (newHighScoreTimer >= NEW_HIGH_SCORE_DISPLAY_TIME)
@@ -1392,7 +1419,7 @@ namespace GalaxyJam
                     float amountToFade = MathHelper.Clamp((float)newHighScoreFadeOutTimer / 2000, 0, 1);
                     highScoreFadeValue = MathHelper.Lerp(1, 0, amountToFade);
                 }
-                spriteBatch.DrawString(pixelGlowFont, newHighScore, new Vector2(amountToMoveValue, 380), new Color(255, 255, 255, highScoreFadeValue), 0f, newHighScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                spriteBatch.DrawString(orangePixelGlowFont, newHighScore, new Vector2(amountToMoveValue, 380), new Color(255, 255, 255, highScoreFadeValue), 0f, newHighScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 if (!isHighScoreSoundEffectPlayed)
                 {
                     highScoreSwoosh.Play((float) soundEffectVolumeSetting/10, 0f, 0f);
@@ -1405,16 +1432,16 @@ namespace GalaxyJam
                     float amountToFadeInHighScore = MathHelper.Clamp((float)showNewHighScoreTimer / 1000, 0, 1);
                     float amountToFadeInHighScoreValue = MathHelper.Lerp(0, 1, amountToFadeInHighScore);
                     string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
-                    Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
-                    spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), new Color(255, 255, 255, amountToFadeInHighScoreValue), 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
+                    Vector2 finalScoreOrigin = orangePixelGlowFont.MeasureString(finalScore) / 2;
+                    spriteBatch.DrawString(orangePixelGlowFont, finalScore, new Vector2(1280 / 2, 380), new Color(255, 255, 255, amountToFadeInHighScoreValue), 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
                     newHighScoreTimer = 4001;
                 }
             }
             else if (gameTime.ElapsedGameTime.TotalMilliseconds < 20 && !isNewHighScore)
             {
                 string finalScore = String.Format("Final Score: {0:n0}!", goalManager.GameScore);
-                Vector2 finalScoreOrigin = pixelGlowFont.MeasureString(finalScore) / 2;
-                spriteBatch.DrawString(pixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
+                Vector2 finalScoreOrigin = orangePixelGlowFont.MeasureString(finalScore) / 2;
+                spriteBatch.DrawString(orangePixelGlowFont, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
             }
 
             if (isNewUnlockedBalls)
