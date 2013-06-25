@@ -18,7 +18,6 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         //Options Interface
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
-        private const string GO_BACK_TEXT = "(Esc) Back";
         private static Cue previousCue;
         private static int previousBasketballSelection;
         private const double WEAPON_SWITCH_TIMER = 300;
@@ -26,8 +25,6 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         public static void DrawOptionsInterface(SpriteBatch spriteBatch, GameTime gameTimer, SpriteFont pixelFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection)
         {
-            spriteBatch.DrawString(pixelFont, GO_BACK_TEXT, new Vector2(10, 10), Color.White);
-
             if (nameToShort)
             {
                 spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(30, 440), Color.Red);
@@ -255,8 +252,8 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.OrangeRed, 0, gameOverOrigin, 1f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 420), Color.White, 0, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
-            spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(10, 30), Color.Gold);
-            spriteBatch.DrawString(pixelFont, "Player", new Vector2(76, 50), Color.DarkOrange);
+            spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(58, 30), Color.Gold);
+            spriteBatch.DrawString(pixelFont, "Player", new Vector2(58, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Score", new Vector2(290, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(440, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(625, 50), Color.DarkOrange);

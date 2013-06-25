@@ -86,7 +86,9 @@ namespace GalaxyJam
         private Texture2D onepxsolidstar;
         private Texture2D cursor;
         private Texture2D galaxyJamText;
-        private Texture2D optionsScreenUi;
+
+        //Options Screen
+        private Texture2D menuHull;
         private Texture2D upArrowKey;
         private Texture2D downArrowKey;
         private Texture2D rightArrowKey;
@@ -392,12 +394,12 @@ namespace GalaxyJam
         {
             //Title Screen
             galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
-            galaxyJamText = Content.Load<Texture2D>(@"Textures/GalaxyJamText");
-            optionsScreenUi = Content.Load<Texture2D>(@"Textures/Interface/OptionsUI");
+            galaxyJamText = Content.Load<Texture2D>(@"Textures/Interface/GalaxyJamTitle");
             upArrowKey = Content.Load<Texture2D>(@"Textures/Interface/UpArrowKey");
             downArrowKey = Content.Load<Texture2D>(@"Textures/Interface/DownArrowKey");
             rightArrowKey = Content.Load<Texture2D>(@"Textures/Interface/RightArrowKey");
             leftArrowKey = Content.Load<Texture2D>(@"Textures/Interface/LeftArrowKey");
+            menuHull = Content.Load<Texture2D>(@"Textures/Interface/SelectionPanel");
 
             //Backboards
             backboard1 = Content.Load<Texture2D>(@"Textures/Backboard/RedOrangeBoard2");
@@ -926,13 +928,18 @@ namespace GalaxyJam
                     const string tutorialText = "How to Play";
                     const string exitText = "Exit";
                     const string tickerSymbol = ">";
+                    const string copyright = "(c) Spoida Games LLC, 2013";
+                    const string version = "Beta RC1";
                     Vector2 tickerOrigin = pixel.MeasureString(tickerSymbol)/2;
                     Vector2 playTextOrigin = pixel.MeasureString(playText) / 2;
                     Vector2 practiceOrigin = pixel.MeasureString(practiceText) / 2;
                     Vector2 settingsTextOrigin = pixel.MeasureString(settingsText) / 2;
                     Vector2 tutorialTextOrigin = pixel.MeasureString(tutorialText) / 2;
                     Vector2 exitOrigin = pixel.MeasureString(exitText)/2;
+                    Vector2 copyrightOrigin = pixelGlow.MeasureString(copyright)/2;
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    spriteBatch.DrawString(pixelGlow, copyright, new Vector2(1280/2, 696), Color.DarkOrange, 0f, copyrightOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixel, version, new Vector2(10, 690), Color.White);
                     if (titleScreenSelection == 0)
                     {
                         spriteBatch.DrawString(pixel, tickerSymbol, new Vector2(1280/2 - 60, 290), Color.White, 0f, tickerOrigin, 1.0f, SpriteEffects.None, 1.0f);
@@ -1159,12 +1166,17 @@ namespace GalaxyJam
                     break;
                 case GameStates.OptionsScreen:
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-                    spriteBatch.Draw(optionsScreenUi, new Vector2(726, 0), Color.White);
+                    spriteBatch.Draw(menuHull, new Vector2(38, 0), Color.White);
+                    spriteBatch.Draw(menuHull, new Vector2(1035, 0), Color.White);
                     GetPlayerName(gameTime);
-                    spriteBatch.Draw(galaxyJamText, new Vector2(0, 10), Color.White);
+                    Vector2 galaxyJamLogoOrigin = new Vector2(galaxyJamText.Width,galaxyJamText.Height)/2;
+                    spriteBatch.Draw(galaxyJamText, new Vector2(1280/2, 85), null, Color.White, 0f, galaxyJamLogoOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
                     spriteBatch.End();
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    const string goBackText = "(Esc) Return to Menu";
+                    Vector2 goBackOrigin = pixelGlow.MeasureString(goBackText) / 2;
+                    spriteBatch.DrawString(pixelGlow, goBackText, new Vector2(1280 / 2, 700), Color.White, 0f, goBackOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     if (currentlySelectedBasketballKey == 0)
                     {
                         spriteBatch.Draw(downArrowKey, new Vector2(880, 214), Color.White);
@@ -1192,33 +1204,40 @@ namespace GalaxyJam
                         spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
                     }
                     int count = 0;
-                    spriteBatch.DrawString(pixel, "Top Scores", new Vector2(105, 550), Color.OrangeRed);
+                    const string topScoreText = "Top Scores";
+                    Vector2 topScoreOrigin = pixel.MeasureString(topScoreText)/2;
+                    spriteBatch.DrawString(pixel, topScoreText, new Vector2(1280/2, 484), Color.OrangeRed, 0f, topScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     foreach (HighScore highScore in highScoreManager.HighScores)
                     {
                         if (count == 0)
                         {
-                            spriteBatch.DrawString(pixel, "1." + highScore.CurrentPlayerName, new Vector2(15, 580), Color.Gold);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 580), Color.Gold);
+                            string first = String.Format("1.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
+                            Vector2 firstOrigin = pixel.MeasureString(first)/2;
+                            spriteBatch.DrawString(pixel, first, new Vector2(1280/2, 514), Color.Gold, 0f, firstOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         }
                         else if (count == 1)
                         {
-                            spriteBatch.DrawString(pixel, "2." + highScore.CurrentPlayerName, new Vector2(15, 610), Color.Goldenrod);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 610), Color.Goldenrod);
+                            string second = String.Format("2.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
+                            Vector2 secondOrigin = pixel.MeasureString(second) / 2;
+                            spriteBatch.DrawString(pixel, second, new Vector2(1280 / 2, 544), Color.Silver, 0f, secondOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         }
                         else if (count == 2)
                         {
-                            spriteBatch.DrawString(pixel, "3." + highScore.CurrentPlayerName, new Vector2(15, 640), Color.DarkGoldenrod);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 640), Color.DarkGoldenrod);
+                            string third = String.Format("3.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
+                            Vector2 thirdOrigin = pixel.MeasureString(third) / 2;
+                            spriteBatch.DrawString(pixel, third, new Vector2(1280 / 2, 574), Color.Goldenrod, 0f, thirdOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         }
                         else if (count == 3)
                         {
-                            spriteBatch.DrawString(pixel, "4." + highScore.CurrentPlayerName, new Vector2(15, 670), Color.WhiteSmoke);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 670), Color.WhiteSmoke);
+                            string fourth = String.Format("4.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
+                            Vector2 fourthOrigin = pixel.MeasureString(fourth) / 2;
+                            spriteBatch.DrawString(pixel, fourth, new Vector2(1280 / 2, 604), Color.WhiteSmoke, 0f, fourthOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         }
                         else if (count == 4)
                         {
-                            spriteBatch.DrawString(pixel, "5." + highScore.CurrentPlayerName, new Vector2(15, 700), Color.WhiteSmoke);
-                            spriteBatch.DrawString(pixel, highScore.PlayerScore.ToString(), new Vector2(255, 700), Color.WhiteSmoke);
+                            string fifth = String.Format("5.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
+                            Vector2 fifthOrigin = pixel.MeasureString(fifth) / 2;
+                            spriteBatch.DrawString(pixel, fifth, new Vector2(1280 / 2, 634), Color.WhiteSmoke, 0f, fifthOrigin, 1.0f, SpriteEffects.None, 1.0f);
                         }
                         count++;
                     }
@@ -1820,14 +1839,14 @@ namespace GalaxyJam
         {
             bool caretVisible = (gameTime.TotalGameTime.TotalMilliseconds % 1000) >= 500;
 
-            spriteBatch.DrawString(pixel, "Your Name:", new Vector2(170, 410), Color.White);
+            spriteBatch.DrawString(pixel, "Your Name:", new Vector2(450, 188), Color.White);
             Vector2 size = pixel.MeasureString("Your Name: ");
-            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 170, 410), Color.White);
+            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 450, 188), Color.White);
 
             if (caretVisible)
             {
                 Vector2 inputLength = pixel.MeasureString(playerName + "Your Name: ");
-                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 170, 410), Color.White);
+                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 450, 188), Color.White);
             }
         }
         #endregion

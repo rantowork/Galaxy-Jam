@@ -49,8 +49,6 @@ Content\Textures\Backboard\RoyalBlueViolet.xnb
 Content\Textures\Backboard\RoyalBlueVioletContact.xnb
 Content\Textures\Backboard\RoyalBlueVioletContactFlip.xnb
 Content\Textures\Backboard\RoyalBlueVioletFlip.xnb
-Content\Textures\GalaxyJamText.xnb
-Content\Textures\Interface\OptionsUI.xnb
 Content\Textures\Interface\DownArrowKey.xnb
 Content\Textures\Interface\LeftArrowKey.xnb
 Content\Textures\Interface\RightArrowKey.xnb
@@ -74,6 +72,7 @@ Content\Audio\SoundEffects\UnlockSound.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.xnb
 Content\Fonts\SpriteFont.xnb
 Content\Fonts\SpriteFontGlow.xnb
+Content\Textures\Interface\GalaxyJamTitle.xnb
 Content\Audio\Music\IntroAmbientCreativeZero.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
