@@ -938,6 +938,8 @@ namespace GalaxyJam
                     Vector2 exitOrigin = pixel.MeasureString(exitText)/2;
                     Vector2 copyrightOrigin = pixelGlow.MeasureString(copyright)/2;
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    Vector2 galaxyLogoOrigin = new Vector2(galaxyJamText.Width,galaxyJamText.Height)/2;
+                    spriteBatch.Draw(galaxyJamText, new Vector2(1280 / 2, 85), null, Color.White, 0f, galaxyLogoOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     spriteBatch.DrawString(pixelGlow, copyright, new Vector2(1280/2, 696), Color.DarkOrange, 0f, copyrightOrigin, 1.0f, SpriteEffects.None, 1.0f);
                     spriteBatch.DrawString(pixel, version, new Vector2(10, 690), Color.White);
                     if (titleScreenSelection == 0)
@@ -1165,18 +1167,29 @@ namespace GalaxyJam
                     spriteBatch.End();
                     break;
                 case GameStates.OptionsScreen:
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-                    spriteBatch.Draw(menuHull, new Vector2(38, 0), Color.White);
-                    spriteBatch.Draw(menuHull, new Vector2(1035, 0), Color.White);
+                    GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, pixelGlow, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey, camera);
+
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     GetPlayerName(gameTime);
+                    spriteBatch.Draw(menuHull, new Vector2(38, 0), Color.White);
                     Vector2 galaxyJamLogoOrigin = new Vector2(galaxyJamText.Width,galaxyJamText.Height)/2;
                     spriteBatch.Draw(galaxyJamText, new Vector2(1280/2, 85), null, Color.White, 0f, galaxyJamLogoOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    GameInterface.DrawOptionsInterface(spriteBatch, gameTime, pixel, highScoreManager, nameToShort, currentlySelectedBasketballKey, currentlySelectedSongKey);
-                    spriteBatch.End();
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+
+                    const string basketballselection = "Basketball";
+                    Vector2 bsOrigin = pixelGlow.MeasureString(basketballselection)/2;
+                    spriteBatch.DrawString(pixelGlow, basketballselection, new Vector2(141.5f, 47.5f), Color.White, 0f, bsOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    
                     const string goBackText = "(Esc) Return to Menu";
                     Vector2 goBackOrigin = pixelGlow.MeasureString(goBackText) / 2;
                     spriteBatch.DrawString(pixelGlow, goBackText, new Vector2(1280 / 2, 700), Color.White, 0f, goBackOrigin, 1.0f, SpriteEffects.None, 1.0f);
+
+                    const string selectBasketballText = "Selected Basketball";
+                    const string selectMusicText = "Selected Music";
+                    Vector2 selectedBasketballTextOrigin = pixel.MeasureString(selectBasketballText)/2;
+                    Vector2 selectedMusicTextOrigin = pixel.MeasureString(selectMusicText)/2;
+                    spriteBatch.DrawString(pixel, selectBasketballText, new Vector2(1280/2, 338), Color.White, 0f, selectedBasketballTextOrigin, 1.0f, SpriteEffects.None, 1f);
+                    spriteBatch.DrawString(pixel, selectMusicText, new Vector2(1280 / 2, 538), Color.White, 0f, selectedMusicTextOrigin, 1.0f, SpriteEffects.None, 1f);
+                    
                     if (currentlySelectedBasketballKey == 0)
                     {
                         spriteBatch.Draw(downArrowKey, new Vector2(880, 214), Color.White);
@@ -1203,44 +1216,7 @@ namespace GalaxyJam
                     {
                         spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
                     }
-                    int count = 0;
-                    const string topScoreText = "Top Scores";
-                    Vector2 topScoreOrigin = pixel.MeasureString(topScoreText)/2;
-                    spriteBatch.DrawString(pixel, topScoreText, new Vector2(1280/2, 484), Color.OrangeRed, 0f, topScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                    foreach (HighScore highScore in highScoreManager.HighScores)
-                    {
-                        if (count == 0)
-                        {
-                            string first = String.Format("1.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
-                            Vector2 firstOrigin = pixel.MeasureString(first)/2;
-                            spriteBatch.DrawString(pixel, first, new Vector2(1280/2, 514), Color.Gold, 0f, firstOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                        }
-                        else if (count == 1)
-                        {
-                            string second = String.Format("2.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
-                            Vector2 secondOrigin = pixel.MeasureString(second) / 2;
-                            spriteBatch.DrawString(pixel, second, new Vector2(1280 / 2, 544), Color.Silver, 0f, secondOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                        }
-                        else if (count == 2)
-                        {
-                            string third = String.Format("3.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
-                            Vector2 thirdOrigin = pixel.MeasureString(third) / 2;
-                            spriteBatch.DrawString(pixel, third, new Vector2(1280 / 2, 574), Color.Goldenrod, 0f, thirdOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                        }
-                        else if (count == 3)
-                        {
-                            string fourth = String.Format("4.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
-                            Vector2 fourthOrigin = pixel.MeasureString(fourth) / 2;
-                            spriteBatch.DrawString(pixel, fourth, new Vector2(1280 / 2, 604), Color.WhiteSmoke, 0f, fourthOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                        }
-                        else if (count == 4)
-                        {
-                            string fifth = String.Format("5.{0} - {1}", highScore.CurrentPlayerName, highScore.PlayerScore);
-                            Vector2 fifthOrigin = pixel.MeasureString(fifth) / 2;
-                            spriteBatch.DrawString(pixel, fifth, new Vector2(1280 / 2, 634), Color.WhiteSmoke, 0f, fifthOrigin, 1.0f, SpriteEffects.None, 1.0f);
-                        }
-                        count++;
-                    }
+
                     spriteBatch.End();
                     break;
                 case GameStates.GetReadyState:
