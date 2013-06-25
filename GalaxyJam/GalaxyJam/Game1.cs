@@ -89,10 +89,19 @@ namespace GalaxyJam
 
         //Options Screen
         private Texture2D menuHull;
-        private Texture2D upArrowKey;
-        private Texture2D downArrowKey;
-        private Texture2D rightArrowKey;
-        private Texture2D leftArrowKey;
+        private Texture2D arrowKey;
+        private Texture2D arrowKeyHover;
+
+        private Rectangle downArrowBox = new Rectangle(564,322,32,32);
+        private Rectangle upArrowBox = new Rectangle(924,322,32,32);
+        private Rectangle leftArrowBox = new Rectangle(564, 522, 32, 32);
+        private Rectangle rightArrowBox = new Rectangle(924,522,32,32);
+
+        private MouseState previousMouseClick;
+        private bool downArrowHovered;
+        private bool upArrowHovered;
+        private bool leftArrowHovered;
+        private bool rightArrowHovered;
 
         //Sounds
         private AudioEngine audioEngine;
@@ -395,10 +404,8 @@ namespace GalaxyJam
             //Title Screen
             galaxyJamLogo = Content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
             galaxyJamText = Content.Load<Texture2D>(@"Textures/Interface/GalaxyJamTitle");
-            upArrowKey = Content.Load<Texture2D>(@"Textures/Interface/UpArrowKey");
-            downArrowKey = Content.Load<Texture2D>(@"Textures/Interface/DownArrowKey");
-            rightArrowKey = Content.Load<Texture2D>(@"Textures/Interface/RightArrowKey");
-            leftArrowKey = Content.Load<Texture2D>(@"Textures/Interface/LeftArrowKey");
+            arrowKey = Content.Load<Texture2D>(@"Textures/Interface/Arrow");
+            arrowKeyHover = Content.Load<Texture2D>(@"Textures/Interface/ArrowHover");
             menuHull = Content.Load<Texture2D>(@"Textures/Interface/SelectionPanel");
 
             //Backboards
@@ -644,37 +651,80 @@ namespace GalaxyJam
 
                     break;
                 case GameStates.OptionsScreen:
-                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
-                    {
-                        if (currentlySelectedSongKey > 0)
-                        {
-                            currentlySelectedSongKey--;
-                        }
-                    }
-                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
-                    {
-                        if (currentlySelectedSongKey < SoundManager.music.Count - 1)
-                        {
-                            currentlySelectedSongKey++;
-                        }
-                    }
-                    cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
 
-                    if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up) && highScoreManager.CanChangeBasketballSelection)
+                    if (downArrowHovered)
                     {
-                        if (currentlySelectedBasketballKey > 0)
+                        if (input.GetMouse().GetState().LeftButton == ButtonState.Pressed && previousMouseClick.LeftButton != ButtonState.Pressed && highScoreManager.CanChangeBasketballSelection)
                         {
-                            currentlySelectedBasketballKey--;
+                            if (currentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
+                            {
+                                currentlySelectedBasketballKey++;
+                            }
                         }
                     }
-                    else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down) && highScoreManager.CanChangeBasketballSelection)
+                    if (upArrowHovered)
                     {
-                        if (currentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
+                        if (input.GetMouse().GetState().LeftButton == ButtonState.Pressed && previousMouseClick.LeftButton != ButtonState.Pressed && highScoreManager.CanChangeBasketballSelection)
                         {
-                            currentlySelectedBasketballKey++;
+                            if (currentlySelectedBasketballKey > 0)
+                            {
+                                currentlySelectedBasketballKey--;
+                            }
                         }
                     }
-                    cachedUpDownKeyboardState = input.GetKeyboard().GetState();
+                    if (leftArrowHovered)
+                    {
+                        if (input.GetMouse().GetState().LeftButton == ButtonState.Pressed && previousMouseClick.LeftButton != ButtonState.Pressed)
+                        {
+                            if (currentlySelectedSongKey > 0)
+                            {
+                                currentlySelectedSongKey--;
+                            }
+                        }
+                    }
+                    if (rightArrowHovered)
+                    {
+                        if (input.GetMouse().GetState().LeftButton == ButtonState.Pressed && previousMouseClick.LeftButton != ButtonState.Pressed)
+                        {
+                            if (currentlySelectedSongKey < SoundManager.music.Count - 1)
+                            {
+                                currentlySelectedSongKey++;
+                            }
+                        }
+                    }
+                    previousMouseClick = input.GetMouse().GetState();
+
+                    //if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
+                    //{
+                    //    if (currentlySelectedSongKey > 0)
+                    //    {
+                    //        currentlySelectedSongKey--;
+                    //    }
+                    //}
+                    //else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
+                    //{
+                    //    if (currentlySelectedSongKey < SoundManager.music.Count - 1)
+                    //    {
+                    //        currentlySelectedSongKey++;
+                    //    }
+                    //}
+                    //cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
+
+                    //if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up) && highScoreManager.CanChangeBasketballSelection)
+                    //{
+                    //    if (currentlySelectedBasketballKey > 0)
+                    //    {
+                    //        currentlySelectedBasketballKey--;
+                    //    }
+                    //}
+                    //else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down) && highScoreManager.CanChangeBasketballSelection)
+                    //{
+                    //    if (currentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
+                    //    {
+                    //        currentlySelectedBasketballKey++;
+                    //    }
+                    //}
+                    //cachedUpDownKeyboardState = input.GetKeyboard().GetState();
                     
                     if (playerName.Length >= 3)
                     {
@@ -1173,7 +1223,7 @@ namespace GalaxyJam
                     GetPlayerName(gameTime);
                     spriteBatch.Draw(menuHull, new Vector2(38, 0), Color.White);
                     Vector2 galaxyJamLogoOrigin = new Vector2(galaxyJamText.Width,galaxyJamText.Height)/2;
-                    spriteBatch.Draw(galaxyJamText, new Vector2(1280/2, 85), null, Color.White, 0f, galaxyJamLogoOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.Draw(galaxyJamText, new Vector2(1280/2 + 120, 85), null, Color.White, 0f, galaxyJamLogoOrigin, 1.0f, SpriteEffects.None, 1.0f);
 
                     const string basketballselection = "Basketball";
                     Vector2 bsOrigin = pixelGlow.MeasureString(basketballselection)/2;
@@ -1181,40 +1231,148 @@ namespace GalaxyJam
                     
                     const string goBackText = "(Esc) Return to Menu";
                     Vector2 goBackOrigin = pixelGlow.MeasureString(goBackText) / 2;
-                    spriteBatch.DrawString(pixelGlow, goBackText, new Vector2(1280 / 2, 700), Color.White, 0f, goBackOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                    spriteBatch.DrawString(pixelGlow, goBackText, new Vector2(1280 / 2 + 120, 700), Color.White, 0f, goBackOrigin, 1.0f, SpriteEffects.None, 1.0f);
 
                     const string selectBasketballText = "Selected Basketball";
                     const string selectMusicText = "Selected Music";
                     Vector2 selectedBasketballTextOrigin = pixel.MeasureString(selectBasketballText)/2;
                     Vector2 selectedMusicTextOrigin = pixel.MeasureString(selectMusicText)/2;
-                    spriteBatch.DrawString(pixel, selectBasketballText, new Vector2(1280/2, 338), Color.White, 0f, selectedBasketballTextOrigin, 1.0f, SpriteEffects.None, 1f);
-                    spriteBatch.DrawString(pixel, selectMusicText, new Vector2(1280 / 2, 538), Color.White, 0f, selectedMusicTextOrigin, 1.0f, SpriteEffects.None, 1f);
+                    spriteBatch.DrawString(pixel, selectBasketballText, new Vector2(1280/2 + 120, 338), Color.White, 0f, selectedBasketballTextOrigin, 1.0f, SpriteEffects.None, 1f);
+                    spriteBatch.DrawString(pixel, selectMusicText, new Vector2(1280 / 2 +  120, 538), Color.White, 0f, selectedMusicTextOrigin, 1.0f, SpriteEffects.None, 1f);
                     
+                    Vector2 arrowKeyOrigin = new Vector2(arrowKey.Width, arrowKey.Height)/2;
+                    MouseState state = Mouse.GetState();
+                    Vector2 mouseLocation = Vector2.Transform(new Vector2(state.X, state.Y) - new Vector2(ResolutionManager.GetViewportX, ResolutionManager.GetViewportY),Matrix.Invert(ResolutionManager.GetTransformationMatrix()));
+                    Rectangle mouseRectangle = new Rectangle(Convert.ToInt32(mouseLocation.X), Convert.ToInt32(mouseLocation.Y), 1, 1);
                     if (currentlySelectedBasketballKey == 0)
                     {
-                        spriteBatch.Draw(downArrowKey, new Vector2(880, 214), Color.White);
+                        //down
+                        if (mouseRectangle.Intersects(downArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 - 60, 338), null, Color.White, 0f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            downArrowHovered = true;
+                            upArrowHovered = false;
+                            leftArrowHovered = false;
+                            rightArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 - 60, 338), null, Color.White, 0f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            downArrowHovered = false;
+                        }
                     }
                     else if (currentlySelectedBasketballKey > 0 && currentlySelectedBasketballKey < (BasketballManager.basketballSelection.Count - 1))
                     {
-                        spriteBatch.Draw(downArrowKey, new Vector2(880, 214), Color.White);
-                        spriteBatch.Draw(upArrowKey, new Vector2(1102, 214), Color.White);
+                        //down
+                        if (mouseRectangle.Intersects(downArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 - 60, 338), null, Color.White, 0f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            downArrowHovered = true;
+                            upArrowHovered = false;
+                            leftArrowHovered = false;
+                            rightArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 - 60, 338), null, Color.White, 0f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            downArrowHovered = false;
+                        }
+                        //up
+                        if (mouseRectangle.Intersects(upArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 + 300, 338), null, Color.White, (float)Math.PI, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            upArrowHovered = true;
+                            downArrowHovered = false;
+                            leftArrowHovered = false;
+                            rightArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 + 300, 338), null, Color.White, (float)Math.PI, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            upArrowHovered = false;
+                        }
                     }
                     else
                     {
-                        spriteBatch.Draw(upArrowKey, new Vector2(1102, 214), Color.White);
+                        //up
+                        if (mouseRectangle.Intersects(upArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 + 300, 338), null, Color.White, (float)Math.PI, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            upArrowHovered = true;
+                            downArrowHovered = false;
+                            leftArrowHovered = false;
+                            rightArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 + 300, 338), null, Color.White, (float)Math.PI, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            upArrowHovered = false;
+                        }
                     }
                     if (currentlySelectedSongKey == 0)
                     {
-                        spriteBatch.Draw(rightArrowKey, new Vector2(1102, 560), Color.White);
+                        //right
+                        if (mouseRectangle.Intersects(rightArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 + 300, 538), null, Color.White, (float)Math.PI * 1.5f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            rightArrowHovered = true;
+                            leftArrowHovered = false;
+                            upArrowHovered = false;
+                            downArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 + 300, 538), null, Color.White, (float)Math.PI * 1.5f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            rightArrowHovered = false;
+                        }
                     }
                     else if (currentlySelectedSongKey > 0 && currentlySelectedSongKey < (SoundManager.music.Count - 1))
                     {
-                        spriteBatch.Draw(rightArrowKey, new Vector2(1102, 560), Color.White);
-                        spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
+                        //right
+                        if (mouseRectangle.Intersects(rightArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 + 300, 538), null, Color.White, (float)Math.PI * 1.5f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            rightArrowHovered = true;
+                            leftArrowHovered = false;
+                            upArrowHovered = false;
+                            downArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 + 300, 538), null, Color.White, (float)Math.PI * 1.5f, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            rightArrowHovered = false;
+                        }
+                        //left
+                        if (mouseRectangle.Intersects(leftArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 - 60, 538), null, Color.White, (float)Math.PI / 2, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            leftArrowHovered = true;
+                            rightArrowHovered = false;
+                            upArrowHovered = false;
+                            downArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 - 60, 538), null, Color.White, (float)Math.PI / 2, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            leftArrowHovered = false;
+                        }
                     }
                     else
                     {
-                        spriteBatch.Draw(leftArrowKey, new Vector2(880, 560), Color.White);
+                        //left
+                        if (mouseRectangle.Intersects(leftArrowBox))
+                        {
+                            spriteBatch.Draw(arrowKeyHover, new Vector2(1280 / 2 - 60, 538), null, Color.White, (float)Math.PI / 2, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            leftArrowHovered = true;
+                            rightArrowHovered = false;
+                            upArrowHovered = false;
+                            downArrowHovered = false;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(arrowKey, new Vector2(1280 / 2 - 60, 538), null, Color.White, (float)Math.PI / 2, arrowKeyOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                            leftArrowHovered = false;
+                        }
                     }
 
                     spriteBatch.End();
@@ -1815,14 +1973,14 @@ namespace GalaxyJam
         {
             bool caretVisible = (gameTime.TotalGameTime.TotalMilliseconds % 1000) >= 500;
 
-            spriteBatch.DrawString(pixel, "Your Name:", new Vector2(450, 188), Color.White);
+            spriteBatch.DrawString(pixel, "Your Name:", new Vector2(570, 188), Color.White);
             Vector2 size = pixel.MeasureString("Your Name: ");
-            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 450, 188), Color.White);
+            spriteBatch.DrawString(pixel, playerName, new Vector2(10 + size.X + 570, 188), Color.White);
 
             if (caretVisible)
             {
                 Vector2 inputLength = pixel.MeasureString(playerName + "Your Name: ");
-                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 450, 188), Color.White);
+                spriteBatch.Draw(cursor, new Vector2(11 + inputLength.X + 570, 188), Color.White);
             }
         }
         #endregion

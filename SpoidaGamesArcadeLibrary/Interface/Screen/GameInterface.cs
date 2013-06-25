@@ -29,7 +29,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             if (nameToShort)
             {
                 Vector2 nameErrorOrigin = pixelFont.MeasureString(NAME_ERROR)/2;
-                spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(1280/2, 210), Color.Red, 0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
+                spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(1280/2 + 120, 230), Color.Red, 0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
             }
 
             if (BasketballManager.basketballSelection.Count == 0)
@@ -59,7 +59,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             {
                 string songName = GetSongTypeString(songType);
                 Vector2 songOrigin = pixelGlowFont.MeasureString(songName) / 2;
-                spriteBatch.DrawString(pixelGlowFont, songName, new Vector2(1280 / 2, 600), Color.MediumPurple, 0f, songOrigin, 1.0f, SpriteEffects.None, 1f);
+                spriteBatch.DrawString(pixelGlowFont, songName, new Vector2(1280 / 2 + 120, 575), Color.MediumPurple, 0f, songOrigin, 1.0f, SpriteEffects.None, 1f);
             }
 
             Cue cue;
@@ -94,14 +94,14 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                         {
                             string lockedText = String.Format("Unlock With {0} Points", basketball.BasketballUnlockScore);
                             Vector2 lockedCenter = pixelGlowFont.MeasureString(lockedText) / 2;
-                            spriteBatch.DrawString(pixelGlowFont, lockedText, new Vector2(1280 / 2, 400), Color.Red, 0f, lockedCenter, 1f, SpriteEffects.None, 1f);
+                            spriteBatch.DrawString(pixelGlowFont, lockedText, new Vector2(1280 / 2 + 120, 375), Color.Red, 0f, lockedCenter, 1f, SpriteEffects.None, 1f);
                             Texture2D lockedTexture = BasketballManager.lockedBasketballTextures[0];
                             spriteBatch.Draw(lockedTexture, new Vector2(145.5f, 452), null, Color.White, 0f, new Vector2((float)lockedTexture.Width / 2, (float)lockedTexture.Height / 2), 1.0f, SpriteEffects.None, 1.0f);
                         }
                         else
                         {
                             Vector2 basketballTextCenter = pixelGlowFont.MeasureString(basketball.BasketballName) / 2;
-                            spriteBatch.DrawString(pixelGlowFont, basketball.BasketballName, new Vector2(1280 / 2, 400), Color.MediumPurple, 0f, basketballTextCenter, 1f, SpriteEffects.None, 1f);
+                            spriteBatch.DrawString(pixelGlowFont, basketball.BasketballName, new Vector2(1280 / 2 + 120, 375), Color.MediumPurple, 0f, basketballTextCenter, 1f, SpriteEffects.None, 1f);
                             spriteBatch.Draw(basketball.BasketballTexture, new Vector2(145.5f, 452), null, Color.White, 0f, basketball.Origin, 1.0f, SpriteEffects.None, 1.0f);
                             BasketballManager.SelectedBasketball = basketball;
                         }

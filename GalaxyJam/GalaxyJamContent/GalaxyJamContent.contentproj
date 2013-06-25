@@ -450,28 +450,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Interface\DownArrowKey.png">
-      <Name>DownArrowKey</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Interface\LeftArrowKey.png">
-      <Name>LeftArrowKey</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Interface\RightArrowKey.png">
-      <Name>RightArrowKey</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Interface\UpArrowKey.png">
-      <Name>UpArrowKey</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Audio\SoundEffects\HighScoreSwoosh.wav">
       <Name>HighScoreSwoosh</Name>
       <Importer>WavImporter</Importer>
@@ -507,6 +485,18 @@
   <ItemGroup>
     <Compile Include="Textures\Interface\GalaxyJamTitle.png">
       <Name>GalaxyJamTitle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Interface\Arrow.png">
+      <Name>Arrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Interface\ArrowHover.png">
+      <Name>ArrowHover</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
