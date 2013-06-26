@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Script.Serialization;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Reflection;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using Microsoft.Xna.Framework;
@@ -19,6 +23,8 @@ using SpoidaGamesArcadeLibrary.Interface.GameOptions;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
 using SpoidaGamesArcadeLibrary.Settings;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace GalaxyJam
 {
@@ -263,6 +269,10 @@ namespace GalaxyJam
         protected override void Initialize()
         {
             IsMouseVisible = true;
+            Cursor myCursor = LoadCustomCursor(@"Content\Cursor\crosshair.cur");
+            Form winForm = (Form)Control.FromHandle(Window.Handle);
+            winForm.Cursor = myCursor;
+
             input.GetKeyboard().CharacterEntered += GamePlayInput;
 
             highScoreManager = new HighScoreManager(fullHighScorePath);
@@ -693,38 +703,6 @@ namespace GalaxyJam
                         }
                     }
                     previousMouseClick = input.GetMouse().GetState();
-
-                    //if (input.GetKeyboard().GetState().IsKeyDown(Keys.Left) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Left))
-                    //{
-                    //    if (currentlySelectedSongKey > 0)
-                    //    {
-                    //        currentlySelectedSongKey--;
-                    //    }
-                    //}
-                    //else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Right) && !cachedRightLeftKeyboardState.IsKeyDown(Keys.Right))
-                    //{
-                    //    if (currentlySelectedSongKey < SoundManager.music.Count - 1)
-                    //    {
-                    //        currentlySelectedSongKey++;
-                    //    }
-                    //}
-                    //cachedRightLeftKeyboardState = input.GetKeyboard().GetState();
-
-                    //if (input.GetKeyboard().GetState().IsKeyDown(Keys.Up) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Up) && highScoreManager.CanChangeBasketballSelection)
-                    //{
-                    //    if (currentlySelectedBasketballKey > 0)
-                    //    {
-                    //        currentlySelectedBasketballKey--;
-                    //    }
-                    //}
-                    //else if (input.GetKeyboard().GetState().IsKeyDown(Keys.Down) && !cachedUpDownKeyboardState.IsKeyDown(Keys.Down) && highScoreManager.CanChangeBasketballSelection)
-                    //{
-                    //    if (currentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
-                    //    {
-                    //        currentlySelectedBasketballKey++;
-                    //    }
-                    //}
-                    //cachedUpDownKeyboardState = input.GetKeyboard().GetState();
                     
                     if (playerName.Length >= 3)
                     {
@@ -979,7 +957,7 @@ namespace GalaxyJam
                     const string exitText = "Exit";
                     const string tickerSymbol = ">";
                     const string copyright = "(c) Spoida Games LLC, 2013";
-                    const string version = "Beta RC1";
+                    const string version = "v0.10 RC 1 (Beta)";
                     Vector2 tickerOrigin = pixel.MeasureString(tickerSymbol)/2;
                     Vector2 playTextOrigin = pixel.MeasureString(playText) / 2;
                     Vector2 practiceOrigin = pixel.MeasureString(practiceText) / 2;
@@ -2069,6 +2047,20 @@ namespace GalaxyJam
                 form.Width = gameSettings.DisplayModeWidth;
                 form.Height = gameSettings.DisplayModeHeight;
             }
+        }
+
+        [DllImport("User32.dll", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern IntPtr LoadCursorFromFile(String path);
+
+        private static Cursor LoadCustomCursor(string path)
+        {
+            IntPtr hCurs = LoadCursorFromFile(path);
+            if (hCurs == IntPtr.Zero) throw new Win32Exception();
+            var curs = new Cursor(hCurs);
+            // Note: force the cursor to own the handle so it gets released properly
+            var fi = typeof(Cursor).GetField("ownHandle", BindingFlags.NonPublic | BindingFlags.Instance);
+            fi.SetValue(curs, true);
+            return curs;
         }
     }
 }
