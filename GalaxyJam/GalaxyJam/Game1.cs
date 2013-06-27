@@ -98,11 +98,6 @@ namespace GalaxyJam
         private Texture2D arrowKey;
         private Texture2D arrowKeyHover;
 
-        private Rectangle downArrowBox = new Rectangle(564,322,32,32);
-        private Rectangle upArrowBox = new Rectangle(924,322,32,32);
-        private Rectangle leftArrowBox = new Rectangle(564, 522, 32, 32);
-        private Rectangle rightArrowBox = new Rectangle(924,522,32,32);
-
         private MouseState previousMouseClick;
         private bool downArrowHovered;
         private bool upArrowHovered;
@@ -355,7 +350,8 @@ namespace GalaxyJam
             }
 
             ResolutionManager.SetResolution(gameSettings.DisplayModeWidth, gameSettings.DisplayModeHeight, fullScreen);
-            
+            ResolutionManager.ResetViewport();
+
             if (gameSettings.FullScreenOption == 2)
             {
                 MakeGameBorderless();
@@ -1222,6 +1218,13 @@ namespace GalaxyJam
                     MouseState state = Mouse.GetState();
                     Vector2 mouseLocation = Vector2.Transform(new Vector2(state.X, state.Y) - new Vector2(ResolutionManager.GetViewportX, ResolutionManager.GetViewportY),Matrix.Invert(ResolutionManager.GetTransformationMatrix()));
                     Rectangle mouseRectangle = new Rectangle(Convert.ToInt32(mouseLocation.X), Convert.ToInt32(mouseLocation.Y), 1, 1);
+                    spriteBatch.DrawString(pixel, String.Format("Mouse: {0},{1}", mouseLocation.X, mouseLocation.Y),
+                                           new Vector2(1280/2, 720/2), Color.White);
+                    Rectangle downArrowBox = new Rectangle(564,322,32,32);
+                    Rectangle upArrowBox = new Rectangle(924,322,32,32);
+                    Rectangle leftArrowBox = new Rectangle(564, 522, 32, 32);
+                    Rectangle rightArrowBox = new Rectangle(924,522,32,32);
+
                     if (currentlySelectedBasketballKey == 0)
                     {
                         //down
@@ -1793,7 +1796,8 @@ namespace GalaxyJam
                             }
                             
                             ResolutionManager.SetResolution(mode.Width, mode.Height, fullScreen);
-                            
+                            ResolutionManager.ResetViewport();
+
                             if (gameSettings.FullScreenOption == 2)
                             {
                                 MakeGameBorderless();
@@ -2024,12 +2028,12 @@ namespace GalaxyJam
         private void MakeGameBorderless()
         {
             IntPtr windowHandle = Window.Handle;
-            var control = System.Windows.Forms.Control.FromHandle(windowHandle);
+            var control = Control.FromHandle(windowHandle);
             var form = control.FindForm();
             if (form != null)
             {
-                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-                form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.WindowState = FormWindowState.Maximized;
                 form.Width = gameSettings.DisplayModeWidth;
                 form.Height = gameSettings.DisplayModeHeight;
             }
@@ -2038,14 +2042,12 @@ namespace GalaxyJam
         private void MakeGameWindowed()
         {
             IntPtr windowHandle = Window.Handle;
-            var control = System.Windows.Forms.Control.FromHandle(windowHandle);
+            var control = Control.FromHandle(windowHandle);
             var form = control.FindForm();
             if (form != null)
             {
-                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-                form.WindowState = System.Windows.Forms.FormWindowState.Normal;
-                form.Width = gameSettings.DisplayModeWidth;
-                form.Height = gameSettings.DisplayModeHeight;
+                form.FormBorderStyle = FormBorderStyle.Fixed3D;
+                form.WindowState = FormWindowState.Normal;
             }
         }
 
