@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,9 @@ using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
 using SpoidaGamesArcadeLibrary.Settings;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace GalaxyJam
 {
@@ -103,6 +106,11 @@ namespace GalaxyJam
         private bool upArrowHovered;
         private bool leftArrowHovered;
         private bool rightArrowHovered;
+
+        private Rectangle downArrowBox = new Rectangle(564, 322, 32, 32);
+        private Rectangle upArrowBox = new Rectangle(924, 322, 32, 32);
+        private Rectangle leftArrowBox = new Rectangle(564, 522, 32, 32);
+        private Rectangle rightArrowBox = new Rectangle(924, 522, 32, 32);
 
         //Sounds
         private AudioEngine audioEngine;
@@ -1218,12 +1226,6 @@ namespace GalaxyJam
                     MouseState state = Mouse.GetState();
                     Vector2 mouseLocation = Vector2.Transform(new Vector2(state.X, state.Y) - new Vector2(ResolutionManager.GetViewportX, ResolutionManager.GetViewportY),Matrix.Invert(ResolutionManager.GetTransformationMatrix()));
                     Rectangle mouseRectangle = new Rectangle(Convert.ToInt32(mouseLocation.X), Convert.ToInt32(mouseLocation.Y), 1, 1);
-                    spriteBatch.DrawString(pixel, String.Format("Mouse: {0},{1}", mouseLocation.X, mouseLocation.Y),
-                                           new Vector2(1280/2, 720/2), Color.White);
-                    Rectangle downArrowBox = new Rectangle(564,322,32,32);
-                    Rectangle upArrowBox = new Rectangle(924,322,32,32);
-                    Rectangle leftArrowBox = new Rectangle(564, 522, 32, 32);
-                    Rectangle rightArrowBox = new Rectangle(924,522,32,32);
 
                     if (currentlySelectedBasketballKey == 0)
                     {
@@ -2034,8 +2036,7 @@ namespace GalaxyJam
             {
                 form.FormBorderStyle = FormBorderStyle.None;
                 form.WindowState = FormWindowState.Maximized;
-                form.Width = gameSettings.DisplayModeWidth;
-                form.Height = gameSettings.DisplayModeHeight;
+                form.ClientSize = new Size(gameSettings.DisplayModeWidth, gameSettings.DisplayModeHeight);
             }
         }
 
@@ -2048,6 +2049,7 @@ namespace GalaxyJam
             {
                 form.FormBorderStyle = FormBorderStyle.Fixed3D;
                 form.WindowState = FormWindowState.Normal;
+                form.ClientSize = new Size(gameSettings.DisplayModeWidth, gameSettings.DisplayModeHeight);
             }
         }
 
