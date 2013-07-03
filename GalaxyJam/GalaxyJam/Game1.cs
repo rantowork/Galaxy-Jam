@@ -237,6 +237,9 @@ namespace GalaxyJam
         //Tutorial
         private short currentTutorialScreen;
 
+        //testing github
+        private string "Hey Tim how does it work?";
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
