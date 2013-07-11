@@ -237,8 +237,10 @@ namespace GalaxyJam
         //Tutorial
         private short currentTutorialScreen;
 
-        //testing github
-        private string "Hey Tim how does it work?";
+        //Playing
+        Vector2 basketballLocation;
+        Vector2 pointingAt;
+        float force;
 
         public Game1()
         {
@@ -264,6 +266,7 @@ namespace GalaxyJam
             Components.Add(input);
 
             PhysicalWorld.World = new World(Vector2.Zero);
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
         }
 
         /// <summary>
@@ -765,7 +768,9 @@ namespace GalaxyJam
                     break;
                 case GameStates.PracticeScreen:
                     BasketballManager.basketballs[0].Update(gameTime);
-                    PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+
+                    float timeStep = Math.Min((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f, (1f / 60f));
+                    PhysicalWorld.World.Step(timeStep);
 
                     HandlePlayerInput();
                     HandleBasketballPosition();
@@ -1047,6 +1052,19 @@ namespace GalaxyJam
                     spriteBatch.End();
 
                     spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+
+                    if (basketballManager.BasketballBody.Awake == false)
+                    {
+                        for (float t = 0; t < 70f; t += .01f)
+                        {
+                            const float steps = 1 / 60f;
+                            Vector2 stepVelocity = (pointingAt * force * steps);
+                            Vector2 gravity = (ConvertUnits.ToDisplayUnits(new Vector2(0, 25f))) * steps * steps;
+                            Vector2 position = basketballLocation + t * stepVelocity + .5f * (t * t + t) * gravity;
+                            spriteBatch.Draw(twopxsolidstar, position, Color.MediumPurple);
+                        }
+                    }
+
                     basketballSparkle.Draw(spriteBatch);
                     spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, basketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
                     
@@ -1447,6 +1465,22 @@ namespace GalaxyJam
             Vector2 leftRimOrigin = new Vector2(leftRim1.Width, leftRim1.Height) / 2;
             Vector2 rightRimOrigin2 = new Vector2(rightRim1.Width, rightRim1.Height) / 2;
 
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+
+            if (basketballManager.BasketballBody.Awake == false)
+            {
+                for (float t = 0; t < 5f; t += .01f)
+                {
+                    const float steps = 1 / 60f;
+                    Vector2 stepVelocity = (pointingAt * force * steps);
+                    Vector2 gravity = (ConvertUnits.ToDisplayUnits(new Vector2(0, 25f))) * steps * steps;
+                    Vector2 position = basketballLocation + t * stepVelocity + .5f * (t * t + t) * gravity;
+                    spriteBatch.Draw(twopxsolidstar, position, Color.MediumPurple);
+                }
+            }
+
+            spriteBatch.End();
+
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             basketballSparkle.Draw(spriteBatch);
             spriteBatch.End();
@@ -1652,22 +1686,8 @@ namespace GalaxyJam
         private void HandlePlayerInput()
         {
             MouseState state = input.GetMouse().GetState();
-            if (basketballManager.BasketballBody.Awake == false)
-            {
-                if (state.LeftButton == ButtonState.Pressed)
-                {
-                    PhysicalWorld.World.Gravity.Y = 25;
-                    basketballManager.BasketballBody.Awake = true;
-                    HandleShotAngle(state);
-                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
-                }
-            }
-        }
 
-        private void HandleShotAngle(MouseState state)
-        {
-            Vector2 basketballLocation = new Vector2(basketballManager.BasketballBody.Position.X * PhysicalWorld.MetersInPixels,
-                                                     basketballManager.BasketballBody.Position.Y * PhysicalWorld.MetersInPixels);
+            basketballLocation = basketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels;
             Vector2 mouseLocation =
                 Vector2.Transform(
                     new Vector2(state.X, state.Y) -
@@ -1675,13 +1695,26 @@ namespace GalaxyJam
                     Matrix.Invert(ResolutionManager.GetTransformationMatrix()));
 
             double radians = MouseAngle(basketballLocation, mouseLocation);
-            Vector2 pointingAt = new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
-
+            pointingAt = new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
             float distance = Vector2.Distance(basketballLocation, mouseLocation);
+            float modifier = MathHelper.Clamp(distance, 0, 1200);
+            force = (6 / 10f) * modifier + 1200;
 
-            Vector2 shotVector = new Vector2(MathHelper.Clamp((pointingAt.X * distance) / (PhysicalWorld.MetersInPixels * 1.5f), -3, 3), MathHelper.Clamp(((pointingAt.Y * distance) / (PhysicalWorld.MetersInPixels)), -4, 3));
+            if (basketballManager.BasketballBody.Awake == false)
+            {
+                if (state.LeftButton == ButtonState.Pressed)
+                {
+                    PhysicalWorld.World.Gravity.Y = 25;
+                    basketballManager.BasketballBody.Awake = true;
+                    HandleShotAngle(pointingAt, force);
+                    SoundManager.PlaySoundEffect(basketBallShotSoundEffect, (float)gameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
+                }
+            }
+        }
 
-            basketballManager.BasketballBody.ApplyLinearImpulse(shotVector);
+        private void HandleShotAngle(Vector2 direction, float shotForce)
+        {
+            basketballManager.BasketballBody.ApplyLinearImpulse(ConvertUnits.ToSimUnits(pointingAt) * shotForce);
             basketballManager.BasketballBody.ApplyAngularImpulse(.2f);
         }
 
