@@ -111,6 +111,25 @@
     <Compile Include="Effects\2D\SparkleEmitter.cs" />
     <Compile Include="Effects\Environment\Starfield.cs" />
     <Compile Include="Effects\Environment\Stars.cs" />
+    <Compile Include="GameStates\GameEndScreenState.cs" />
+    <Compile Include="GameStates\GetReadyScreenState.cs" />
+    <Compile Include="Globals\ComputerSettings.cs" />
+    <Compile Include="Globals\ConvertUnits.cs" />
+    <Compile Include="Globals\Fonts.cs" />
+    <Compile Include="Globals\GameState.cs" />
+    <Compile Include="Globals\InterfaceSettings.cs" />
+    <Compile Include="Globals\Screen.cs" />
+    <Compile Include="GameStates\OptionsScreenState.cs" />
+    <Compile Include="GameStates\PausedScreenState.cs" />
+    <Compile Include="GameStates\PlayingScreenState.cs" />
+    <Compile Include="GameStates\PracticeScreenState.cs" />
+    <Compile Include="GameStates\SettingsScreenState.cs" />
+    <Compile Include="GameStates\StartScreenState.cs" />
+    <Compile Include="GameStates\TitleScreenState.cs" />
+    <Compile Include="GameStates\TutorialScreenState.cs" />
+    <Compile Include="Globals\Sounds.cs" />
+    <Compile Include="Globals\Textures.cs" />
+    <Compile Include="Globals\Unlocks.cs" />
     <Compile Include="Interface\GameGoals\GameTimer.cs" />
     <Compile Include="Interface\GameGoals\GoalManager.cs" />
     <Compile Include="Interface\GameGoals\HighScore.cs" />
@@ -127,6 +146,7 @@
     <Compile Include="Settings\InterfaceOptions.cs" />
     <Compile Include="Settings\SoundManager.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

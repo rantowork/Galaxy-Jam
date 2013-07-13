@@ -47,6 +47,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         {
             basketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
             basketballBody.BodyType = BodyType.Dynamic;
+            basketballBody.Mass = 1f;
             basketballBody.Restitution = 0.3f;
             basketballBody.Friction = 0.1f;
             LoadBasketballs(content);

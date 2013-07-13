@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace GalaxyJam
+namespace SpoidaGamesArcadeLibrary.Globals
 {
     public static class ConvertUnits
     {
