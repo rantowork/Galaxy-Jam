@@ -11,7 +11,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
     {
         public static void Update(GameTime gameTime)
         {
-            BasketballManager.basketballs[0].Update(gameTime);
+            BasketballManager.Basketballs[0].Update(gameTime);
 
             float timeStep = Math.Min((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f, (1f / 60f));
             PhysicalWorld.World.Step(timeStep);
@@ -19,8 +19,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Screen.HandlePlayerInput();
             Screen.HandleBasketballPosition();
 
-            InterfaceSettings.SparkleEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-            InterfaceSettings.SparkleEmitter.Update();
+            BasketballManager.SelectedBasketballEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+            BasketballManager.SelectedBasketballEmitter.Update();
 
             if (PhysicalWorld.BackboardCollisionHappened)
             {
@@ -70,8 +70,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 }
             }
 
-            InterfaceSettings.SparkleEmitter.Draw(spriteBatch);
-            spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
+            BasketballManager.SelectedBasketballEmitter.Draw(spriteBatch);
+            spriteBatch.Draw(BasketballManager.Basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.Basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.Basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
 
             //draw backboard
             spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard1Glow : Textures.Backboard1, backboardPosition, null, Color.White, 0f, backboardOrigin, 1f, SpriteEffects.None, 0f);

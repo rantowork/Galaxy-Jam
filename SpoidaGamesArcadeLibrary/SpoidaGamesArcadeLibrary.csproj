@@ -108,9 +108,11 @@
     <Compile Include="Effects\2D\Particle.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Effects\2D\SparkleEmitter.cs" />
+    <Compile Include="Effects\2D\Emitter.cs" />
+    <Compile Include="Effects\2D\ParticleEmitters.cs" />
     <Compile Include="Effects\Environment\Starfield.cs" />
     <Compile Include="Effects\Environment\Stars.cs" />
+    <Compile Include="GameStates\ArcadeModeScreenState.cs" />
     <Compile Include="GameStates\GameEndScreenState.cs" />
     <Compile Include="GameStates\GetReadyScreenState.cs" />
     <Compile Include="Globals\ComputerSettings.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="Interface\Screen\GameInterface.cs" />
     <Compile Include="Interface\Screen\ResolutionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Entities\ArcadeBasketball.cs" />
     <Compile Include="Resources\Entities\Basketball.cs" />
     <Compile Include="Resources\Entities\BasketballManager.cs" />
     <Compile Include="Resources\Entities\PhysicalWorld.cs" />

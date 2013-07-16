@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.GameStates;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
@@ -210,6 +211,7 @@ namespace GalaxyJam
         {
             Textures.LoadTextures(Content);
             InterfaceSettings.LoadEffects();
+            ParticleEmitters.LoadEmitters(Content);
             Fonts.LoadFonts(Content);
             Sounds.LoadSongs(Content, InterfaceSettings.GameSettings);
             Sounds.LoadSounds(Content);
@@ -277,6 +279,9 @@ namespace GalaxyJam
                 case GameState.GameStates.GameEnd:
                     GameEndScreenState.Update(gameTime);
                     break;
+                case GameState.GameStates.ArcadeMode:
+                    ArcadeModeScreenState.Update(gameTime);
+                    break;
             }
             base.Update(gameTime);
         }
@@ -326,16 +331,12 @@ namespace GalaxyJam
                 case GameState.GameStates.GameEnd:
                     GameEndScreenState.Draw(gameTime, m_spriteBatch);
                     break;
+                case GameState.GameStates.ArcadeMode:
+                    ArcadeModeScreenState.Draw(gameTime, m_spriteBatch);
+                    break;
             }
 
             base.Draw(gameTime);
-        }
-
-        private static void ResetPosition()
-        {
-            PhysicalWorld.World.Gravity.Y = 0;
-            InterfaceSettings.BasketballManager.BasketballBody.Awake = false;
-            InterfaceSettings.BasketballManager.BasketballBody.Position = Screen.RandomizePosition();
         }
 
         #region PlayerInput
@@ -374,6 +375,7 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.LeftRimBody);
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.RightRimBody);
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
+                        BasketballManager.SelectedBasketballEmitter = ParticleEmitters.GetEmitter(ParticleEmitterTypes.SparkleEmitter);
                         GameState.States = GameState.GameStates.PracticeScreen;
                     }
                     else if (InterfaceSettings.TitleScreenSelection == 2)
@@ -388,6 +390,7 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.IgnoreCollisionWith(PhysicalWorld.RightRimBody);
                         InterfaceSettings.CurrentTutorialScreen = 0;
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
+                        BasketballManager.SelectedBasketballEmitter = ParticleEmitters.GetEmitter(ParticleEmitterTypes.SparkleEmitter);
                         GameState.States = GameState.GameStates.TutorialScreen;
                     }
                     else
@@ -401,7 +404,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     ResetPosition();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     GameState.States = GameState.GameStates.TitleScreen;
                 }
             }
@@ -410,7 +413,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     ResetPosition();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     GameState.States = GameState.GameStates.TitleScreen;
                 }
             }
@@ -552,7 +555,7 @@ namespace GalaxyJam
                 if (character == 109)
                 {
                     ResetPosition();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     GetReadyScreenState.SoundEffectCounter = 1;
@@ -565,7 +568,7 @@ namespace GalaxyJam
                 if (character == 114)
                 {
                     ResetPosition();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     SoundManager.MuteSounds();
@@ -584,7 +587,7 @@ namespace GalaxyJam
                 if (character == 109)
                 {
                     ResetPosition();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     GetReadyScreenState.SoundEffectCounter = 1;
@@ -596,7 +599,7 @@ namespace GalaxyJam
                 if (character == 114)
                 {
                     ResetPosition();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     GetReadyScreenState.SoundEffectCounter = 1;
@@ -606,6 +609,13 @@ namespace GalaxyJam
             }
         }
         #endregion
+
+        private static void ResetPosition()
+        {
+            PhysicalWorld.World.Gravity.Y = 0;
+            InterfaceSettings.BasketballManager.BasketballBody.Awake = false;
+            InterfaceSettings.BasketballManager.BasketballBody.Position = Screen.RandomizePosition();
+        }
 
         private void MakeGameBorderless()
         {

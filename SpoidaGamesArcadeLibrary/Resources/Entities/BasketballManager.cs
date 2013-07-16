@@ -5,88 +5,83 @@ using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
     public class BasketballManager
     {
-        private Random random = new Random();
+        private readonly Random m_random = new Random();
 
-        public static Dictionary<BasketballTypes, Basketball> basketballs = new Dictionary<BasketballTypes, Basketball>();
-        public static Dictionary<int, Texture2D> lockedBasketballTextures = new Dictionary<int, Texture2D>();
-        public static Dictionary<int, BasketballTypes> basketballSelection = new Dictionary<int, BasketballTypes>();
-        public static List<Basketball> basketballList = new List<Basketball>();
+        public static Dictionary<BasketballTypes, Basketball> Basketballs = new Dictionary<BasketballTypes, Basketball>();
+        public static Dictionary<int, Texture2D> LockedBasketballTextures = new Dictionary<int, Texture2D>();
+        public static Dictionary<int, BasketballTypes> BasketballSelection = new Dictionary<int, BasketballTypes>();
+        public static List<Basketball> BasketballList = new List<Basketball>();
 
-        private static Basketball selectedBasketball;
-        public static Basketball SelectedBasketball
-        {
-            get { return selectedBasketball; }
-            set { selectedBasketball = value; }
-        }
+        public static Basketball SelectedBasketball { get; set; }
+        public static Emitter SelectedBasketballEmitter { get; set;}
 
         public void SelectBasketball(BasketballTypes type)
         {
             Basketball selectedBall;
-            if (basketballs.TryGetValue(type, out selectedBall))
+            if (Basketballs.TryGetValue(type, out selectedBall))
             {
                 SelectedBasketball = selectedBall;
+                SelectedBasketballEmitter = ParticleEmitters.GetEmitter(selectedBall.BasketballEmitter);
             }
             else
             {
-                selectedBasketball = basketballs[0];
+                SelectedBasketball = Basketballs[0];
+                SelectedBasketballEmitter = ParticleEmitters.GetEmitter(SelectedBasketball.BasketballEmitter);
             }
         }
 
-        private Body basketballBody;
-        public Body BasketballBody
-        {
-            get { return basketballBody; }
-        }
-        
+        public Body BasketballBody { get; private set; }
+
         public BasketballManager(ContentManager content)
         {
-            basketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
-            basketballBody.BodyType = BodyType.Dynamic;
-            basketballBody.Mass = 1f;
-            basketballBody.Restitution = 0.3f;
-            basketballBody.Friction = 0.1f;
+            BasketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((m_random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (m_random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
+            BasketballBody.BodyType = BodyType.Dynamic;
+            BasketballBody.Mass = 1f;
+            BasketballBody.Restitution = 0.3f;
+            BasketballBody.Friction = 0.1f;
             LoadBasketballs(content);
             LoadLockedBasketballs(content);
         }
 
         private static void LoadBasketballs(ContentManager content)
         {
-            Basketball redGlowBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Red Glow Ball", 0);
-            Basketball slimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Green Slime Ball", 0);
-            Basketball blueSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Blue Slime Ball", 100000);
-            Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Cute In Pink", 200000);
-            Basketball brokenPlanet = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Broken Planet", 500000);
-            Basketball thatsNoMoon = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "That's No Moon!", 750000);
-            Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> {new Rectangle(0, 0, 36, 36)}, false, "Earth Day", 1000000);
-            Basketball magmaBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Magma Ball", 1500000);
+            Basketball redGlowBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Red Glow Ball", 0, ParticleEmitterTypes.SparkleEmitter);
+            Basketball slimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Green Slime Ball", 0, ParticleEmitterTypes.SparkleEmitter);
+            Basketball blueSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Blue Slime Ball", 100000, ParticleEmitterTypes.SparkleEmitter);
+            Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Cute In Pink", 200000, ParticleEmitterTypes.SparkleEmitter);
+            Basketball brokenPlanet = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Broken Planet", 500000, ParticleEmitterTypes.SparkleEmitter);
+            Basketball thatsNoMoon = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!", 750000, ParticleEmitterTypes.SparkleEmitter);
+            Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day", 1000000, ParticleEmitterTypes.SparkleEmitter);
+            Basketball magmaBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Magma Ball", 1500000, ParticleEmitterTypes.SparkleEmitter);
 
-            basketballs.Add(BasketballTypes.RedGlowBall, redGlowBall);
-            basketballs.Add(BasketballTypes.SlimeBall, slimeBall);
-            basketballs.Add(BasketballTypes.CuteInPink, cuteInPink);
-            basketballs.Add(BasketballTypes.BlueSlimeBall, blueSlimeBall);
-            basketballs.Add(BasketballTypes.BrokenPlanet, brokenPlanet);
-            basketballs.Add(BasketballTypes.ThatsNoMoon, thatsNoMoon);
-            basketballs.Add(BasketballTypes.EarthDay, earthDay);
-            basketballs.Add(BasketballTypes.MagmaBall, magmaBall);
+            Basketballs.Add(BasketballTypes.RedGlowBall, redGlowBall);
+            Basketballs.Add(BasketballTypes.SlimeBall, slimeBall);
+            Basketballs.Add(BasketballTypes.CuteInPink, cuteInPink);
+            Basketballs.Add(BasketballTypes.BlueSlimeBall, blueSlimeBall);
+            Basketballs.Add(BasketballTypes.BrokenPlanet, brokenPlanet);
+            Basketballs.Add(BasketballTypes.ThatsNoMoon, thatsNoMoon);
+            Basketballs.Add(BasketballTypes.EarthDay, earthDay);
+            Basketballs.Add(BasketballTypes.MagmaBall, magmaBall);
 
-            basketballList.Add(redGlowBall);
-            basketballList.Add(slimeBall);
-            basketballList.Add(cuteInPink);
-            basketballList.Add(blueSlimeBall);
-            basketballList.Add(brokenPlanet);
-            basketballList.Add(thatsNoMoon);
-            basketballList.Add(earthDay);
-            basketballList.Add(magmaBall);
+            BasketballList.Add(redGlowBall);
+            BasketballList.Add(slimeBall);
+            BasketballList.Add(cuteInPink);
+            BasketballList.Add(blueSlimeBall);
+            BasketballList.Add(brokenPlanet);
+            BasketballList.Add(thatsNoMoon);
+            BasketballList.Add(earthDay);
+            BasketballList.Add(magmaBall);
         }
 
         private static void LoadLockedBasketballs(ContentManager content)
         {
-            lockedBasketballTextures.Add(0, content.Load<Texture2D>(@"Textures/Basketballs/Locked"));
+            LockedBasketballTextures.Add(0, content.Load<Texture2D>(@"Textures/Basketballs/Locked"));
         }
     }
 

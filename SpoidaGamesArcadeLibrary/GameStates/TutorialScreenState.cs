@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
@@ -21,14 +22,14 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
             if (InterfaceSettings.CurrentTutorialScreen == 0)
             {
-                BasketballManager.basketballs[0].Update(gameTime);
+                BasketballManager.Basketballs[0].Update(gameTime);
                 PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
 
                 Screen.HandlePlayerInput();
                 Screen.HandleBasketballPosition();
 
-                InterfaceSettings.SparkleEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-                InterfaceSettings.SparkleEmitter.Update();
+                BasketballManager.SelectedBasketballEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                BasketballManager.SelectedBasketballEmitter.Update();
             }
         }
 
@@ -52,10 +53,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 Vector2 tutText1Origin = Fonts.SpriteFont.MeasureString(tutText01) / 2;
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 spriteBatch.DrawString(Fonts.SpriteFont, tutText01, new Vector2(1280 / 2, 700), Color.White, 0f, tutText1Origin, 1.0f, SpriteEffects.None, 1.0f);
-                InterfaceSettings.SparkleEmitter.Draw(spriteBatch);
+                BasketballManager.SelectedBasketballEmitter.Draw(spriteBatch);
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-                spriteBatch.Draw(BasketballManager.basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(BasketballManager.Basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.Basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.Basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
             else if (InterfaceSettings.CurrentTutorialScreen == 1)

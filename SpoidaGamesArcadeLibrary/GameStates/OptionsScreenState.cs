@@ -22,7 +22,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 if (Screen.Input.GetMouse().GetState().LeftButton == ButtonState.Pressed && InterfaceSettings.PreviousMouseClick.LeftButton != ButtonState.Pressed && InterfaceSettings.HighScoreManager.CanChangeBasketballSelection)
                 {
-                    if (InterfaceSettings.CurrentlySelectedBasketballKey < BasketballManager.basketballs.Count - 1)
+                    if (InterfaceSettings.CurrentlySelectedBasketballKey < BasketballManager.Basketballs.Count - 1)
                     {
                         InterfaceSettings.CurrentlySelectedBasketballKey++;
                     }
@@ -113,7 +113,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     InterfaceSettings.DownArrowHovered = false;
                 }
             }
-            else if (InterfaceSettings.CurrentlySelectedBasketballKey > 0 && InterfaceSettings.CurrentlySelectedBasketballKey < (BasketballManager.basketballSelection.Count - 1))
+            else if (InterfaceSettings.CurrentlySelectedBasketballKey > 0 && InterfaceSettings.CurrentlySelectedBasketballKey < (BasketballManager.BasketballSelection.Count - 1))
             {
                 //down
                 if (mouseRectangle.Intersects(s_downArrowBox))

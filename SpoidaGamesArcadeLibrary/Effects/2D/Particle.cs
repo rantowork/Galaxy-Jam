@@ -36,7 +36,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         public void Draw(SpriteBatch spriteBatch)
         {
             Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-            Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+            Vector2 origin = new Vector2(Texture.Width / 2f, Texture.Height / 2f);
 
             spriteBatch.Draw(Texture, Position, sourceRectangle, Color,
                 Angle, origin, Size, SpriteEffects.None, 0f);

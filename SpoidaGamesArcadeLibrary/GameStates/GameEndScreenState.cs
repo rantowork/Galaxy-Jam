@@ -17,7 +17,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         {
             if (Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() && !Unlocks.UnlocksCalculated)
             {
-                foreach (Basketball basketball in BasketballManager.basketballList)
+                foreach (Basketball basketball in BasketballManager.BasketballList)
                 {
                     if (basketball.BasketballUnlockScore <= Unlocks.CurrentBestScore)
                     {

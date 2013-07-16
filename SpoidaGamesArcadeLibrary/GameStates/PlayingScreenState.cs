@@ -43,12 +43,12 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Screen.HandlePlayerInput();
             Screen.HandleBasketballPosition();
 
-            InterfaceSettings.SparkleEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-            InterfaceSettings.SparkleEmitter.Update();
-
+            BasketballManager.SelectedBasketballEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+            BasketballManager.SelectedBasketballEmitter.Update();
+            
             Vector2 basketballCenter = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
             Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
-            InterfaceSettings.GoalManager.UpdateGoalScored(gameTime, Screen.Camera, basketballCenterRectangle, Sounds.BasketScoredSoundEffect, Sounds.StreakWubSoundEffect, InterfaceSettings.SparkleEmitter, InterfaceSettings.StarField, InterfaceSettings.GameSettings);
+            InterfaceSettings.GoalManager.UpdateGoalScored(gameTime, Screen.Camera, basketballCenterRectangle, Sounds.BasketScoredSoundEffect, Sounds.StreakWubSoundEffect, BasketballManager.SelectedBasketballEmitter, InterfaceSettings.StarField, InterfaceSettings.GameSettings);
 
             if (PhysicalWorld.BackboardCollisionHappened)
             {
@@ -92,7 +92,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     Unlocks.HighScoresScore.Clear();
                     Unlocks.HighScoresStreak.Clear();
                     Unlocks.HighScoresMultiplier.Clear();
-                    InterfaceSettings.SparkleEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
                     if (Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() && !Unlocks.UnlocksCalculated)
                     {
                         Unlocks.IsNewHighScore = true;
@@ -127,7 +127,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-            InterfaceSettings.SparkleEmitter.Draw(spriteBatch);
+            BasketballManager.SelectedBasketballEmitter.Draw(spriteBatch);
             spriteBatch.End();
 
             //draw objects which contain a body that can have forces applied to it

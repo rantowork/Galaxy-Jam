@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
-    public class Basketball
+    public class ArcadeBasketball
     {
         public Texture2D BasketballTexture { get; set; }
 
@@ -41,35 +45,19 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             get { return m_frames[m_currentFrame]; }
         }
 
-        public bool Animate { get; set; }
-        public string BasketballName { get; set; }
-        public int BasketballUnlockScore { get; set; }
         public ParticleEmitterTypes BasketballEmitter { get; set; }
+        public Body BasketballBody { get; set; }
 
-        public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated, string name, int unlockScore, ParticleEmitterTypes ballEmitter)
+        public ArcadeBasketball(Texture2D texture, List<Rectangle> framesList, ParticleEmitterTypes ballEmitter)
         {
             BasketballTexture = texture;
             m_frames = framesList;
-            Animate = isAnimated;
-            BasketballName = name;
-            BasketballUnlockScore = unlockScore;
             BasketballEmitter = ballEmitter;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            TimeLeftForCurrentFrame += elapsed;
-
-            if (Animate)
-            {
-                if (TimeLeftForCurrentFrame >= FrameTime)
-                {
-                    Frame = (Frame + 1) % (FrameCount);
-                    TimeLeftForCurrentFrame = 0.0f;
-                }
-            }
+            
         }
     }
 }

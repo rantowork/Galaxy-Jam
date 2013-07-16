@@ -32,13 +32,13 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 spriteBatch.DrawString(pixelFont, NAME_ERROR, new Vector2(1280/2 + 120, 230), Color.Red, 0f, nameErrorOrigin, 1f, SpriteEffects.None, 1.0f);
             }
 
-            if (BasketballManager.basketballSelection.Count == 0)
+            if (BasketballManager.BasketballSelection.Count == 0)
             {
                 int count = 0;
                 var values = Enum.GetValues(typeof(BasketballTypes));
                 foreach (BasketballTypes type in values)
                 {
-                    BasketballManager.basketballSelection.Add(count, type);
+                    BasketballManager.BasketballSelection.Add(count, type);
                     count++;
                 }
             }
@@ -85,17 +85,17 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             {
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 BasketballTypes basketballTypes;
-                if (BasketballManager.basketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
+                if (BasketballManager.BasketballSelection.TryGetValue(currentBasketballSelection, out basketballTypes))
                 {
                     Basketball basketball;
-                    if (BasketballManager.basketballs.TryGetValue(basketballTypes, out basketball))
+                    if (BasketballManager.Basketballs.TryGetValue(basketballTypes, out basketball))
                     {
                         if (IsBasketballLocked(basketball, highScoreManager))
                         {
                             string lockedText = String.Format("Unlock With {0} Points", basketball.BasketballUnlockScore);
                             Vector2 lockedCenter = pixelGlowFont.MeasureString(lockedText) / 2;
                             spriteBatch.DrawString(pixelGlowFont, lockedText, new Vector2(1280 / 2 + 120, 375), Color.Red, 0f, lockedCenter, 1f, SpriteEffects.None, 1f);
-                            Texture2D lockedTexture = BasketballManager.lockedBasketballTextures[0];
+                            Texture2D lockedTexture = BasketballManager.LockedBasketballTextures[0];
                             spriteBatch.Draw(lockedTexture, new Vector2(145.5f, 452), null, Color.White, 0f, new Vector2((float)lockedTexture.Width / 2, (float)lockedTexture.Height / 2), 1.0f, SpriteEffects.None, 1.0f);
                         }
                         else
@@ -114,10 +114,10 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 highScoreManager.CanChangeBasketballSelection = false;
 
-                BasketballTypes previousBasketballType = BasketballManager.basketballSelection[previousBasketballSelection];
-                BasketballTypes nextBasketballType = BasketballManager.basketballSelection[currentBasketballSelection];
-                Basketball previousBasketball = BasketballManager.basketballs[previousBasketballType];
-                Basketball nextBasketball = BasketballManager.basketballs[nextBasketballType];
+                BasketballTypes previousBasketballType = BasketballManager.BasketballSelection[previousBasketballSelection];
+                BasketballTypes nextBasketballType = BasketballManager.BasketballSelection[currentBasketballSelection];
+                Basketball previousBasketball = BasketballManager.Basketballs[previousBasketballType];
+                Basketball nextBasketball = BasketballManager.Basketballs[nextBasketballType];
 
                 Texture2D previousTexture;
                 Texture2D nextTexture;
@@ -126,7 +126,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
                 if (IsBasketballLocked(previousBasketball, highScoreManager))
                 {
-                    previousTexture = BasketballManager.lockedBasketballTextures[0];
+                    previousTexture = BasketballManager.LockedBasketballTextures[0];
                     highScoreManager.LockedBasketballSelection = true;
                     previousCenter = new Vector2((float) previousTexture.Width/2, (float) previousTexture.Height/2);
                 }
@@ -139,7 +139,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
                 if (IsBasketballLocked(nextBasketball, highScoreManager))
                 {
-                    nextTexture = BasketballManager.lockedBasketballTextures[0];
+                    nextTexture = BasketballManager.LockedBasketballTextures[0];
                     highScoreManager.LockedBasketballSelection = true;
                     nextCenter = new Vector2((float) nextTexture.Width/2, (float) nextTexture.Height/2);
                 }

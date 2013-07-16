@@ -41,7 +41,6 @@ namespace SpoidaGamesArcadeLibrary.Globals
 
         public static List<Texture2D> StarTextures = new List<Texture2D>();
         public static Starfield StarField { get; set; }
-        public static SparkleEmitter SparkleEmitter { get; set; }
         
         public static void LoadEffects()
         {
@@ -49,7 +48,6 @@ namespace SpoidaGamesArcadeLibrary.Globals
             StarTextures.Add(Textures.Fourpxblurstar);
             StarTextures.Add(Textures.Onepxsolidstar);
             StarField = new Starfield(1280, 720, 1000, StarTextures) { StarSpeedModifier = 1 };
-            SparkleEmitter = new SparkleEmitter(new List<Texture2D> { Textures.Twopxsolidstar }, new Vector2(-40, -40));
         }
     }
 }

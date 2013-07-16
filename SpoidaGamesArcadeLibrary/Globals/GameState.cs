@@ -12,6 +12,7 @@
             OptionsScreen,
             GetReadyState,
             Playing,
+            ArcadeMode,
             GameEnd,
             Paused
         } ;
