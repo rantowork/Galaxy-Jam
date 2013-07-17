@@ -15,6 +15,12 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         }
 
         private readonly List<Rectangle> m_frames = new List<Rectangle>();
+        
+        public List<Rectangle> FrameList
+        {
+            get { return m_frames; }
+        } 
+
         private int m_currentFrame;
         public int Frame
         {

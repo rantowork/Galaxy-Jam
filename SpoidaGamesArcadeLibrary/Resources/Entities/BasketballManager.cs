@@ -48,7 +48,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             LoadBasketballs(content);
             LoadLockedBasketballs(content);
         }
-
+        
         private static void LoadBasketballs(ContentManager content)
         {
             Basketball redGlowBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Red Glow Ball", 0, ParticleEmitterTypes.SparkleEmitter);

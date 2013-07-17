@@ -47,6 +47,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
         public ParticleEmitterTypes BasketballEmitter { get; set; }
         public Body BasketballBody { get; set; }
+        public bool HasBallScored { get; set; }
 
         public ArcadeBasketball(Texture2D texture, List<Rectangle> framesList, ParticleEmitterTypes ballEmitter)
         {
