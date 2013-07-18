@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Globals;
+using SpoidaGamesArcadeLibrary.Interface.Screen;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
     public class ArcadeBasketball
     {
+        private readonly Random m_random = new Random();
+
         public Texture2D BasketballTexture { get; set; }
 
         public Vector2 Origin
@@ -54,11 +57,21 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             BasketballTexture = texture;
             m_frames = framesList;
             BasketballEmitter = ballEmitter;
+            BasketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((m_random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (m_random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
+            BasketballBody.BodyType = BodyType.Static;
+            BasketballBody.Mass = 1f;
+            BasketballBody.Restitution = 0.3f;
+            BasketballBody.Friction = 0.1f;
         }
 
         public virtual void Update(GameTime gameTime)
         {
             
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(BasketballTexture, BasketballBody.Position*PhysicalWorld.MetersInPixels, Source, Color.White, BasketballBody.Rotation, Origin, 1f, SpriteEffects.None, 0f);
         }
     }
 }

@@ -375,15 +375,26 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.LeftRimBody);
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.RightRimBody);
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
+                        BasketballManager.SelectBasketball(BasketballTypes.EarthDay);
+                        ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                        PhysicalWorld.World.Gravity.Y = 25;
+                        GameState.States = GameState.GameStates.ArcadeMode;
+                    }
+                    else if (InterfaceSettings.TitleScreenSelection == 2)
+                    {
+                        InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.BackboardBody);
+                        InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.LeftRimBody);
+                        InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.RightRimBody);
+                        Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
                         BasketballManager.SelectedBasketballEmitter = ParticleEmitters.GetEmitter(ParticleEmitterTypes.SparkleEmitter);
                         GameState.States = GameState.GameStates.PracticeScreen;
                     }
-                    else if (InterfaceSettings.TitleScreenSelection == 2)
+                    else if (InterfaceSettings.TitleScreenSelection == 3)
                     {
                         ComputerSettings.CurrentSettingSelection = 0;
                         GameState.States = GameState.GameStates.SettingsScreen;
                     }
-                    else if (InterfaceSettings.TitleScreenSelection == 3)
+                    else if (InterfaceSettings.TitleScreenSelection == 4)
                     {
                         InterfaceSettings.BasketballManager.BasketballBody.IgnoreCollisionWith(PhysicalWorld.BackboardBody);
                         InterfaceSettings.BasketballManager.BasketballBody.IgnoreCollisionWith(PhysicalWorld.LeftRimBody);

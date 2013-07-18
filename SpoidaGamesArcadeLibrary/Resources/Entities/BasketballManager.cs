@@ -21,7 +21,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public static Basketball SelectedBasketball { get; set; }
         public static Emitter SelectedBasketballEmitter { get; set;}
 
-        public void SelectBasketball(BasketballTypes type)
+        public static void SelectBasketball(BasketballTypes type)
         {
             Basketball selectedBall;
             if (Basketballs.TryGetValue(type, out selectedBall))
