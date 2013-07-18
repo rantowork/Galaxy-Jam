@@ -21,7 +21,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static int s_basketballTimer = 0;
         private static bool s_readyToFire = true;
         private static bool s_lastShotMade;
-        private static Vector2 s_cachedShootableBasketballLocation;
 
         private static readonly Vector2 s_backboardPosition = PhysicalWorld.BackboardBody.Position * PhysicalWorld.MetersInPixels;
         private static readonly Vector2 s_backboardOrigin = new Vector2(Textures.Backboard1.Width, Textures.Backboard1.Height) / 2;
@@ -155,15 +154,18 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     float modifier = MathHelper.Clamp(distance, 0, 1200);
                     InterfaceSettings.Force = (6 / 10f) * modifier + 1200;
 
-                    if (ball.BasketballBody.Awake == false)
+                    if (!ball.HasBallFired)
                     {
                         if (state.LeftButton == ButtonState.Pressed)
                         {
+                            ball.HasBallFired = true;
                             ball.BasketballBody.Awake = true;
                             ball.BasketballBody.BodyType = BodyType.Dynamic;
                             ball.BasketballBody.Mass = 1f;
                             HandleShotAngle(ball.BasketballBody, InterfaceSettings.Force);
-                            SoundManager.PlaySoundEffect(Sounds.BasketBallShotSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
+                            SoundManager.PlaySoundEffect(Sounds.BasketBallShotSoundEffect,
+                                                         (float) InterfaceSettings.GameSettings.SoundEffectVolume/10,
+                                                         0.0f, 0.0f);
                         }
                     }
                 }

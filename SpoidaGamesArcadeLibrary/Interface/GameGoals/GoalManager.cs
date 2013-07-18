@@ -23,7 +23,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
         public bool DrawNumberScrollEffect { get; set; }
         public string NumberScrollScoreToDraw { get; set; }
         public double BaseScoreMultiplier { get; private set; }
-        public Rectangle BasketLocation { get; set; }
+        public static Rectangle BasketLocation { get; set; }
         public bool BackboardHit { get; set; }
         public bool RimHit { get; set; }
 

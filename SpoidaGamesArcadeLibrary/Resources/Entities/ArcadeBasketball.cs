@@ -6,7 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Globals;
+using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
+using SpoidaGamesArcadeLibrary.Settings;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
@@ -51,6 +53,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public ParticleEmitterTypes BasketballEmitter { get; set; }
         public Body BasketballBody { get; set; }
         public bool HasBallScored { get; set; }
+        public bool HasBallFired { get; set; }
 
         public ArcadeBasketball(Texture2D texture, List<Rectangle> framesList, ParticleEmitterTypes ballEmitter)
         {
@@ -66,7 +69,13 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
         public virtual void Update(GameTime gameTime)
         {
-            
+            Vector2 basketballCenter = BasketballBody.WorldCenter*PhysicalWorld.MetersInPixels;
+            Rectangle basketballCenterRectangle = new Rectangle((int)basketballCenter.X - 8, (int)basketballCenter.Y - 8, 16, 16);
+            if (GoalManager.BasketLocation.Intersects(basketballCenterRectangle) && !HasBallScored)
+            {
+                SoundManager.PlaySoundEffect(Sounds.BasketScoredSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
+                HasBallScored = true;
+            }
         }
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
