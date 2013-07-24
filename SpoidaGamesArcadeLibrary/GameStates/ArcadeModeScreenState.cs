@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
@@ -18,7 +19,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static readonly List<ArcadeBasketball> s_activeBasketballs = new List<ArcadeBasketball>();
         private static readonly List<ArcadeBasketball> s_activeBasketballsToRemove = new List<ArcadeBasketball>();
         private const int BASKETBALL_SPAWN_TIMER = 660;
-        private static int s_basketballTimer = 0;
+        private static int s_basketballTimer;
         private static bool s_readyToFire = true;
         private static bool s_lastShotMade;
 
@@ -57,6 +58,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 if (basketball.BasketballBody.Position.Y > 720/PhysicalWorld.MetersInPixels)
                 {
                     s_activeBasketballsToRemove.Add(basketball);
+                    if (basketball.HasBallScored == false)
+                    {
+                        ArcadeGoalManager.Streak = 0;
+                    }
                 }
             }
 
@@ -83,6 +88,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, ArcadeGoalManager.Streak.ToString(CultureInfo.InvariantCulture), new Vector2(1200, 10),Color.White);
+
             foreach (ArcadeBasketball basketball in s_activeBasketballs)
             {
                 basketball.Draw(gameTime, spriteBatch);

@@ -226,6 +226,8 @@ namespace GalaxyJam
 
             PhysicalWorld.LoadPhysicalWorldEntities();
 
+            ArcadeGoalManager.LoadPowerUps();
+
             AudioCategory category = m_audioEngine.GetCategory("Music");
             category.SetVolume((float)InterfaceSettings.GameSettings.MusicVolume / 10);
             m_soundManager.SelectMusic(SongTypes.SpaceLoop1);

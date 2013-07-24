@@ -120,6 +120,7 @@
     <Compile Include="Globals\Fonts.cs" />
     <Compile Include="Globals\GameState.cs" />
     <Compile Include="Globals\InterfaceSettings.cs" />
+    <Compile Include="Globals\ArcadeGoalManager.cs" />
     <Compile Include="Globals\Screen.cs" />
     <Compile Include="GameStates\OptionsScreenState.cs" />
     <Compile Include="GameStates\PausedScreenState.cs" />

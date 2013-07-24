@@ -15,7 +15,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static Camera Camera { get; set; }
         public static InputManager Input { get; set; }
         public static KeyboardState CachedRightLeftKeyboardState { get; set; }
-        public static readonly List<DisplayMode> DisplayModes = new List<DisplayMode>();
+        public static List<DisplayMode> DisplayModes = new List<DisplayMode>();
         private static readonly Random s_rand = new Random();
 
         public static void HandlePlayerInput()

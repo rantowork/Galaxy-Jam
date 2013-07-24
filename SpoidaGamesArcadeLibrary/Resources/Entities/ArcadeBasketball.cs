@@ -75,6 +75,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             {
                 SoundManager.PlaySoundEffect(Sounds.BasketScoredSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
                 HasBallScored = true;
+                ArcadeGoalManager.Streak++;
             }
         }
 
