@@ -27,9 +27,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
                 Screen.HandlePlayerInput();
                 Screen.HandleBasketballPosition();
-
-                BasketballManager.SelectedBasketballEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-                BasketballManager.SelectedBasketballEmitter.Update();
             }
         }
 
@@ -53,7 +50,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 Vector2 tutText1Origin = Fonts.SpriteFont.MeasureString(tutText01) / 2;
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 spriteBatch.DrawString(Fonts.SpriteFont, tutText01, new Vector2(1280 / 2, 700), Color.White, 0f, tutText1Origin, 1.0f, SpriteEffects.None, 1.0f);
-                BasketballManager.SelectedBasketballEmitter.Draw(spriteBatch);
+                BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 spriteBatch.Draw(BasketballManager.Basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.Basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.Basketballs[0].Origin, 1f, SpriteEffects.None, 0f);

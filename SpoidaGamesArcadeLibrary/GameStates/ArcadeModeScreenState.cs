@@ -95,31 +95,31 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 basketball.Draw(gameTime, spriteBatch);
             }
 
-            if (InterfaceSettings.GoalManager.Streak < 3)
+            if (ArcadeGoalManager.Streak < 3)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard1Glow : Textures.Backboard1, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim1Glow : Textures.LeftRim1, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim1Glow : Textures.RightRim1, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (InterfaceSettings.GoalManager.Streak >= 3 && InterfaceSettings.GoalManager.Streak < 6)
+            else if (ArcadeGoalManager.Streak >= 3 && ArcadeGoalManager.Streak < 6)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard2Glow : Textures.Backboard2, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim2Glow : Textures.LeftRim2, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim2Glow : Textures.RightRim2, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (InterfaceSettings.GoalManager.Streak >= 6 && InterfaceSettings.GoalManager.Streak < 9)
+            else if (ArcadeGoalManager.Streak >= 6 && ArcadeGoalManager.Streak < 9)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard3Glow : Textures.Backboard3, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim3Glow : Textures.LeftRim3, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim3Glow : Textures.RightRim3, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (InterfaceSettings.GoalManager.Streak >= 9 && InterfaceSettings.GoalManager.Streak < 15)
+            else if (ArcadeGoalManager.Streak >= 9 && ArcadeGoalManager.Streak < 15)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard4Glow : Textures.Backboard4, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim4Glow : Textures.LeftRim4, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim4Glow : Textures.RightRim4, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (InterfaceSettings.GoalManager.Streak >= 15)
+            else if (ArcadeGoalManager.Streak >= 15)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard5Glow : Textures.Backboard5, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim5Glow : Textures.LeftRim5, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
@@ -137,8 +137,9 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         private static void SpawnNewBasketball()
         {
-            ArcadeBasketball newBall = new ArcadeBasketball(PlayerSelectedBall.BasketballTexture, PlayerSelectedBall.FrameList, PlayerSelectedBall.BasketballEmitter);
-            newBall.BasketballBody.Position = new Vector2((s_random.Next(400, 1200)) / PhysicalWorld.MetersInPixels, (s_random.Next(310, 650)) / PhysicalWorld.MetersInPixels);
+            ArcadeBasketball newBall = new ArcadeBasketball(PlayerSelectedBall.BasketballTexture, PlayerSelectedBall.FrameList, PlayerSelectedBall.BallEmitterType);
+            newBall.BasketballBody.Position = new Vector2((s_random.Next(400, 1200))/PhysicalWorld.MetersInPixels,
+                                                          (s_random.Next(310, 650))/PhysicalWorld.MetersInPixels);
             newBall.BasketballBody.Awake = false;
             newBall.HasBallScored = false;
             s_activeBasketballs.Add(newBall);

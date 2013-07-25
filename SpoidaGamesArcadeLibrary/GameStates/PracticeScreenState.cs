@@ -19,9 +19,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Screen.HandlePlayerInput();
             Screen.HandleBasketballPosition();
 
-            BasketballManager.SelectedBasketballEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-            BasketballManager.SelectedBasketballEmitter.Update();
-
             if (PhysicalWorld.BackboardCollisionHappened)
             {
                 PhysicalWorld.GlowBackboard(gameTime);
@@ -70,7 +67,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 }
             }
 
-            BasketballManager.SelectedBasketballEmitter.Draw(spriteBatch);
+            BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
             spriteBatch.Draw(BasketballManager.Basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.Basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.Basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
 
             //draw backboard

@@ -19,7 +19,6 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public static List<Basketball> BasketballList = new List<Basketball>();
 
         public static Basketball SelectedBasketball { get; set; }
-        public static Emitter SelectedBasketballEmitter { get; set;}
 
         public static void SelectBasketball(BasketballTypes type)
         {
@@ -27,12 +26,10 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             if (Basketballs.TryGetValue(type, out selectedBall))
             {
                 SelectedBasketball = selectedBall;
-                SelectedBasketballEmitter = ParticleEmitters.GetEmitter(selectedBall.BasketballEmitter);
             }
             else
             {
                 SelectedBasketball = Basketballs[0];
-                SelectedBasketballEmitter = ParticleEmitters.GetEmitter(SelectedBasketball.BasketballEmitter);
             }
         }
 

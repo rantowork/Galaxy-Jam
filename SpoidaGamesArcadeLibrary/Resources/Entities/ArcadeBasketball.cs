@@ -50,7 +50,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             get { return m_frames[m_currentFrame]; }
         }
 
-        public ParticleEmitterTypes BasketballEmitter { get; set; }
+        public Emitter BallEmitter { get; set; }
+        public ParticleEmitterTypes BallEmitterType { get; set; }
         public Body BasketballBody { get; set; }
         public bool HasBallScored { get; set; }
         public bool HasBallFired { get; set; }
@@ -59,7 +60,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         {
             BasketballTexture = texture;
             m_frames = framesList;
-            BasketballEmitter = ballEmitter;
+            BallEmitter = ParticleEmitters.GetEmitter(ballEmitter);
+            BallEmitterType = ballEmitter;
             BasketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((m_random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (m_random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
             BasketballBody.BodyType = BodyType.Static;
             BasketballBody.Mass = 1f;
@@ -77,10 +79,14 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 HasBallScored = true;
                 ArcadeGoalManager.Streak++;
             }
+            
+            BallEmitter.EmitterLocation = BasketballBody.WorldCenter*PhysicalWorld.MetersInPixels;
+            BallEmitter.Update();
         }
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            BallEmitter.Draw(spriteBatch);
             spriteBatch.Draw(BasketballTexture, BasketballBody.Position*PhysicalWorld.MetersInPixels, Source, Color.White, BasketballBody.Rotation, Origin, 1f, SpriteEffects.None, 0f);
         }
     }

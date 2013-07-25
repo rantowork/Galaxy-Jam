@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Globals;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
@@ -50,7 +51,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public bool Animate { get; set; }
         public string BasketballName { get; set; }
         public int BasketballUnlockScore { get; set; }
-        public ParticleEmitterTypes BasketballEmitter { get; set; }
+        public Emitter BallEmitter { get; set; }
+        public ParticleEmitterTypes BallEmitterType { get; set; }
 
         public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated, string name, int unlockScore, ParticleEmitterTypes ballEmitter)
         {
@@ -59,12 +61,16 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Animate = isAnimated;
             BasketballName = name;
             BasketballUnlockScore = unlockScore;
-            BasketballEmitter = ballEmitter;
+            BallEmitter = ParticleEmitters.GetEmitter(ballEmitter);
+            BallEmitterType = ballEmitter;
         }
 
         public virtual void Update(GameTime gameTime)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            BallEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+            BallEmitter.Update();
 
             TimeLeftForCurrentFrame += elapsed;
 
@@ -76,6 +82,11 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                     TimeLeftForCurrentFrame = 0.0f;
                 }
             }
+        }
+
+        public virtual void DrawEmitter(SpriteBatch spriteBatch)
+        {
+            BallEmitter.Draw(spriteBatch);
         }
     }
 }

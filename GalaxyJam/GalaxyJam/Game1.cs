@@ -388,7 +388,6 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.LeftRimBody);
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.RightRimBody);
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
-                        BasketballManager.SelectedBasketballEmitter = ParticleEmitters.GetEmitter(ParticleEmitterTypes.SparkleEmitter);
                         GameState.States = GameState.GameStates.PracticeScreen;
                     }
                     else if (InterfaceSettings.TitleScreenSelection == 3)
@@ -403,7 +402,6 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.IgnoreCollisionWith(PhysicalWorld.RightRimBody);
                         InterfaceSettings.CurrentTutorialScreen = 0;
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
-                        BasketballManager.SelectedBasketballEmitter = ParticleEmitters.GetEmitter(ParticleEmitterTypes.SparkleEmitter);
                         GameState.States = GameState.GameStates.TutorialScreen;
                     }
                     else
@@ -417,7 +415,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
                     GameState.States = GameState.GameStates.TitleScreen;
                 }
             }
@@ -426,7 +424,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
                     GameState.States = GameState.GameStates.TitleScreen;
                 }
             }
@@ -568,7 +566,7 @@ namespace GalaxyJam
                 if (character == 109)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     GetReadyScreenState.SoundEffectCounter = 1;
@@ -581,7 +579,7 @@ namespace GalaxyJam
                 if (character == 114)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     SoundManager.MuteSounds();
@@ -600,7 +598,7 @@ namespace GalaxyJam
                 if (character == 109)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     GetReadyScreenState.SoundEffectCounter = 1;
@@ -612,7 +610,7 @@ namespace GalaxyJam
                 if (character == 114)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketballEmitter.CleanUpParticles();
+                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
                     InterfaceSettings.GoalManager.ResetGoalManager();
                     Unlocks.HighScoresLoaded = false;
                     GetReadyScreenState.SoundEffectCounter = 1;
