@@ -377,7 +377,7 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.LeftRimBody);
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.RightRimBody);
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
-                        BasketballManager.SelectBasketball(BasketballTypes.EarthDay);
+                        BasketballManager.SelectBasketball(BasketballTypes.MagmaBall);
                         ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
                         PhysicalWorld.World.Gravity.Y = 25;
                         GameState.States = GameState.GameStates.ArcadeMode;

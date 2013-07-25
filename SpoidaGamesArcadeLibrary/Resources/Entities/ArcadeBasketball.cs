@@ -86,8 +86,12 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            BallEmitter.Draw(spriteBatch);
             spriteBatch.Draw(BasketballTexture, BasketballBody.Position*PhysicalWorld.MetersInPixels, Source, Color.White, BasketballBody.Rotation, Origin, 1f, SpriteEffects.None, 0f);
+        }
+
+        public virtual void DrawEmitter(SpriteBatch spriteBatch)
+        {
+            BallEmitter.Draw(spriteBatch);
         }
     }
 }

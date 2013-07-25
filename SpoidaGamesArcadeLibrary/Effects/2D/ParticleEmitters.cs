@@ -17,6 +17,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
             ParticleEmitter = new Dictionary<ParticleEmitterTypes, Emitter>();
 
             ParticleEmitter.Add(ParticleEmitterTypes.SparkleEmitter, new Emitter(new List<Texture2D> {Textures.Twopxsolidstar}, new Vector2(-40, -40), 150, new List<Color> {Color.DarkRed, Color.DarkOrange}, (0.1f*(float)(s_random.NextDouble()*2 - 1))));
+            ParticleEmitter.Add(ParticleEmitterTypes.CombusionEmitter, new Emitter(new List<Texture2D> { Textures.Explosion }, new Vector2(-40, -40), 50, new List<Color> { Color.DarkRed, Color.DarkOrange }, (0.1f * (float)(s_random.NextDouble() * 2 - 1))));
         }
 
         public static Emitter GetEmitter(ParticleEmitterTypes emitterType)
