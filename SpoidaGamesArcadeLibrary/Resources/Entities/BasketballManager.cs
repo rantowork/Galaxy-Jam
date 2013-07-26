@@ -48,15 +48,17 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         
         private static void LoadBasketballs(ContentManager content)
         {
+            Basketball regularBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RegularBall"), new List<Rectangle> {new Rectangle(0,0,64,64)}, false, "Basketball", 0, ParticleEmitterTypes.SparkleEmitter);
             Basketball redGlowBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/RedGlowBall"), new List<Rectangle> {new Rectangle(0, 0, 64, 64)}, false, "Red Glow Ball", 0, ParticleEmitterTypes.SparkleEmitter);
             Basketball slimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/SlimeBall"), new List<Rectangle> {new Rectangle(0, 0, 96, 96)}, false, "Green Slime Ball", 0, ParticleEmitterTypes.SparkleEmitter);
             Basketball blueSlimeBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BlueSlimeBall"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Blue Slime Ball", 100000, ParticleEmitterTypes.SparkleEmitter);
-            Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Cute In Pink", 200000, ParticleEmitterTypes.SparkleEmitter);
+            Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Cute In Pink", 200000, ParticleEmitterTypes.StarEmitter);
             Basketball brokenPlanet = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Broken Planet", 500000, ParticleEmitterTypes.SparkleEmitter);
             Basketball thatsNoMoon = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!", 750000, ParticleEmitterTypes.SparkleEmitter);
             Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day", 1000000, ParticleEmitterTypes.SparkleEmitter);
             Basketball magmaBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Magma Ball", 1500000, ParticleEmitterTypes.CombusionEmitter);
 
+            Basketballs.Add(BasketballTypes.RegularBall, regularBall);
             Basketballs.Add(BasketballTypes.RedGlowBall, redGlowBall);
             Basketballs.Add(BasketballTypes.SlimeBall, slimeBall);
             Basketballs.Add(BasketballTypes.CuteInPink, cuteInPink);
@@ -66,6 +68,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Basketballs.Add(BasketballTypes.EarthDay, earthDay);
             Basketballs.Add(BasketballTypes.MagmaBall, magmaBall);
 
+            BasketballList.Add(regularBall);
             BasketballList.Add(redGlowBall);
             BasketballList.Add(slimeBall);
             BasketballList.Add(cuteInPink);
@@ -84,6 +87,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
     public enum BasketballTypes
     {
+        RegularBall,
         RedGlowBall,
         SlimeBall,
         BlueSlimeBall,

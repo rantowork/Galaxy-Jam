@@ -123,10 +123,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
-            spriteBatch.End();
-
+            
             //draw objects which contain a body that can have forces applied to it
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             //draw basketball

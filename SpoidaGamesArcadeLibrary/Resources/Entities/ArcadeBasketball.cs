@@ -79,7 +79,31 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 HasBallScored = true;
                 ArcadeGoalManager.Streak++;
             }
-            
+
+            if (BallEmitter.ParticlesCanChange)
+            {
+                if (ArcadeGoalManager.Streak >= 3 && ArcadeGoalManager.Streak < 6)
+                {
+                    BallEmitter.Colors = new List<Color> {Color.Purple, Color.Plum, Color.Orchid};
+                }
+                else if (ArcadeGoalManager.Streak >= 6 && ArcadeGoalManager.Streak < 9)
+                {
+                    BallEmitter.Colors = new List<Color> {Color.LimeGreen, Color.Teal, Color.Green};
+                }
+                else if (ArcadeGoalManager.Streak >= 9 && ArcadeGoalManager.Streak < 15)
+                {
+                    BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.Red, Color.IndianRed};
+                }
+                else if (ArcadeGoalManager.Streak >= 15)
+                {
+                    BallEmitter.Colors = new List<Color> {Color.Thistle, Color.BlueViolet, Color.RoyalBlue};
+                }
+                else
+                {
+                    BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
+                }
+            }
+
             BallEmitter.EmitterLocation = BasketballBody.WorldCenter*PhysicalWorld.MetersInPixels;
             BallEmitter.Update();
         }

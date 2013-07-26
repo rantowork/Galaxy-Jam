@@ -2,27 +2,35 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SpoidaGamesArcadeLibrary.Globals;
+using SpoidaGamesArcadeLibrary.Interface.Screen;
 
 namespace SpoidaGamesArcadeLibrary.Effects._2D
 {
     public class Emitter
     {
         private readonly Random m_random;
-        private readonly List<Particle> m_particles;
         
-        public List<Texture2D> Textures; 
-        public int ParticleCount { get; set; }
+        private readonly List<Particle> m_particles;
+        public List<Texture2D> Textures;
         public List<Color> Colors { get; set; }
-        public Vector2 EmitterLocation { get; set; }
-        public float EmitterAngle { get; set; }
 
-        public Emitter(List<Texture2D> textures, Vector2 location, int particleCount, List<Color> initialColors, float initialAngle)
+        public Vector2 EmitterLocation { get; set; }
+
+        private ParticleEmitterTypes EmitterType { get; set; }
+
+        public int ParticleCount { get; set; }
+
+        public bool ParticlesCanChange { get; set; }
+
+        public Emitter(List<Texture2D> textures, Vector2 location, int particleCount, List<Color> initialColors, ParticleEmitterTypes type, bool particlesCanChange)
         {
             EmitterLocation = location;
             Textures = textures;
             ParticleCount = particleCount;
             Colors = initialColors;
-            EmitterAngle = initialAngle;
+            EmitterType = type;
+            ParticlesCanChange = particlesCanChange;
 
             m_random = new Random();
             m_particles = new List<Particle>();
@@ -51,19 +59,73 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         private Particle GenerateNewParticle()
         {
             Texture2D texture = Textures[m_random.Next(Textures.Count)];
-            Vector2 position = EmitterLocation;
-            Vector2 velocity = new Vector2(
-                                    1f * (float)(m_random.NextDouble() * 2 - 1),
-                                    1f * (float)(m_random.NextDouble() * 2 - 1));
-
-            float angle = EmitterAngle;
-            float angularVelocity = 0.1f * (float)(m_random.NextDouble() * 2 - 1);
-
+            
             Color color = Colors[m_random.Next(Colors.Count)];
+
+            Vector2 position = EmitterLocation;
+            Vector2 velocity = GenerateParticleVector();
+
+            float angle = GenerateParticleAngle();
+            float angularVelocity = GenerateParticleAngleVelocity();
             float size = (float)m_random.NextDouble();
-            int ttl = 5 + m_random.Next(30);
+
+            int ttl = GenerateTimeToLive();
  
             return new Particle(texture, position, velocity, angle, angularVelocity, color, size, ttl);
+        }
+
+        private Vector2 GenerateParticleVector()
+        {
+            switch (EmitterType)
+            {
+                case ParticleEmitterTypes.SparkleEmitter:
+                    return new Vector2((1f * (float)(m_random.NextDouble() * 2 - 1)), 1f * (float)(m_random.NextDouble() * 2 - 1));
+                case ParticleEmitterTypes.CombusionEmitter:
+                    return new Vector2((1f * (float)(m_random.NextDouble() * 2 - 1)), 1f * (float)(m_random.NextDouble() * 2 - 1));
+                default:
+                    return new Vector2((1f*(float) (m_random.NextDouble()*2 - 1)/2), 1f*(float) (m_random.NextDouble()*2 - 1)/2);
+            }
+        }
+
+        private float GenerateParticleAngle()
+        {
+            switch (EmitterType)
+            {
+                case ParticleEmitterTypes.SparkleEmitter:
+                    return (0.1f*(float) (m_random.NextDouble()*2 - 1));
+                case ParticleEmitterTypes.CombusionEmitter:
+                    return 0;
+                default:
+                    return (0.1f * (float)(m_random.NextDouble() * 2 - 1));
+            }
+        }
+
+        private int GenerateTimeToLive()
+        {
+            switch (EmitterType)
+            {
+                case ParticleEmitterTypes.SparkleEmitter:
+                    return 5 + m_random.Next(30);
+                case ParticleEmitterTypes.CombusionEmitter:
+                    return 5 + m_random.Next(30);
+                case ParticleEmitterTypes.StarEmitter:
+                    return 25 + m_random.Next(10);
+                default:
+                    return 5 + m_random.Next(30);
+            }
+        }
+
+        private float GenerateParticleAngleVelocity()
+        {
+            switch (EmitterType)
+            {
+                case ParticleEmitterTypes.SparkleEmitter:
+                    return (0.1f * (float)(m_random.NextDouble() * 2 - 1));
+                case ParticleEmitterTypes.CombusionEmitter:
+                    return (0.1f * (float)(m_random.NextDouble() * 2 - 1));
+                default:
+                    return (0.1f * (float)(m_random.NextDouble() * 2 - 1));
+            }
         }
 
         public void CleanUpParticles()
@@ -73,9 +135,32 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Particle t in m_particles)
+            switch (EmitterType)
             {
-                t.Draw(spriteBatch);
+                case ParticleEmitterTypes.SparkleEmitter:
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    foreach (Particle t in m_particles)
+                    {
+                        t.Draw(spriteBatch);
+                    }
+                    spriteBatch.End();
+                    break;
+                case ParticleEmitterTypes.CombusionEmitter:
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    foreach (Particle t in m_particles)
+                    {
+                        t.Draw(spriteBatch);
+                    }
+                    spriteBatch.End();
+                    break;
+                case ParticleEmitterTypes.StarEmitter:
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    foreach (Particle t in m_particles)
+                    {
+                        t.Draw(spriteBatch);
+                    }
+                    spriteBatch.End();
+                    break;
             }
         }
     }

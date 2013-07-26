@@ -46,6 +46,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static Texture2D Fourpxblurstar { get; set; }
         public static Texture2D Onepxsolidstar { get; set; }
         public static Texture2D Explosion { get; set; }
+        public static Texture2D Star { get; set; }
 
         public static Texture2D Cursor { get; set; }
 
@@ -106,6 +107,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
             Fourpxblurstar = content.Load<Texture2D>(@"Textures/4x4BlurStar");
             Onepxsolidstar = content.Load<Texture2D>(@"Textures/1x1SolidStar");
             Explosion = content.Load<Texture2D>(@"Textures/Explosion");
+            Star = content.Load<Texture2D>(@"Textures/star");
 
             //Keyboard Curso
             Cursor = content.Load<Texture2D>(@"Textures/Cursor");

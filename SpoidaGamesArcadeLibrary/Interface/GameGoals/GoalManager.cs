@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
+using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Settings;
 
@@ -112,7 +113,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
                 }
                 if (Streak == 3 || Streak == 6 || Streak == 9 || Streak == 15)
                 {
-                    SoundManager.PlaySoundEffect(streakObtained, (float)gameSettings.SoundEffectVolume / 10, 0f, 0f);
+                    SoundManager.PlaySoundEffect(Sounds.StreakWubSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
                 }
                 AddPointsForScoredGoal();
 

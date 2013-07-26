@@ -87,12 +87,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             foreach (ArcadeBasketball basketball in s_activeBasketballs)
             {
                 basketball.DrawEmitter(spriteBatch);
             }
-            spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             spriteBatch.DrawString(Fonts.PixelScoreGlow, ArcadeGoalManager.Streak.ToString(CultureInfo.InvariantCulture), new Vector2(1200, 10),Color.White);
