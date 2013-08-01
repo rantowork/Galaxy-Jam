@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Nuclex.Input;
 using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Effects._3D.Particles;
 using SpoidaGamesArcadeLibrary.GameStates;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
@@ -231,6 +232,11 @@ namespace GalaxyJam
             AudioCategory category = m_audioEngine.GetCategory("Music");
             category.SetVolume((float)InterfaceSettings.GameSettings.MusicVolume / 10);
             m_soundManager.SelectMusic(SongTypes.SpaceLoop1);
+
+            ParticleSystems.TrailParticleSystemWrapper = new TrailParticleSystemWrapper(this);
+            ParticleSystems.InitializeParticleSystems();
+            ParticleSystems.CurrentParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
+            ParticleSystems.CurrentParticleSystemWrapper.AfterAutoInitialize();
         }
 
         /// <summary>

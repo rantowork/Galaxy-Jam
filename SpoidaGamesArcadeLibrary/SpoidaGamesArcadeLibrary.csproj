@@ -44,6 +44,9 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DPSF">
+      <HintPath>C:\DPSF\DPSF.dll</HintPath>
+    </Reference>
     <Reference Include="FarseerPhysicsXNA, Version=3.3.4863.36575, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\Fenix\Downloads\Farseer Physics Engine 3.3.1 XNA\Farseer Physics Engine 3.3.1 XNA\bin\x86\Debug\FarseerPhysicsXNA.dll</HintPath>
@@ -110,6 +113,9 @@
     </Compile>
     <Compile Include="Effects\2D\Emitter.cs" />
     <Compile Include="Effects\2D\ParticleEmitters.cs" />
+    <Compile Include="Effects\3D\IWrapParticleSystem.cs" />
+    <Compile Include="Effects\3D\Particles\TrailParticleSystem.cs" />
+    <Compile Include="Effects\3D\Particles\TrailParticleSystemWrapper.cs" />
     <Compile Include="Effects\Environment\Starfield.cs" />
     <Compile Include="Effects\Environment\Stars.cs" />
     <Compile Include="GameStates\ArcadeModeScreenState.cs" />
@@ -121,6 +127,7 @@
     <Compile Include="Globals\GameState.cs" />
     <Compile Include="Globals\InterfaceSettings.cs" />
     <Compile Include="Globals\ArcadeGoalManager.cs" />
+    <Compile Include="Globals\ParticleSystems.cs" />
     <Compile Include="Globals\Screen.cs" />
     <Compile Include="GameStates\OptionsScreenState.cs" />
     <Compile Include="GameStates\PausedScreenState.cs" />
@@ -138,6 +145,7 @@
     <Compile Include="Interface\GameGoals\HighScore.cs" />
     <Compile Include="Interface\GameGoals\HighScoreManager.cs" />
     <Compile Include="Interface\GameOptions\PlayerOptions.cs" />
+    <Compile Include="Interface\Screen\3DCamera.cs" />
     <Compile Include="Interface\Screen\Camera.cs" />
     <Compile Include="Interface\Screen\GameInterface.cs" />
     <Compile Include="Interface\Screen\ResolutionManager.cs" />

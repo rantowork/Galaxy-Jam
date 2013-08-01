@@ -6,6 +6,7 @@ using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpoidaGamesArcadeLibrary.Effects._3D.Particles;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
@@ -23,6 +24,9 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static bool s_readyToFire = true;
         private static bool s_lastShotMade;
 
+        private static double s_hoopParticleTimer;
+        private static int s_hoopDirection;
+        
         private static readonly Vector2 s_backboardPosition = PhysicalWorld.BackboardBody.Position * PhysicalWorld.MetersInPixels;
         private static readonly Vector2 s_backboardOrigin = new Vector2(Textures.Backboard1.Width, Textures.Backboard1.Height) / 2;
 
@@ -83,6 +87,44 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 PhysicalWorld.GlowRightRim(gameTime);
             }
+
+            s_hoopParticleTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (s_hoopParticleTimer <= 1500)
+            {
+                if (s_hoopDirection == 0)
+                {
+                    float amount = MathHelper.Clamp((float) s_hoopParticleTimer/1500, 0, 1);
+                    Vector3 start = new Vector3(72, 35, 0);
+                    Vector3 end = new Vector3(62, 35, 0);
+                    Vector3 result = Vector3.Lerp(start, end, amount);
+                    ParticleSystems.CurrentParticleSystemWrapper.Emitter.PositionData.Position = result;
+                }
+                else
+                {
+                    float amount = MathHelper.Clamp((float) s_hoopParticleTimer/1500, 0, 1);
+                    Vector3 start = new Vector3(62, 35, 0);
+                    Vector3 end = new Vector3(72, 35, 0);
+                    Vector3 result = Vector3.Lerp(start, end, amount);
+                    ParticleSystems.CurrentParticleSystemWrapper.Emitter.PositionData.Position = result;
+                }
+            }
+            else
+            {
+                s_hoopParticleTimer = 0;
+                if (s_hoopDirection == 0)
+                {
+                    s_hoopDirection = 1;
+                }
+                else
+                {
+                    s_hoopDirection = 0;
+                }
+            }
+
+            ParticleSystems.ParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+            ParticleSystems.ParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+            ParticleSystems.ParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -138,8 +180,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
 
             spriteBatch.End();
-        }
 
+            ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
+        }
+        
         private static void SpawnNewBasketball()
         {
             ArcadeBasketball newBall = new ArcadeBasketball(PlayerSelectedBall.BasketballTexture, PlayerSelectedBall.FrameList, PlayerSelectedBall.BallEmitterType);
