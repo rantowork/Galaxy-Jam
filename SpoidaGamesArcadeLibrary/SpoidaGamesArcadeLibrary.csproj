@@ -114,6 +114,8 @@
     <Compile Include="Effects\2D\Emitter.cs" />
     <Compile Include="Effects\2D\ParticleEmitters.cs" />
     <Compile Include="Effects\3D\IWrapParticleSystem.cs" />
+    <Compile Include="Effects\3D\Particles\ExplosionFlyingSparksParticleSystem.cs" />
+    <Compile Include="Effects\3D\Particles\ExplosionFlyingSparksParticleSystemWrapper.cs" />
     <Compile Include="Effects\3D\Particles\TrailParticleSystem.cs" />
     <Compile Include="Effects\3D\Particles\TrailParticleSystemWrapper.cs" />
     <Compile Include="Effects\Environment\Starfield.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="Globals\InterfaceSettings.cs" />
     <Compile Include="Globals\ArcadeGoalManager.cs" />
     <Compile Include="Globals\ParticleSystems.cs" />
+    <Compile Include="Globals\PowerUp.cs" />
     <Compile Include="Globals\Screen.cs" />
     <Compile Include="GameStates\OptionsScreenState.cs" />
     <Compile Include="GameStates\PausedScreenState.cs" />

@@ -234,9 +234,12 @@ namespace GalaxyJam
             m_soundManager.SelectMusic(SongTypes.SpaceLoop1);
 
             ParticleSystems.TrailParticleSystemWrapper = new TrailParticleSystemWrapper(this);
+            ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper = new ExplosionFlyingSparksParticleSystemWrapper(this);
             ParticleSystems.InitializeParticleSystems();
-            ParticleSystems.CurrentParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
-            ParticleSystems.CurrentParticleSystemWrapper.AfterAutoInitialize();
+            ParticleSystems.TrailParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
+            ParticleSystems.TrailParticleSystemWrapper.AfterAutoInitialize();
+            ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
+            ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.AfterAutoInitialize();
         }
 
         /// <summary>

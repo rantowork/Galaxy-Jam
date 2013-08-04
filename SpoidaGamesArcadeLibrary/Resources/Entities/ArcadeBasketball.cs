@@ -76,8 +76,14 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             if (GoalManager.BasketLocation.Intersects(basketballCenterRectangle) && !HasBallScored)
             {
                 SoundManager.PlaySoundEffect(Sounds.BasketScoredSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0.0f, 0.0f);
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.Explode();
                 HasBallScored = true;
+                Screen.Camera.Shaking = true;
                 ArcadeGoalManager.Streak++;
+                if (ArcadeGoalManager.Streak == 3 || ArcadeGoalManager.Streak == 6 || ArcadeGoalManager.Streak == 9 || ArcadeGoalManager.Streak == 15)
+                {
+                    SoundManager.PlaySoundEffect(Sounds.StreakWubSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
+                }
             }
 
             if (BallEmitter.ParticlesCanChange)

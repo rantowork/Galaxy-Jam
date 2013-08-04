@@ -37,7 +37,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
         public static void LoadPhysicalWorldEntities()
         {
-            BackboardBody = CreateStaticRectangleBody(new Vector2(64f / MetersInPixels, 116f / MetersInPixels), 140f, 6f, 1f, .3f, .1f);
+            BackboardBody = CreateStaticRectangleBody(new Vector2(68f / MetersInPixels, 116f / MetersInPixels), 140f, 6f, 1f, .3f, .1f);
             BackboardBody.OnCollision += BackboardCollision;
 
             LeftRimBody = CreateStaticRectangleBody(new Vector2(80f / MetersInPixels, 206 / MetersInPixels), 16f, 10f, 1f, .3f, .1f);

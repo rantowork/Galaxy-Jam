@@ -1,39 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using SpoidaGamesArcadeLibrary.Settings;
 
 namespace SpoidaGamesArcadeLibrary.Globals
 {
     public class ArcadeGoalManager
     {
         public static int Streak { get; set; }
-        public static Queue<PowerUpTypes> ActivePowerUps = new Queue<PowerUpTypes>();
+        public static readonly Dictionary<int, PowerUp> ActivePowerUps = new Dictionary<int, PowerUp>();
 
-        private static Random s_random = new Random();
-        private static readonly Dictionary<int, PowerUpTypes> s_powerUps = new Dictionary<int, PowerUpTypes>();
-        private const double POWER_UP_TIME_REMAINING = 10000;
+        private static readonly Random s_random = new Random();
+        private static bool s_hasPowerUpAlreadyTriggered;
+        private static int s_cachedStreak;
 
         public static void Update(GameTime gameTime)
         {
-            if (Streak%3 == 0)
+            if (Streak != 0 && Streak%3 == 0 && !s_hasPowerUpAlreadyTriggered)
             {
-
+                EngageRandomPowerUp();
+                s_hasPowerUpAlreadyTriggered = true;
+                s_cachedStreak = Streak;
             }
-            if (Streak == 3 || Streak == 6 || Streak == 9 || Streak == 15)
+
+            if (Streak < s_cachedStreak || Streak > s_cachedStreak)
             {
-                SoundManager.PlaySoundEffect(Sounds.StreakWubSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
+                s_hasPowerUpAlreadyTriggered = false;
+            }
+
+            if (Streak < 3)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(new Color(255, 120, 0));
+            }
+            else if (Streak >= 3 && Streak < 6)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.Plum);
+            }
+            else if (Streak >= 6 && Streak < 9)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.Lime);
+            }
+            else if (Streak >= 9 && Streak < 15)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.DarkRed);
+            }
+            else if (Streak >= 15)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.BlueViolet);
+            }
+            else
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(new Color(255, 120, 0));
+            }
+        }
+
+        private static void EngageRandomPowerUp()
+        {
+            int powerUpToEngage = s_random.Next(1, ActivePowerUps.Count + 1);
+            PowerUp type;
+            if (ActivePowerUps.TryGetValue(powerUpToEngage, out type))
+            {
+                if (type.IsActive)
+                {
+                    if (type.PowerUpName != "Rapid Fire")
+                    {
+                        type.TimeRemaining = 10000;
+                    }
+                }
+                else
+                {
+                    if (type.PowerUpName == "Rapid Fire")
+                    {
+                        type.IsActive = true;
+                        type.TimeRemaining = 6000;
+                    }
+                    else
+                    {
+                        type.IsActive = true;
+                        type.TimeRemaining = 10000;
+                    }
+                }
             }
         }
 
         public static void LoadPowerUps()
         {
-            s_powerUps.Add(1,PowerUpTypes.LaserSight);
+            ActivePowerUps.Add(1, new PowerUp("Laser Sight"));
+            ActivePowerUps.Add(2, new PowerUp("Double Score"));
+            ActivePowerUps.Add(3, new PowerUp("Triple Ball"));
+            ActivePowerUps.Add(4, new PowerUp("Rapid Fire"));
         }
-    }
-
-    public enum PowerUpTypes
-    {
-        LaserSight,
     }
 }

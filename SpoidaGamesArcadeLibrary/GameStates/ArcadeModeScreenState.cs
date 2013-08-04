@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SpoidaGamesArcadeLibrary.Effects._3D.Particles;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
@@ -19,10 +19,11 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static readonly Random s_random = new Random();
         private static readonly List<ArcadeBasketball> s_activeBasketballs = new List<ArcadeBasketball>();
         private static readonly List<ArcadeBasketball> s_activeBasketballsToRemove = new List<ArcadeBasketball>();
-        private const int BASKETBALL_SPAWN_TIMER = 660;
+        private static int s_basketballSpawnTimer = 660;
         private static int s_basketballTimer;
         private static bool s_readyToFire = true;
         private static bool s_lastShotMade;
+        private static readonly StringBuilder s_powerUpsToDraw = new StringBuilder();
 
         private static double s_hoopParticleTimer;
         private static int s_hoopDirection;
@@ -34,6 +35,25 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static readonly Vector2 s_rightRimOrigin2 = new Vector2(Textures.RightRim1.Width, Textures.RightRim1.Height) / 2;
 
         public static Basketball PlayerSelectedBall { get; set; }
+
+        private static float s_laserSightLength;
+        private static bool s_showLaserSight;
+        private static string s_laserSightText;
+        private static double s_laserSightRemaining;
+
+        private static bool s_showDoubleScore;
+        private static string s_doubleScoreText;
+        private static double s_doubleScoreRemaining;
+
+        private static bool s_showRapidFire;
+        private static string s_rapidFireText;
+        private static double s_rapidFireRemaining;
+
+        private static bool s_showTripleBall;
+        private static string s_tripleBallText;
+        private static double s_tripleBallRemaining;
+
+        private static Vector2 s_randomRapidFireVector = Vector2.Zero;
 
         public static void Update(GameTime gameTime)
         {
@@ -49,7 +69,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             if (!s_readyToFire && s_lastShotMade)
             {
                 s_basketballTimer += gameTime.ElapsedGameTime.Milliseconds;
-                if (s_basketballTimer >= BASKETBALL_SPAWN_TIMER)
+                if (s_basketballTimer >= s_basketballSpawnTimer)
                 {
                     s_basketballTimer = 0;
                     s_readyToFire = true;
@@ -72,6 +92,80 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             s_activeBasketballs.RemoveAll(x => s_activeBasketballsToRemove.Contains(x));
 
             HandlePlayerInput();
+
+            ArcadeGoalManager.Update(gameTime);
+            s_powerUpsToDraw.Clear();
+            foreach (KeyValuePair<int, PowerUp> powerUp in ArcadeGoalManager.ActivePowerUps)
+            {
+                powerUp.Value.TimeRemaining -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (powerUp.Value.TimeRemaining <= 0)
+                {
+                    powerUp.Value.IsActive = false;
+                }
+
+                switch (powerUp.Value.PowerUpName)
+                {
+                    case "Laser Sight":
+                        if (powerUp.Value.IsActive)
+                        {
+                            s_laserSightLength = 80f;
+                            s_showLaserSight = true;
+                            s_laserSightRemaining = powerUp.Value.TimeRemaining/1000;
+                            s_laserSightText = powerUp.Value.PowerUpName;
+                        }
+                        else
+                        {
+                            s_laserSightLength = 5f;
+                            s_showLaserSight = false;
+                        }
+                        break;
+                    case "Triple Ball":
+                        if (powerUp.Value.IsActive)
+                        {
+                            s_showTripleBall = true;
+                            s_tripleBallRemaining = powerUp.Value.TimeRemaining/1000;
+                            s_tripleBallText = powerUp.Value.PowerUpName;
+                        }
+                        else
+                        {
+                            s_showTripleBall = false;
+                        }
+                        break;
+                    case "Double Score":
+                        if (powerUp.Value.IsActive)
+                        {
+                            s_showDoubleScore = true;
+                            s_doubleScoreRemaining = powerUp.Value.TimeRemaining/1000;
+                            s_doubleScoreText = powerUp.Value.PowerUpName;
+                        }
+                        else
+                        {
+                            s_showDoubleScore = false;
+                        }
+                        break;
+                    case "Rapid Fire":
+                        if (powerUp.Value.IsActive)
+                        {
+                            s_basketballSpawnTimer = 250;
+                            s_showRapidFire = true;
+                            s_rapidFireRemaining = powerUp.Value.TimeRemaining/1000;
+                            s_rapidFireText = powerUp.Value.PowerUpName;
+                            if (s_randomRapidFireVector == Vector2.Zero)
+                            {
+                                s_randomRapidFireVector = new Vector2((s_random.Next(400, 1200)) / PhysicalWorld.MetersInPixels,
+                                                              (s_random.Next(310, 650)) / PhysicalWorld.MetersInPixels);
+                            }
+                        }
+                        else
+                        {
+                            s_randomRapidFireVector = Vector2.Zero;
+                            s_showRapidFire = false;
+                            s_basketballSpawnTimer = 660;
+                        }
+                        break;
+                }
+
+            }
 
             if (PhysicalWorld.BackboardCollisionHappened)
             {
@@ -98,7 +192,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     Vector3 start = new Vector3(72, 35, 0);
                     Vector3 end = new Vector3(62, 35, 0);
                     Vector3 result = Vector3.Lerp(start, end, amount);
-                    ParticleSystems.CurrentParticleSystemWrapper.Emitter.PositionData.Position = result;
+                    ParticleSystems.TrailParticleSystemWrapper.Emitter.PositionData.Position = result;
                 }
                 else
                 {
@@ -106,7 +200,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     Vector3 start = new Vector3(62, 35, 0);
                     Vector3 end = new Vector3(72, 35, 0);
                     Vector3 result = Vector3.Lerp(start, end, amount);
-                    ParticleSystems.CurrentParticleSystemWrapper.Emitter.PositionData.Position = result;
+                    ParticleSystems.TrailParticleSystemWrapper.Emitter.PositionData.Position = result;
                 }
             }
             else
@@ -125,10 +219,21 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             ParticleSystems.ParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
             ParticleSystems.ParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
             ParticleSystems.ParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            if (Screen.Camera.Shaking)
+            {
+                Screen.Camera.ShakeCamera(gameTime);
+            }
+            else
+            {
+                Screen.Camera.Position = Vector2.Zero;
+            }
         }
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            DrawLaserSight(spriteBatch);
+
             foreach (ArcadeBasketball basketball in s_activeBasketballs)
             {
                 basketball.DrawEmitter(spriteBatch);
@@ -179,6 +284,43 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim1Glow : Textures.RightRim1, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
 
+            spriteBatch.DrawString(Fonts.SpriteFontGlow, s_powerUpsToDraw.ToString(), new Vector2(600, 10), Color.White);
+            if (s_showLaserSight)
+            {
+                float amount = MathHelper.Clamp((float)s_laserSightRemaining/10, 0, 1);
+                float width = MathHelper.Lerp(0, 150, amount);
+
+                spriteBatch.Draw(Textures.Onepxsolidstar, new Rectangle(85, 700, (int)width, 16), Color.OrangeRed);
+                spriteBatch.DrawString(Fonts.SpriteFontGlow, s_laserSightText + " " + Convert.ToInt16(s_laserSightRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(85, 680), Color.White);
+            }
+
+            if (s_showDoubleScore)
+            {
+                float amount = MathHelper.Clamp((float)s_doubleScoreRemaining / 10, 0, 1);
+                float width = MathHelper.Lerp(0, 150, amount);
+
+                spriteBatch.Draw(Textures.Onepxsolidstar, new Rectangle(405, 700, (int)width, 16), Color.OrangeRed);
+                spriteBatch.DrawString(Fonts.SpriteFontGlow, s_doubleScoreText + " " + Convert.ToInt16(s_doubleScoreRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(405, 680), Color.White);
+            }
+
+            if (s_showRapidFire)
+            {
+                float amount = MathHelper.Clamp((float)s_rapidFireRemaining / 10, 0, 1);
+                float width = MathHelper.Lerp(0, 150, amount);
+
+                spriteBatch.Draw(Textures.Onepxsolidstar, new Rectangle(725, 700, (int)width, 16), Color.OrangeRed);
+                spriteBatch.DrawString(Fonts.SpriteFontGlow, s_rapidFireText + " " + Convert.ToInt16(s_rapidFireRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(725, 680), Color.White);
+            }
+
+            if (s_showTripleBall)
+            {
+                float amount = MathHelper.Clamp((float)s_tripleBallRemaining / 10, 0, 1);
+                float width = MathHelper.Lerp(0, 150, amount);
+
+                spriteBatch.Draw(Textures.Onepxsolidstar, new Rectangle(1045, 700, (int)width, 16), Color.OrangeRed);
+                spriteBatch.DrawString(Fonts.SpriteFontGlow, s_tripleBallText + " " + Convert.ToInt16(s_tripleBallRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(1045, 680), Color.White);
+            }
+
             spriteBatch.End();
 
             ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
@@ -187,11 +329,31 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static void SpawnNewBasketball()
         {
             ArcadeBasketball newBall = new ArcadeBasketball(PlayerSelectedBall.BasketballTexture, PlayerSelectedBall.FrameList, PlayerSelectedBall.BallEmitterType);
-            newBall.BasketballBody.Position = new Vector2((s_random.Next(400, 1200))/PhysicalWorld.MetersInPixels,
-                                                          (s_random.Next(310, 650))/PhysicalWorld.MetersInPixels);
-            newBall.BasketballBody.Awake = false;
-            newBall.HasBallScored = false;
+            if (s_showRapidFire)
+            {
+                newBall.BasketballBody.Position = s_randomRapidFireVector;
+                newBall.BasketballBody.Awake = false;
+                newBall.HasBallScored = false;
+            }
+            else
+            {
+                
+                newBall.BasketballBody.Position = new Vector2((s_random.Next(400, 1200)) / PhysicalWorld.MetersInPixels,
+                                                              (s_random.Next(310, 650)) / PhysicalWorld.MetersInPixels);
+                newBall.BasketballBody.Awake = false;
+                newBall.HasBallScored = false;
+            }
+
             s_activeBasketballs.Add(newBall);
+        }
+
+        private static void SpawnExtraBasketballs()
+        {
+            if (s_activeBasketballs.Count != 0)
+            {
+                ArcadeBasketball newActiveBall = s_activeBasketballs.LastOrDefault();
+
+            }
         }
 
         private static void HandlePlayerInput()
@@ -227,6 +389,32 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     }
                 }
             }
+        }
+
+        private static void DrawLaserSight(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+            if (s_activeBasketballs.Count != 0)
+            {
+                ArcadeBasketball ball = s_activeBasketballs.LastOrDefault();
+                if (ball != null)
+                {
+                    if (!ball.HasBallFired)
+                    {
+                        for (float t = 0; t < s_laserSightLength; t += .01f)
+                        {
+                            const float steps = 1/60f;
+                            Vector2 ballLocation = ball.BasketballBody.Position * PhysicalWorld.MetersInPixels;
+                            Vector2 stepVelocity = (InterfaceSettings.PointingAt*InterfaceSettings.Force*steps);
+                            Vector2 gravity = (ConvertUnits.ToDisplayUnits(new Vector2(0, 25f)))*steps*steps;
+                            Vector2 position = ballLocation + t * stepVelocity + .5f*(t*t + t)*gravity;
+                            spriteBatch.Draw(Textures.Twopxsolidstar, position, Color.MediumPurple);
+                        }
+                    }
+                }
+            }
+
+            spriteBatch.End();
         }
 
         private static void HandleShotAngle(Body ball, float shotForce)
