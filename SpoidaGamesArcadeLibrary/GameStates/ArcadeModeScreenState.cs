@@ -228,6 +228,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 Screen.Camera.Position = Vector2.Zero;
             }
+
+            //CalculateAngle();
         }
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -356,6 +358,70 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
         }
 
+        private static void CalculateAngle()
+        {
+            double range = CalculateMaximumRange();
+            double solution = CalculateProjectileFiring();
+        }
+
+        private static double CalculateMaximumRange()
+        {
+            if (s_activeBasketballs.Count != 0)
+            {
+                ArcadeBasketball ball = s_activeBasketballs.LastOrDefault();
+                if (ball != null)
+                {
+                    Vector2 ballLocation = ball.BasketballBody.Position*PhysicalWorld.MetersInPixels;
+                    double g = 25;
+                    double v = (6/10f)*2400;
+                    double y = ballLocation.Y;
+                    double a = (Math.PI/180)*120;
+                    double vSin = v*Math.Cos(a);
+                    double vCos = v*Math.Sin(a);
+                    double sqrt = Math.Sqrt(vSin*vSin + 2*g*y);
+                    return Math.Abs((vSin/g)*(vCos + sqrt));
+                }
+            }
+            return 0;
+        }
+
+        private static double CalculateProjectileFiring()
+        {
+            if (s_activeBasketballs.Count != 0)
+            {
+                ArcadeBasketball ball = s_activeBasketballs.LastOrDefault();
+                if (ball != null)
+                {
+                    Vector2 ballLocation = ball.BasketballBody.Position*PhysicalWorld.MetersInPixels;
+                    Vector2 hoopLocation = new Vector2(95, 246);
+
+                    double x = -(ballLocation.X - hoopLocation.X);
+                    double y = (ballLocation.Y - hoopLocation.Y);
+                    double v = (6/10f)*2800;
+                    double g = ConvertUnits.ToDisplayUnits(new Vector2(0, 25)).Y;
+
+                    //double y = ballLocation.Y - hoopLocation.Y;
+                    //double x = Vector2.Distance(ballLocation, hoopLocation);
+                    //double v = (6 / 10f) * 2400;
+                    //double g = -25;
+                    double sqrt = (v*v*v*v) - (g*(g*(x*x) + 2*y*(v*v)));
+                    sqrt = Math.Sqrt(sqrt);
+                    return Math.Atan(((v*v) + sqrt)/(g*x));
+                    //double targetX = hoopLocation.X - ballLocation.X;
+                    //double targetY = -(hoopLocation.Y - ballLocation.Y);
+                    //double r1 = Math.Sqrt((v*v*v*v) - g*(g*(hoopLocation.X*hoopLocation.X) + ((2*hoopLocation.Y)*(v*v))));
+                    //double a1 = ((v*v) + r1)/(g*hoopLocation.X);
+                    //a1 = -Math.Atan(a1);
+                    //if (targetX < 0)
+                    //{
+                    //    a1 -= 180/180*Math.PI;
+                    //}
+                    //return a1;
+                }
+            }
+            return 0;
+        }
+
         private static void HandlePlayerInput()
         {
             MouseState state = Screen.Input.GetMouse().GetState();
@@ -419,7 +485,13 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         private static void HandleShotAngle(Body ball, float shotForce)
         {
-            ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(InterfaceSettings.PointingAt) * shotForce);
+            //TODO: THIS IS SOME TESTING PLEASE REMOVE
+            shotForce = (6/10f)*2800;
+            double angle = CalculateProjectileFiring();
+            Vector2 angleVector = new Vector2(-(float) Math.Cos(angle), (float) Math.Sin(angle));
+            //
+            //ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(InterfaceSettings.PointingAt) * shotForce);
+            ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(angleVector)*shotForce);
             ball.ApplyAngularImpulse(.2f);
             s_lastShotMade = true;
         }
