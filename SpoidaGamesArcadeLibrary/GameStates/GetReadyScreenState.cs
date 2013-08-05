@@ -15,7 +15,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static float s_gameStartAlphaFade = 255;
         public static int SoundEffectCounter = 1;
 
-        public static void Update(GameTime gameTime)
+        public static void Update(GameTime gameTime, int mode)
         {
             InterfaceSettings.StarField.StarSpeedModifier = 1;
 
@@ -34,7 +34,14 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
             if (s_gameStartCountdownTimer >= GAME_START_COUNTDOWN_LENGTH)
             {
-                GameState.States = GameState.GameStates.Playing;
+                if (mode == 0)
+                {
+                    GameState.States = GameState.GameStates.Playing;
+                }
+                else
+                {
+                    GameState.States = GameState.GameStates.ArcadeMode;
+                }
                 GameTimer.StartGameTimer();
                 s_gameStartCountdownTimer = 0;
             }

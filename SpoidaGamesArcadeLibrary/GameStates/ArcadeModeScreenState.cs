@@ -49,9 +49,12 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static string s_rapidFireText;
         private static double s_rapidFireRemaining;
 
-        private static bool s_showTripleBall;
-        private static string s_tripleBallText;
-        private static double s_tripleBallRemaining;
+        private static bool s_showHomingBall;
+        private static string s_homingBallText;
+        private static int s_homingBallInventoryRemaining;
+
+        private static bool s_isHomingBallEngaged;
+        private static bool s_readyToReduceHomingBallInventory;
 
         private static Vector2 s_randomRapidFireVector = Vector2.Zero;
 
@@ -93,6 +96,15 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
             HandlePlayerInput();
 
+            if (!s_isHomingBallEngaged && s_homingBallInventoryRemaining > 0)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.F))
+                {
+                    s_isHomingBallEngaged = true;
+                    s_readyToReduceHomingBallInventory = true;
+                }
+            }
+
             ArcadeGoalManager.Update(gameTime);
             s_powerUpsToDraw.Clear();
             foreach (KeyValuePair<int, PowerUp> powerUp in ArcadeGoalManager.ActivePowerUps)
@@ -100,7 +112,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 powerUp.Value.TimeRemaining -= gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (powerUp.Value.TimeRemaining <= 0)
                 {
-                    powerUp.Value.IsActive = false;
+                    if (powerUp.Value.PowerUpName != "Homing Ball")
+                    {
+                        powerUp.Value.IsActive = false;
+                    }
                 }
 
                 switch (powerUp.Value.PowerUpName)
@@ -119,16 +134,17 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                             s_showLaserSight = false;
                         }
                         break;
-                    case "Triple Ball":
+                    case "Homing Ball":
                         if (powerUp.Value.IsActive)
                         {
-                            s_showTripleBall = true;
-                            s_tripleBallRemaining = powerUp.Value.TimeRemaining/1000;
-                            s_tripleBallText = powerUp.Value.PowerUpName;
-                        }
-                        else
-                        {
-                            s_showTripleBall = false;
+                            if (s_readyToReduceHomingBallInventory)
+                            {
+                                powerUp.Value.AvailableInventory--;
+                                s_readyToReduceHomingBallInventory = false;
+                            }
+                            s_showHomingBall = true;
+                            s_homingBallInventoryRemaining = powerUp.Value.AvailableInventory;
+                            s_homingBallText = powerUp.Value.PowerUpName;
                         }
                         break;
                     case "Double Score":
@@ -228,8 +244,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 Screen.Camera.Position = Vector2.Zero;
             }
-
-            //CalculateAngle();
         }
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -314,13 +328,13 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 spriteBatch.DrawString(Fonts.SpriteFontGlow, s_rapidFireText + " " + Convert.ToInt16(s_rapidFireRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(725, 680), Color.White);
             }
 
-            if (s_showTripleBall)
+            if (s_showHomingBall)
             {
-                float amount = MathHelper.Clamp((float)s_tripleBallRemaining / 10, 0, 1);
-                float width = MathHelper.Lerp(0, 150, amount);
-
-                spriteBatch.Draw(Textures.Onepxsolidstar, new Rectangle(1045, 700, (int)width, 16), Color.OrangeRed);
-                spriteBatch.DrawString(Fonts.SpriteFontGlow, s_tripleBallText + " " + Convert.ToInt16(s_tripleBallRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(1045, 680), Color.White);
+                for (int x = 0; x < s_homingBallInventoryRemaining; x++)
+                {
+                    spriteBatch.Draw(Textures.Onepxsolidstar, new Rectangle(1045 + x * 10, 700, 6, 16), Color.OrangeRed);
+                }
+                spriteBatch.DrawString(Fonts.SpriteFontGlow, s_homingBallText + " - " + s_homingBallInventoryRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(1045, 680), Color.White);
             }
 
             spriteBatch.End();
@@ -328,7 +342,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
         }
         
-        private static void SpawnNewBasketball()
+        public static void SpawnNewBasketball()
         {
             ArcadeBasketball newBall = new ArcadeBasketball(PlayerSelectedBall.BasketballTexture, PlayerSelectedBall.FrameList, PlayerSelectedBall.BallEmitterType);
             if (s_showRapidFire)
@@ -339,7 +353,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
             else
             {
-                
                 newBall.BasketballBody.Position = new Vector2((s_random.Next(400, 1200)) / PhysicalWorld.MetersInPixels,
                                                               (s_random.Next(310, 650)) / PhysicalWorld.MetersInPixels);
                 newBall.BasketballBody.Awake = false;
@@ -347,42 +360,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
 
             s_activeBasketballs.Add(newBall);
-        }
-
-        private static void SpawnExtraBasketballs()
-        {
-            if (s_activeBasketballs.Count != 0)
-            {
-                ArcadeBasketball newActiveBall = s_activeBasketballs.LastOrDefault();
-
-            }
-        }
-
-        private static void CalculateAngle()
-        {
-            double range = CalculateMaximumRange();
-            double solution = CalculateProjectileFiring();
-        }
-
-        private static double CalculateMaximumRange()
-        {
-            if (s_activeBasketballs.Count != 0)
-            {
-                ArcadeBasketball ball = s_activeBasketballs.LastOrDefault();
-                if (ball != null)
-                {
-                    Vector2 ballLocation = ball.BasketballBody.Position*PhysicalWorld.MetersInPixels;
-                    double g = 25;
-                    double v = (6/10f)*2400;
-                    double y = ballLocation.Y;
-                    double a = (Math.PI/180)*120;
-                    double vSin = v*Math.Cos(a);
-                    double vCos = v*Math.Sin(a);
-                    double sqrt = Math.Sqrt(vSin*vSin + 2*g*y);
-                    return Math.Abs((vSin/g)*(vCos + sqrt));
-                }
-            }
-            return 0;
         }
 
         private static double CalculateProjectileFiring()
@@ -397,26 +374,11 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
                     double x = -(ballLocation.X - hoopLocation.X);
                     double y = (ballLocation.Y - hoopLocation.Y);
-                    double v = (6/10f)*2800;
+                    const double v = (6/10f)*2800;
                     double g = ConvertUnits.ToDisplayUnits(new Vector2(0, 25)).Y;
-
-                    //double y = ballLocation.Y - hoopLocation.Y;
-                    //double x = Vector2.Distance(ballLocation, hoopLocation);
-                    //double v = (6 / 10f) * 2400;
-                    //double g = -25;
                     double sqrt = (v*v*v*v) - (g*(g*(x*x) + 2*y*(v*v)));
                     sqrt = Math.Sqrt(sqrt);
                     return Math.Atan(((v*v) + sqrt)/(g*x));
-                    //double targetX = hoopLocation.X - ballLocation.X;
-                    //double targetY = -(hoopLocation.Y - ballLocation.Y);
-                    //double r1 = Math.Sqrt((v*v*v*v) - g*(g*(hoopLocation.X*hoopLocation.X) + ((2*hoopLocation.Y)*(v*v))));
-                    //double a1 = ((v*v) + r1)/(g*hoopLocation.X);
-                    //a1 = -Math.Atan(a1);
-                    //if (targetX < 0)
-                    //{
-                    //    a1 -= 180/180*Math.PI;
-                    //}
-                    //return a1;
                 }
             }
             return 0;
@@ -485,13 +447,18 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         private static void HandleShotAngle(Body ball, float shotForce)
         {
-            //TODO: THIS IS SOME TESTING PLEASE REMOVE
-            shotForce = (6/10f)*2800;
-            double angle = CalculateProjectileFiring();
-            Vector2 angleVector = new Vector2(-(float) Math.Cos(angle), (float) Math.Sin(angle));
-            //
-            //ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(InterfaceSettings.PointingAt) * shotForce);
-            ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(angleVector)*shotForce);
+            if (s_isHomingBallEngaged)
+            {
+                shotForce = (6 / 10f) * 2800;
+                double angle = CalculateProjectileFiring();
+                Vector2 angleVector = new Vector2(-(float)Math.Cos(angle), (float)Math.Sin(angle));
+                ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(angleVector) * shotForce);
+                s_isHomingBallEngaged = false;
+            }
+            else
+            {
+                ball.ApplyLinearImpulse(ConvertUnits.ToSimUnits(InterfaceSettings.PointingAt) * shotForce);
+            }
             ball.ApplyAngularImpulse(.2f);
             s_lastShotMade = true;
         }
@@ -499,6 +466,11 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static double MouseAngle(Vector2 spriteLocation, Vector2 mouseLocation)
         {
             return Math.Atan2(mouseLocation.Y - (spriteLocation.Y), mouseLocation.X - (spriteLocation.X)); //this will return the angle(in radians) from sprite to mouse.
+        }
+
+        public static void CleanUpGameState()
+        {
+            s_activeBasketballs.Clear();
         }
     }
 }

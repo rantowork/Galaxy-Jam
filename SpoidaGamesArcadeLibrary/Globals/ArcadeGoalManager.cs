@@ -53,6 +53,23 @@ namespace SpoidaGamesArcadeLibrary.Globals
             }
         }
 
+        public static void ResetArcadeGoals()
+        {
+            Streak = 0;
+            foreach (KeyValuePair<int, PowerUp> powerUp in ActivePowerUps)
+            {
+                if (powerUp.Value.PowerUpName == "Homing Ball")
+                {
+                    powerUp.Value.AvailableInventory = 3;
+                }
+                else
+                {
+                    powerUp.Value.TimeRemaining = 0;
+                    powerUp.Value.IsActive = false;
+                }
+            }
+        }
+
         private static void EngageRandomPowerUp()
         {
             int powerUpToEngage = s_random.Next(1, ActivePowerUps.Count + 1);
@@ -61,7 +78,11 @@ namespace SpoidaGamesArcadeLibrary.Globals
             {
                 if (type.IsActive)
                 {
-                    if (type.PowerUpName != "Rapid Fire")
+                    if (type.PowerUpName == "Homing Ball")
+                    {
+                        type.AvailableInventory += 1;
+                    }
+                    else if (type.PowerUpName != "Rapid Fire")
                     {
                         type.TimeRemaining = 10000;
                     }
@@ -86,7 +107,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
         {
             ActivePowerUps.Add(1, new PowerUp("Laser Sight"));
             ActivePowerUps.Add(2, new PowerUp("Double Score"));
-            ActivePowerUps.Add(3, new PowerUp("Triple Ball"));
+            ActivePowerUps.Add(3, new PowerUp("Homing Ball"));
             ActivePowerUps.Add(4, new PowerUp("Rapid Fire"));
         }
     }

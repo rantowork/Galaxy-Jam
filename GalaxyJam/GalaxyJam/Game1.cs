@@ -50,6 +50,8 @@ namespace GalaxyJam
         private const string SETTINGS_FILENAME = "game.settings";
         private readonly string m_fullSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SETTINGS_FILENAME);
 
+        private int m_selectedGameMode;
+
         public Game1()
         {
             m_graphics = new GraphicsDeviceManager(this);
@@ -273,7 +275,7 @@ namespace GalaxyJam
                     OptionsScreenState.Update(gameTime);
                     break;
                 case GameState.GameStates.GetReadyState:
-                    GetReadyScreenState.Update(gameTime);
+                    GetReadyScreenState.Update(gameTime, m_selectedGameMode);
                     break;
                 case GameState.GameStates.TutorialScreen:
                     TutorialScreenState.Update(gameTime);
@@ -378,6 +380,7 @@ namespace GalaxyJam
                         InterfaceSettings.PlayerName.Clear();
                         InterfaceSettings.NameToShort = false;
                         SoundManager.SelectedMusic.Resume();
+                        m_selectedGameMode = 0;
                         GameState.States = GameState.GameStates.OptionsScreen;
                     }
                     else if (InterfaceSettings.TitleScreenSelection == 1)
@@ -386,10 +389,14 @@ namespace GalaxyJam
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.LeftRimBody);
                         InterfaceSettings.BasketballManager.BasketballBody.RestoreCollisionWith(PhysicalWorld.RightRimBody);
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
-                        BasketballManager.SelectBasketball(BasketballTypes.CuteInPink);
-                        ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
-                        PhysicalWorld.World.Gravity.Y = 25;
-                        GameState.States = GameState.GameStates.ArcadeMode;
+                        MediaPlayer.Stop();
+                        InterfaceSettings.PlayerName.Clear();
+                        InterfaceSettings.NameToShort = false;
+                        SoundManager.SelectedMusic.Resume();
+                        //BasketballManager.SelectBasketball(BasketballTypes.CuteInPink);
+                        //ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                        m_selectedGameMode = 1;
+                        GameState.States = GameState.GameStates.OptionsScreen;
                     }
                     else if (InterfaceSettings.TitleScreenSelection == 2)
                     {
@@ -538,6 +545,13 @@ namespace GalaxyJam
                         InterfaceSettings.PlayerOptions.PlayerName = InterfaceSettings.PlayerName.ToString();
                         Screen.Camera.Limits = new Rectangle(0, 0, 1280, 720);
                         Screen.Camera.ResetCamera();
+                        if (m_selectedGameMode == 1)
+                        {
+                            ArcadeGoalManager.ResetArcadeGoals();
+                            ArcadeModeScreenState.CleanUpGameState();
+                            ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                            PhysicalWorld.World.Gravity.Y = 25;
+                        }
                         GameState.States = GameState.GameStates.GetReadyState;
                     }
                 }
@@ -549,7 +563,7 @@ namespace GalaxyJam
                     //Exit();
                 }
             }
-            else if (GameState.States == GameState.GameStates.Playing)
+            else if (GameState.States == GameState.GameStates.Playing || GameState.States == GameState.GameStates.ArcadeMode)
             {
                 if (character == 27)
                 {
@@ -562,7 +576,14 @@ namespace GalaxyJam
             {
                 if (character == 27)
                 {
-                    GameState.States = GameState.GameStates.Playing;
+                    if (m_selectedGameMode == 0)
+                    {
+                        GameState.States = GameState.GameStates.Playing;
+                    }
+                    else
+                    {
+                        GameState.States = GameState.GameStates.ArcadeMode;
+                    }
                     SoundManager.MuteSounds();
                     GameTimer.StartGameTimer();
                 }
