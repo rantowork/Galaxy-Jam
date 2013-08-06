@@ -143,6 +143,7 @@
     <Compile Include="Globals\Sounds.cs" />
     <Compile Include="Globals\Textures.cs" />
     <Compile Include="Globals\Unlocks.cs" />
+    <Compile Include="Interface\GameGoals\ArcadeHighScoreManager.cs" />
     <Compile Include="Interface\GameGoals\GameTimer.cs" />
     <Compile Include="Interface\GameGoals\GoalManager.cs" />
     <Compile Include="Interface\GameGoals\HighScore.cs" />

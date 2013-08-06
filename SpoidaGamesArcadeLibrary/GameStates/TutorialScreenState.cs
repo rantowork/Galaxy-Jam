@@ -23,8 +23,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             if (InterfaceSettings.CurrentTutorialScreen == 0)
             {
                 BasketballManager.Basketballs[0].Update(gameTime);
-                PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
-
+                
                 Screen.HandlePlayerInput();
                 Screen.HandleBasketballPosition();
             }

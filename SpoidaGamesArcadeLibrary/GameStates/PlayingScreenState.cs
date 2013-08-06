@@ -38,8 +38,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Unlocks.UnlockedBalls.Clear();
 
             BasketballManager.SelectedBasketball.Update(gameTime);
-            PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
-
+            
             Screen.HandlePlayerInput();
             Screen.HandleBasketballPosition();
             

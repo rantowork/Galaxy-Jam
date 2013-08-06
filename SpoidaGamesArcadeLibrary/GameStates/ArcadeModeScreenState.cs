@@ -21,7 +21,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static readonly List<ArcadeBasketball> s_activeBasketballsToRemove = new List<ArcadeBasketball>();
         private static int s_basketballSpawnTimer = 660;
         private static int s_basketballTimer;
-        private static bool s_readyToFire = true;
+        public static bool ReadyToFire = true;
         private static bool s_lastShotMade;
         private static readonly StringBuilder s_powerUpsToDraw = new StringBuilder();
 
@@ -60,22 +60,20 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Update(GameTime gameTime)
         {
-            PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
-
-            if (s_readyToFire)
+            if (ReadyToFire)
             {
-                s_readyToFire = false;
+                ReadyToFire = false;
                 SpawnNewBasketball();
                 s_lastShotMade = false;
             }
 
-            if (!s_readyToFire && s_lastShotMade)
+            if (!ReadyToFire && s_lastShotMade)
             {
                 s_basketballTimer += gameTime.ElapsedGameTime.Milliseconds;
                 if (s_basketballTimer >= s_basketballSpawnTimer)
                 {
                     s_basketballTimer = 0;
-                    s_readyToFire = true;
+                    ReadyToFire = true;
                 }
             }
 
@@ -84,6 +82,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 basketball.Update(gameTime);
                 if (basketball.BasketballBody.Position.Y > 720/PhysicalWorld.MetersInPixels)
                 {
+                    PhysicalWorld.World.RemoveBody(basketball.BasketballBody);
                     s_activeBasketballsToRemove.Add(basketball);
                     if (basketball.HasBallScored == false)
                     {
@@ -263,31 +262,31 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 basketball.Draw(gameTime, spriteBatch);
             }
 
-            if (ArcadeGoalManager.Streak < 3)
+            if (ArcadeGoalManager.Streak < 4)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard1Glow : Textures.Backboard1, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim1Glow : Textures.LeftRim1, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim1Glow : Textures.RightRim1, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (ArcadeGoalManager.Streak >= 3 && ArcadeGoalManager.Streak < 6)
+            else if (ArcadeGoalManager.Streak >= 4 && ArcadeGoalManager.Streak < 8)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard2Glow : Textures.Backboard2, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim2Glow : Textures.LeftRim2, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim2Glow : Textures.RightRim2, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (ArcadeGoalManager.Streak >= 6 && ArcadeGoalManager.Streak < 9)
+            else if (ArcadeGoalManager.Streak >= 8 && ArcadeGoalManager.Streak < 12)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard3Glow : Textures.Backboard3, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim3Glow : Textures.LeftRim3, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim3Glow : Textures.RightRim3, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (ArcadeGoalManager.Streak >= 9 && ArcadeGoalManager.Streak < 15)
+            else if (ArcadeGoalManager.Streak >= 12 && ArcadeGoalManager.Streak < 16)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard4Glow : Textures.Backboard4, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim4Glow : Textures.LeftRim4, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(PhysicalWorld.RightRimCollisionHappened ? Textures.RightRim4Glow : Textures.RightRim4, new Vector2(188, 208), null, Color.White, 0f, s_rightRimOrigin2, 1.0f, SpriteEffects.None, 1.0f);
             }
-            else if (ArcadeGoalManager.Streak >= 15)
+            else if (ArcadeGoalManager.Streak >= 16)
             {
                 spriteBatch.Draw(PhysicalWorld.BackboardCollisionHappened ? Textures.Backboard5Glow : Textures.Backboard5, s_backboardPosition, null, Color.White, 0f, s_backboardOrigin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(PhysicalWorld.LeftRimCollisionHappened ? Textures.LeftRim5Glow : Textures.LeftRim5, new Vector2(57, 208), null, Color.White, 0f, s_leftRimOrigin, 1.0f, SpriteEffects.None, 1.0f);
@@ -470,6 +469,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void CleanUpGameState()
         {
+            foreach (ArcadeBasketball ball in s_activeBasketballs)
+            {
+                PhysicalWorld.World.RemoveBody(ball.BasketballBody);
+            }
             s_activeBasketballs.Clear();
         }
     }

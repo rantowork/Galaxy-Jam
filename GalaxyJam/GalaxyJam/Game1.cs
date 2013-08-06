@@ -45,6 +45,9 @@ namespace GalaxyJam
         //High Scores
         private const string HIGH_SCORES_FILENAME = "highscores.lst";
         private readonly string m_fullHighScorePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HIGH_SCORES_FILENAME);
+
+        private const string ARCADE_HIGH_SCORES_FILENAME = "arcadehighscores.lst";
+        private readonly string m_arcadeFullHighScorePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ARCADE_HIGH_SCORES_FILENAME);
         
         //Settings
         private const string SETTINGS_FILENAME = "game.settings";
@@ -96,6 +99,29 @@ namespace GalaxyJam
             Screen.Input.GetKeyboard().CharacterEntered += GamePlayInput;
 
             InterfaceSettings.HighScoreManager = new HighScoreManager(m_fullHighScorePath) {CanChangeBasketballSelection = true};
+            InterfaceSettings.ArcadeHighScoreManager = new ArcadeHighScoreManager(m_arcadeFullHighScorePath) { CanChangeBasketballSelection = true };
+
+            if (!File.Exists(InterfaceSettings.ArcadeHighScoreManager.HighScoreFilePath))
+            {
+                List<HighScore> tempList = new List<HighScore> { new HighScore("Tim Randall", 2000, 1, 5), new HighScore("Dan Randall", 1000, 1, 5) };
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                string json = serializer.Serialize(tempList);
+                string encryptedJson = InterfaceSettings.ArcadeHighScoreManager.EncodeHighScores(json);
+
+                using (FileStream fileStream = File.Create(InterfaceSettings.ArcadeHighScoreManager.HighScoreFilePath))
+                {
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                    {
+                        streamWriter.Write(encryptedJson);
+                    }
+                }
+                InterfaceSettings.ArcadeHighScoreManager.HighScores = tempList;
+            }
+            else
+            {
+                InterfaceSettings.ArcadeHighScoreManager.LoadHighScoresFromDisk();
+            }
 
             if (!File.Exists(InterfaceSettings.HighScoreManager.HighScoreFilePath))
             {
@@ -259,6 +285,7 @@ namespace GalaxyJam
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            PhysicalWorld.World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             InterfaceSettings.StarField.Update(gameTime);
             switch (GameState.States)
             {
@@ -550,6 +577,7 @@ namespace GalaxyJam
                             ArcadeGoalManager.ResetArcadeGoals();
                             ArcadeModeScreenState.CleanUpGameState();
                             ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                            ArcadeModeScreenState.ReadyToFire = true;
                             PhysicalWorld.World.Gravity.Y = 25;
                         }
                         GameState.States = GameState.GameStates.GetReadyState;

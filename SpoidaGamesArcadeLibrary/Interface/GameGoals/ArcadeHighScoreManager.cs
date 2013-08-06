@@ -7,7 +7,7 @@ using System.Web.Script.Serialization;
 
 namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
 {
-    public class HighScoreManager
+    public class ArcadeHighScoreManager
     {
         private List<HighScore> highScores = new List<HighScore>();
         public List<HighScore> HighScores
@@ -83,7 +83,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             }
         }
 
-        public HighScoreManager(string highScoreFilePath)
+        public ArcadeHighScoreManager(string highScoreFilePath)
         {
             filePath = highScoreFilePath;
         }

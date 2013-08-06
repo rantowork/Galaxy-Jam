@@ -8,6 +8,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
     {
         public static int Streak { get; set; }
         public static readonly Dictionary<int, PowerUp> ActivePowerUps = new Dictionary<int, PowerUp>();
+        public static double Score { get; set; }
 
         private static readonly Random s_random = new Random();
         private static bool s_hasPowerUpAlreadyTriggered;
@@ -15,7 +16,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
 
         public static void Update(GameTime gameTime)
         {
-            if (Streak != 0 && Streak%3 == 0 && !s_hasPowerUpAlreadyTriggered)
+            if (Streak != 0 && Streak%4 == 0 && !s_hasPowerUpAlreadyTriggered)
             {
                 EngageRandomPowerUp();
                 s_hasPowerUpAlreadyTriggered = true;
@@ -27,23 +28,23 @@ namespace SpoidaGamesArcadeLibrary.Globals
                 s_hasPowerUpAlreadyTriggered = false;
             }
 
-            if (Streak < 3)
+            if (Streak < 4)
             {
                 ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(new Color(255, 120, 0));
             }
-            else if (Streak >= 3 && Streak < 6)
+            else if (Streak >= 4 && Streak < 8)
             {
                 ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.Plum);
             }
-            else if (Streak >= 6 && Streak < 9)
+            else if (Streak >= 8 && Streak < 12)
             {
                 ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.Lime);
             }
-            else if (Streak >= 9 && Streak < 15)
+            else if (Streak >= 12 && Streak < 16)
             {
                 ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.DarkRed);
             }
-            else if (Streak >= 15)
+            else if (Streak >= 16)
             {
                 ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.BlueViolet);
             }

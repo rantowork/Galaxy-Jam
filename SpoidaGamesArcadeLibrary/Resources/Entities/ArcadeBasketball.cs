@@ -80,7 +80,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 HasBallScored = true;
                 Screen.Camera.Shaking = true;
                 ArcadeGoalManager.Streak++;
-                if (ArcadeGoalManager.Streak == 3 || ArcadeGoalManager.Streak == 6 || ArcadeGoalManager.Streak == 9 || ArcadeGoalManager.Streak == 15)
+                if (ArcadeGoalManager.Streak % 4 == 0 && ArcadeGoalManager.Streak != 0)
                 {
                     SoundManager.PlaySoundEffect(Sounds.StreakWubSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
                 }
@@ -88,19 +88,19 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
 
             if (BallEmitter.ParticlesCanChange)
             {
-                if (ArcadeGoalManager.Streak >= 3 && ArcadeGoalManager.Streak < 6)
+                if (ArcadeGoalManager.Streak >= 4 && ArcadeGoalManager.Streak < 8)
                 {
                     BallEmitter.Colors = new List<Color> {Color.Purple, Color.Plum, Color.Orchid};
                 }
-                else if (ArcadeGoalManager.Streak >= 6 && ArcadeGoalManager.Streak < 9)
+                else if (ArcadeGoalManager.Streak >= 8 && ArcadeGoalManager.Streak < 12)
                 {
                     BallEmitter.Colors = new List<Color> {Color.LimeGreen, Color.Teal, Color.Green};
                 }
-                else if (ArcadeGoalManager.Streak >= 9 && ArcadeGoalManager.Streak < 15)
+                else if (ArcadeGoalManager.Streak >= 12 && ArcadeGoalManager.Streak < 16)
                 {
                     BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.Red, Color.IndianRed};
                 }
-                else if (ArcadeGoalManager.Streak >= 15)
+                else if (ArcadeGoalManager.Streak >= 16)
                 {
                     BallEmitter.Colors = new List<Color> {Color.Thistle, Color.BlueViolet, Color.RoyalBlue};
                 }

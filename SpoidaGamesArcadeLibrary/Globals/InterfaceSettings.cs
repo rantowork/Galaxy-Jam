@@ -18,6 +18,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static short TitleScreenSelection { get; set; }
 
         public static HighScoreManager HighScoreManager { get; set; }
+        public static ArcadeHighScoreManager ArcadeHighScoreManager { get; set; }
         public static GameSettings GameSettings { get; set; }
         public static BasketballManager BasketballManager { get; set; }
         public static readonly GoalManager GoalManager = new GoalManager(100, true, new Rectangle(85, 208, 76, 15));

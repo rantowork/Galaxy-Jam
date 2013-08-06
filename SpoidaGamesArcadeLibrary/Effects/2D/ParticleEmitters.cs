@@ -19,7 +19,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
             ParticleEmitter.Add(ParticleEmitterTypes.SparkleEmitter, 
                 new Emitter(new List<Texture2D> {Textures.Twopxsolidstar}, 
                     new Vector2(-40, -40), 
-                    150, 
+                    125, 
                     new List<Color> {Color.DarkRed, Color.DarkOrange},
                     ParticleEmitterTypes.SparkleEmitter,
                     true));

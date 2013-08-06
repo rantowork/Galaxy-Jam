@@ -12,10 +12,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         public static void Update(GameTime gameTime)
         {
             BasketballManager.Basketballs[0].Update(gameTime);
-
-            float timeStep = Math.Min((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f, (1f / 60f));
-            PhysicalWorld.World.Step(timeStep);
-
+            
             Screen.HandlePlayerInput();
             Screen.HandleBasketballPosition();
 
