@@ -9,6 +9,9 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static int Streak { get; set; }
         public static readonly Dictionary<int, PowerUp> ActivePowerUps = new Dictionary<int, PowerUp>();
         public static double Score { get; set; }
+        public static int Multiplier { get; set; }
+        public static bool DrawNumberScrollEffect { get; set; }
+        public static string NumberScrollScoreToDraw { get; set; }
 
         private static readonly Random s_random = new Random();
         private static bool s_hasPowerUpAlreadyTriggered;
@@ -19,6 +22,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
             if (Streak != 0 && Streak%4 == 0 && !s_hasPowerUpAlreadyTriggered)
             {
                 EngageRandomPowerUp();
+                Multiplier++;
                 s_hasPowerUpAlreadyTriggered = true;
                 s_cachedStreak = Streak;
             }
@@ -57,6 +61,9 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static void ResetArcadeGoals()
         {
             Streak = 0;
+            Multiplier = 1;
+            Score = 0;
+            DrawNumberScrollEffect = false;
             foreach (KeyValuePair<int, PowerUp> powerUp in ActivePowerUps)
             {
                 if (powerUp.Value.PowerUpName == "Homing Ball")
@@ -93,7 +100,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
                     if (type.PowerUpName == "Rapid Fire")
                     {
                         type.IsActive = true;
-                        type.TimeRemaining = 6000;
+                        type.TimeRemaining = 4000;
                     }
                     else
                     {
@@ -107,9 +114,10 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static void LoadPowerUps()
         {
             ActivePowerUps.Add(1, new PowerUp("Laser Sight"));
-            ActivePowerUps.Add(2, new PowerUp("Double Score"));
+            ActivePowerUps.Add(2, new PowerUp("2x Multiplier"));
             ActivePowerUps.Add(3, new PowerUp("Homing Ball"));
             ActivePowerUps.Add(4, new PowerUp("Rapid Fire"));
+            Multiplier = 1;
         }
     }
 }

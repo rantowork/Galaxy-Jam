@@ -25,6 +25,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static bool s_lastShotMade;
         private static readonly StringBuilder s_powerUpsToDraw = new StringBuilder();
 
+        private const double NUMBER_SCROLL_EFFECT_TIME = 500;
+        private static double s_numberScrollEffectTimer;
+        private static readonly StringBuilder s_numberScrollStringEffects = new StringBuilder();
+
         private static double s_hoopParticleTimer;
         private static int s_hoopDirection;
         
@@ -41,7 +45,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private static string s_laserSightText;
         private static double s_laserSightRemaining;
 
-        private static bool s_showDoubleScore;
+        public static bool ShowDoubleScore {get;set;}
         private static string s_doubleScoreText;
         private static double s_doubleScoreRemaining;
 
@@ -146,16 +150,16 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                             s_homingBallText = powerUp.Value.PowerUpName;
                         }
                         break;
-                    case "Double Score":
+                    case "2x Multiplier":
                         if (powerUp.Value.IsActive)
                         {
-                            s_showDoubleScore = true;
+                            ShowDoubleScore = true;
                             s_doubleScoreRemaining = powerUp.Value.TimeRemaining/1000;
                             s_doubleScoreText = powerUp.Value.PowerUpName;
                         }
                         else
                         {
-                            s_showDoubleScore = false;
+                            ShowDoubleScore = false;
                         }
                         break;
                     case "Rapid Fire":
@@ -180,6 +184,23 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                         break;
                 }
 
+            }
+
+            if (ArcadeGoalManager.DrawNumberScrollEffect)
+            {
+                s_numberScrollStringEffects.Clear();
+                for (int i = 0; i < ArcadeGoalManager.Score.ToString(CultureInfo.InvariantCulture).Length; i++)
+                {
+                    int number = s_random.Next(0, 9);
+                    s_numberScrollStringEffects.Append(number);
+                }
+                ArcadeGoalManager.NumberScrollScoreToDraw = s_numberScrollStringEffects.ToString();
+                s_numberScrollEffectTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (NUMBER_SCROLL_EFFECT_TIME < s_numberScrollEffectTimer)
+                {
+                    ArcadeGoalManager.DrawNumberScrollEffect = false;
+                    s_numberScrollEffectTimer = 0;
+                }
             }
 
             if (PhysicalWorld.BackboardCollisionHappened)
@@ -254,8 +275,23 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 basketball.DrawEmitter(spriteBatch);
             }
 
+            string currentMultiplier = String.Format("x{0}", ArcadeGoalManager.Multiplier);
+            string currentStreak = String.Format("+{0}", ArcadeGoalManager.Streak);
+
+            Vector2 multiplierOrigin = Fonts.PixelScoreGlow.MeasureString(currentMultiplier);
+            Vector2 currentStreakOrigin = Fonts.PixelScoreGlow.MeasureString(currentStreak);
+
+            string homingBallEngaged = "Homing Ball Engaged!";
+            Vector2 homingBallEngagedOrigin = Fonts.SpriteFontGlow.MeasureString(homingBallEngaged) / 2;
+
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-            spriteBatch.DrawString(Fonts.PixelScoreGlow, ArcadeGoalManager.Streak.ToString(CultureInfo.InvariantCulture), new Vector2(1200, 10),Color.White);
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentMultiplier, new Vector2(1080, 60), Color.White, 0f, multiplierOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentStreak, new Vector2(1260, 60), Color.White, 0f, currentStreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
+
+            if (s_isHomingBallEngaged)
+            {
+                spriteBatch.DrawString(Fonts.SpriteFontGlow, homingBallEngaged, new Vector2(1280 / 2, 60), Color.Red, 0f, homingBallEngagedOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            }
 
             foreach (ArcadeBasketball basketball in s_activeBasketballs)
             {
@@ -309,7 +345,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 spriteBatch.DrawString(Fonts.SpriteFontGlow, s_laserSightText + " " + Convert.ToInt16(s_laserSightRemaining).ToString(CultureInfo.InvariantCulture), new Vector2(85, 680), Color.White);
             }
 
-            if (s_showDoubleScore)
+            if (ShowDoubleScore)
             {
                 float amount = MathHelper.Clamp((float)s_doubleScoreRemaining / 10, 0, 1);
                 float width = MathHelper.Lerp(0, 150, amount);
@@ -335,6 +371,18 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 }
                 spriteBatch.DrawString(Fonts.SpriteFontGlow, s_homingBallText + " - " + s_homingBallInventoryRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(1045, 680), Color.White);
             }
+
+            string currentScore;
+            if (ArcadeGoalManager.DrawNumberScrollEffect)
+            {
+                currentScore = ArcadeGoalManager.NumberScrollScoreToDraw;
+            }
+            else
+            {
+                currentScore = String.Format("{0}", ArcadeGoalManager.Score);
+            }
+            Vector2 currentScoreOrigin = Fonts.PixelScoreGlow.MeasureString(currentScore) / 2;
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentScore, new Vector2(1280 / 2, 30), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
 
             spriteBatch.End();
 

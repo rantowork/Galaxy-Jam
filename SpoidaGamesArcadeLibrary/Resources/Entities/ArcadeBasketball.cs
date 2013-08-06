@@ -9,6 +9,7 @@ using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Settings;
+using SpoidaGamesArcadeLibrary.GameStates;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
 {
@@ -80,6 +81,15 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 HasBallScored = true;
                 Screen.Camera.Shaking = true;
                 ArcadeGoalManager.Streak++;
+                if (ArcadeModeScreenState.ShowDoubleScore)
+                {
+                    ArcadeGoalManager.Score += 1000*(ArcadeGoalManager.Multiplier*2);
+                }
+                else
+                {
+                    ArcadeGoalManager.Score += 1000 * ArcadeGoalManager.Multiplier;                
+                }
+                ArcadeGoalManager.DrawNumberScrollEffect = true;
                 if (ArcadeGoalManager.Streak % 4 == 0 && ArcadeGoalManager.Streak != 0)
                 {
                     SoundManager.PlaySoundEffect(Sounds.StreakWubSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
