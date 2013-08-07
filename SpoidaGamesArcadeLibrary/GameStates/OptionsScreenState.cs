@@ -68,7 +68,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            GameInterface.DrawOptionsInterface(spriteBatch, gameTime, Fonts.SpriteFont, Fonts.SpriteFontGlow, InterfaceSettings.HighScoreManager, InterfaceSettings.NameToShort, InterfaceSettings.CurrentlySelectedBasketballKey, InterfaceSettings.CurrentlySelectedSongKey, Screen.Camera);
+            GameInterface.DrawOptionsInterface(spriteBatch, gameTime, Fonts.SpriteFont, Fonts.SpriteFontGlow, InterfaceSettings.HighScoreManager, InterfaceSettings.NameToShort, InterfaceSettings.CurrentlySelectedBasketballKey, InterfaceSettings.CurrentlySelectedSongKey, Screen.Camera, InterfaceSettings.ArcadeHighScoreManager);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             GetPlayerName(gameTime, spriteBatch);

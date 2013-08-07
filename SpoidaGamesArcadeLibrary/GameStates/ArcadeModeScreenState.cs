@@ -143,14 +143,28 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     case "Laser Sight":
                         if (powerUp.Value.IsActive)
                         {
-                            s_laserSightLength = 80f;
+                            if (s_isHomingBallEngaged)
+                            {
+                                s_laserSightLength = 120f;
+                            }
+                            else
+                            {
+                                s_laserSightLength = 80f;
+                            }
                             s_showLaserSight = true;
                             s_laserSightRemaining = powerUp.Value.TimeRemaining/1000;
                             s_laserSightText = powerUp.Value.PowerUpName;
                         }
                         else
                         {
-                            s_laserSightLength = 5f;
+                            if (s_isHomingBallEngaged)
+                            {
+                                s_laserSightLength = 120f;
+                            }
+                            else
+                            {
+                                s_laserSightLength = 5f;
+                            }
                             s_showLaserSight = false;
                         }
                         break;
@@ -516,11 +530,25 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                         for (float t = 0; t < s_laserSightLength; t += .01f)
                         {
                             const float steps = 1/60f;
-                            Vector2 ballLocation = ball.BasketballBody.Position * PhysicalWorld.MetersInPixels;
-                            Vector2 stepVelocity = (InterfaceSettings.PointingAt*InterfaceSettings.Force*steps);
-                            Vector2 gravity = (ConvertUnits.ToDisplayUnits(new Vector2(0, 25f)))*steps*steps;
-                            Vector2 position = ballLocation + t * stepVelocity + .5f*(t*t + t)*gravity;
-                            spriteBatch.Draw(Textures.Twopxsolidstar, position, Color.MediumPurple);
+                            if (!s_isHomingBallEngaged)
+                            {
+                                Vector2 ballLocation = ball.BasketballBody.Position * PhysicalWorld.MetersInPixels;
+                                Vector2 stepVelocity = (InterfaceSettings.PointingAt * InterfaceSettings.Force * steps);
+                                Vector2 gravity = (ConvertUnits.ToDisplayUnits(new Vector2(0, 25f))) * steps * steps;
+                                Vector2 position = ballLocation + t * stepVelocity + .5f * (t * t + t) * gravity;
+                                spriteBatch.Draw(Textures.Twopxsolidstar, position, Color.MediumPurple);
+                            }
+                            else
+                            {
+                                const float shotForce = (6 / 10f) * 2800;
+                                Vector2 ballLocation = ball.BasketballBody.Position * PhysicalWorld.MetersInPixels;
+                                double angle = CalculateProjectileFiring();
+                                Vector2 angleVector = new Vector2(-(float)Math.Cos(angle), (float)Math.Sin(angle));
+                                Vector2 stepVelocity = angleVector*shotForce*steps;
+                                Vector2 gravity = (ConvertUnits.ToDisplayUnits(new Vector2(0, 25f))) * steps * steps;
+                                Vector2 position = ballLocation + t * stepVelocity + .5f * (t * t + t) * gravity;
+                                spriteBatch.Draw(Textures.Twopxsolidstar, position, Color.MediumPurple);
+                            }
                         }
                     }
                 }

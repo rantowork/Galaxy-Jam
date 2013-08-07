@@ -19,12 +19,12 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         //Options Interface
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
-        private static Cue previousCue;
-        private static int previousBasketballSelection;
+        private static Cue s_previousCue;
+        private static int s_previousBasketballSelection;
         private const double WEAPON_SWITCH_TIMER = 300;
-        private static double weaponSwitchElapsedTimer;
+        private static double s_weaponSwitchElapsedTimer;
 
-        public static void DrawOptionsInterface(SpriteBatch spriteBatch, GameTime gameTimer, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection, Camera camera)
+        public static void DrawOptionsInterface(SpriteBatch spriteBatch, GameTime gameTimer, SpriteFont pixelFont, SpriteFont pixelGlowFont, HighScoreManager highScoreManager, bool nameToShort, int currentBasketballSelection, int currentSongSelection, Camera camera, ArcadeHighScoreManager arcadeHighScoreManager)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             if (nameToShort)
@@ -66,14 +66,14 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             Cue cue;
             if (SoundManager.music.TryGetValue(songType, out cue))
             {
-                if (previousCue == null)
+                if (s_previousCue == null)
                 {
-                    previousCue = cue;
+                    s_previousCue = cue;
                     SoundManager.PlayBackgroundMusic();
                 }
-                if (cue != previousCue)
+                if (cue != s_previousCue)
                 {
-                    previousCue = cue;
+                    s_previousCue = cue;
                     SoundManager.SelectedMusic.Stop(AudioStopOptions.Immediate);
                     SoundManager.SelectedMusic.Dispose();
                     Cue newCue = SoundManager.soundBank.GetCue(cue.Name);
@@ -82,7 +82,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 }
             }
             spriteBatch.End();
-            if (previousBasketballSelection == currentBasketballSelection)
+            if (s_previousBasketballSelection == currentBasketballSelection)
             {
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 BasketballTypes basketballTypes;
@@ -91,7 +91,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                     Basketball basketball;
                     if (BasketballManager.Basketballs.TryGetValue(basketballTypes, out basketball))
                     {
-                        if (IsBasketballLocked(basketball, highScoreManager))
+                        if (IsBasketballLocked(basketball, highScoreManager, arcadeHighScoreManager))
                         {
                             string lockedText = String.Format("Unlock With {0} Points", basketball.BasketballUnlockScore);
                             Vector2 lockedCenter = pixelGlowFont.MeasureString(lockedText) / 2;
@@ -115,7 +115,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 highScoreManager.CanChangeBasketballSelection = false;
 
-                BasketballTypes previousBasketballType = BasketballManager.BasketballSelection[previousBasketballSelection];
+                BasketballTypes previousBasketballType = BasketballManager.BasketballSelection[s_previousBasketballSelection];
                 BasketballTypes nextBasketballType = BasketballManager.BasketballSelection[currentBasketballSelection];
                 Basketball previousBasketball = BasketballManager.Basketballs[previousBasketballType];
                 Basketball nextBasketball = BasketballManager.Basketballs[nextBasketballType];
@@ -125,7 +125,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 Vector2 previousCenter;
                 Vector2 nextCenter;
 
-                if (IsBasketballLocked(previousBasketball, highScoreManager))
+                if (IsBasketballLocked(previousBasketball, highScoreManager, arcadeHighScoreManager))
                 {
                     previousTexture = BasketballManager.LockedBasketballTextures[0];
                     highScoreManager.LockedBasketballSelection = true;
@@ -138,7 +138,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                     previousCenter = previousBasketball.Origin;
                 }
 
-                if (IsBasketballLocked(nextBasketball, highScoreManager))
+                if (IsBasketballLocked(nextBasketball, highScoreManager, arcadeHighScoreManager))
                 {
                     nextTexture = BasketballManager.LockedBasketballTextures[0];
                     highScoreManager.LockedBasketballSelection = true;
@@ -151,9 +151,9 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                     nextCenter = nextBasketball.Origin;
                 }
 
-                weaponSwitchElapsedTimer += gameTimer.ElapsedGameTime.TotalMilliseconds;
+                s_weaponSwitchElapsedTimer += gameTimer.ElapsedGameTime.TotalMilliseconds;
 
-                float amountToFade = MathHelper.Clamp((float)weaponSwitchElapsedTimer / 300, 0, 1);
+                float amountToFade = MathHelper.Clamp((float)s_weaponSwitchElapsedTimer / 300, 0, 1);
                 float fadeOutValue = MathHelper.Lerp(255, 0, amountToFade);
                 float fadeInValue = MathHelper.Lerp(0, 255, amountToFade);
                 float moveUpValue1 = MathHelper.Lerp(452, 392, amountToFade);
@@ -163,7 +163,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                 float moveScaleValue1 = MathHelper.Lerp(1, .4f, amountToFade);
                 float moveScaleValue2 = MathHelper.Lerp(.4f, 1, amountToFade);
 
-                if (previousBasketballSelection < currentBasketballSelection)
+                if (s_previousBasketballSelection < currentBasketballSelection)
                 {
                     //up
                     spriteBatch.Draw(previousTexture, new Vector2(145.5f, moveUpValue1), null, new Color(255, 255, 255, (byte)fadeOutValue), 0f, previousCenter, moveScaleValue1, SpriteEffects.None, 1.0f);
@@ -176,21 +176,31 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
                     spriteBatch.Draw(nextTexture, new Vector2(145.5f, moveDownValue2), null, new Color(255, 255, 255, (byte)fadeInValue), 0f, nextCenter, moveScaleValue2, SpriteEffects.None, 1.0f);
                 }
 
-                if (weaponSwitchElapsedTimer >= WEAPON_SWITCH_TIMER)
+                if (s_weaponSwitchElapsedTimer >= WEAPON_SWITCH_TIMER)
                 {
-                    weaponSwitchElapsedTimer = 0;
-                    previousBasketballSelection = currentBasketballSelection;
+                    s_weaponSwitchElapsedTimer = 0;
+                    s_previousBasketballSelection = currentBasketballSelection;
                     highScoreManager.CanChangeBasketballSelection = true;
                 }
                 spriteBatch.End();
             }
         }
 
-        private static bool IsBasketballLocked(Basketball basketball, HighScoreManager highScoreManager)
+        private static bool IsBasketballLocked(Basketball basketball, HighScoreManager highScoreManager, ArcadeHighScoreManager arcadeHighScoreManager)
         {
-            if (basketball.BasketballUnlockScore <= highScoreManager.BestScore())
+            if (highScoreManager.BestScore() <= arcadeHighScoreManager.BestScore())
             {
-                return false;
+                if (basketball.BasketballUnlockScore <= arcadeHighScoreManager.BestScore())
+                {
+                    return false;
+                }
+            }
+            else if (arcadeHighScoreManager.BestScore() <= highScoreManager.BestScore())
+            {
+                if (basketball.BasketballUnlockScore <= highScoreManager.BestScore())
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -249,7 +259,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         //Game Over Interface
         private const string GAME_OVER = "Game Over!";
         private const string QUIT_RESTART_TEXT = "(Q)uit | (R)etry | (M)enu";
-        private static readonly string gameOverTimer = String.Format("{0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
+        private static readonly string s_gameOverTimer = String.Format("{0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
 
         public static void DrawGameEndInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
         {
@@ -258,7 +268,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
             spriteBatch.DrawString(pixelFont, GAME_OVER, new Vector2(1280 / 2, 340), Color.OrangeRed, 0, gameOverOrigin, 1f, SpriteEffects.None, 1.0f);
             spriteBatch.DrawString(pixelFont, QUIT_RESTART_TEXT, new Vector2(1280/2, 420), Color.White, 0, quitRestartOrigin, 1.0f, SpriteEffects.None, 1.0f);
-            spriteBatch.DrawString(pixelGlowFont, gameOverTimer, new Vector2(10, 664), Color.White);
+            spriteBatch.DrawString(pixelGlowFont, s_gameOverTimer, new Vector2(10, 664), Color.White);
             spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(58, 30), Color.Gold);
             spriteBatch.DrawString(pixelFont, "Player", new Vector2(58, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Score", new Vector2(290, 50), Color.DarkOrange);

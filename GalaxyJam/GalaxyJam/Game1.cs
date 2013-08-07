@@ -621,27 +621,60 @@ namespace GalaxyJam
 
                 if (character == 109)
                 {
-                    ResetPosition();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
-                    InterfaceSettings.GoalManager.ResetGoalManager();
-                    Unlocks.HighScoresLoaded = false;
-                    GetReadyScreenState.SoundEffectCounter = 1;
-                    SoundManager.MuteSounds();
-                    SoundManager.SelectedMusic.Resume();
-                    GameState.States = GameState.GameStates.OptionsScreen;
-                    GameTimer.ResetTimer();
+                    if (GameState.SelectedGameMode == 0)
+                    {
+                        ResetPosition();
+                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        InterfaceSettings.GoalManager.ResetGoalManager();
+                        Unlocks.HighScoresLoaded = false;
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        SoundManager.MuteSounds();
+                        SoundManager.SelectedMusic.Resume();
+                        GameState.States = GameState.GameStates.OptionsScreen;
+                        GameTimer.ResetTimer();
+                    }
+                    else
+                    {
+                        ArcadeGoalManager.ResetArcadeGoals();
+                        ArcadeModeScreenState.CleanUpGameState();
+                        ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                        ArcadeModeScreenState.ReadyToFire = true;
+                        PhysicalWorld.World.Gravity.Y = 25;
+                        Unlocks.HighScoresLoaded = false;
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        SoundManager.MuteSounds();
+                        SoundManager.SelectedMusic.Resume();
+                        GameState.States = GameState.GameStates.OptionsScreen;
+                        GameTimer.ResetTimer();
+                    }
                 }
 
                 if (character == 114)
                 {
-                    ResetPosition();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
-                    InterfaceSettings.GoalManager.ResetGoalManager();
-                    Unlocks.HighScoresLoaded = false;
-                    SoundManager.MuteSounds();
-                    GetReadyScreenState.SoundEffectCounter = 1;
-                    GameState.States = GameState.GameStates.GetReadyState;
-                    GameTimer.ResetTimer();
+                    if (GameState.SelectedGameMode == 0)
+                    {
+                        ResetPosition();
+                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        InterfaceSettings.GoalManager.ResetGoalManager();
+                        Unlocks.HighScoresLoaded = false;
+                        SoundManager.MuteSounds();
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        GameState.States = GameState.GameStates.GetReadyState;
+                        GameTimer.ResetTimer();
+                    }
+                    else
+                    {
+                        ArcadeGoalManager.ResetArcadeGoals();
+                        ArcadeModeScreenState.CleanUpGameState();
+                        ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                        ArcadeModeScreenState.ReadyToFire = true;
+                        PhysicalWorld.World.Gravity.Y = 25;
+                        Unlocks.HighScoresLoaded = false;
+                        SoundManager.MuteSounds();
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        GameState.States = GameState.GameStates.GetReadyState;
+                        GameTimer.ResetTimer();
+                    }
                 }
             }
             else if (GameState.States == GameState.GameStates.GameEnd)
@@ -651,27 +684,59 @@ namespace GalaxyJam
                     Exit();
                 }
 
+
                 if (character == 109)
                 {
-                    ResetPosition();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
-                    InterfaceSettings.GoalManager.ResetGoalManager();
-                    Unlocks.HighScoresLoaded = false;
-                    GetReadyScreenState.SoundEffectCounter = 1;
-                    SoundManager.SelectedMusic.Resume();
-                    GameState.States = GameState.GameStates.OptionsScreen;
-                    GameTimer.ResetTimer();
+                    if (GameState.SelectedGameMode == 0)
+                    {
+                        ResetPosition();
+                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        InterfaceSettings.GoalManager.ResetGoalManager();
+                        Unlocks.HighScoresLoaded = false;
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        SoundManager.SelectedMusic.Resume();
+                        GameState.States = GameState.GameStates.OptionsScreen;
+                        GameTimer.ResetTimer();
+                    }
+                    else
+                    {
+                        ArcadeGoalManager.ResetArcadeGoals();
+                        ArcadeModeScreenState.CleanUpGameState();
+                        ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                        ArcadeModeScreenState.ReadyToFire = true;
+                        PhysicalWorld.World.Gravity.Y = 25;
+                        Unlocks.HighScoresLoaded = false;
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        SoundManager.SelectedMusic.Resume();
+                        GameState.States = GameState.GameStates.OptionsScreen;
+                        GameTimer.ResetTimer();
+                    }
                 }
 
                 if (character == 114)
                 {
-                    ResetPosition();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
-                    InterfaceSettings.GoalManager.ResetGoalManager();
-                    Unlocks.HighScoresLoaded = false;
-                    GetReadyScreenState.SoundEffectCounter = 1;
-                    GameState.States = GameState.GameStates.GetReadyState;
-                    GameTimer.ResetTimer();
+                    if (GameState.SelectedGameMode == 0)
+                    {
+                        ResetPosition();
+                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        InterfaceSettings.GoalManager.ResetGoalManager();
+                        Unlocks.HighScoresLoaded = false;
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        GameState.States = GameState.GameStates.GetReadyState;
+                        GameTimer.ResetTimer();
+                    }
+                    else
+                    {
+                        ArcadeGoalManager.ResetArcadeGoals();
+                        ArcadeModeScreenState.CleanUpGameState();
+                        ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
+                        ArcadeModeScreenState.ReadyToFire = true;
+                        PhysicalWorld.World.Gravity.Y = 25;
+                        Unlocks.HighScoresLoaded = false;
+                        GetReadyScreenState.SoundEffectCounter = 1;
+                        GameState.States = GameState.GameStates.GetReadyState;
+                        GameTimer.ResetTimer();
+                    }
                 }
             }
         }
