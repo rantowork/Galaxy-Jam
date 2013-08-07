@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
@@ -37,10 +38,12 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 if (mode == 0)
                 {
                     GameState.States = GameState.GameStates.Playing;
+                    GameTimer.GameTime = new TimeSpan(0, 0, 2, 0);
                 }
                 else
                 {
                     GameState.States = GameState.GameStates.ArcadeMode;
+                    GameTimer.GameTime = new TimeSpan(0, 0, 3, 0);
                 }
                 GameTimer.StartGameTimer();
                 s_gameStartCountdownTimer = 0;

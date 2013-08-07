@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpoidaGamesArcadeLibrary.Effects.Environment;
-using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.GameOptions;
 using SpoidaGamesArcadeLibrary.Resources.Entities;

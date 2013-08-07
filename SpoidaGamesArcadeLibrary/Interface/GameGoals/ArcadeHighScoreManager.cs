@@ -9,19 +9,9 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
 {
     public class ArcadeHighScoreManager
     {
-        private List<HighScore> highScores = new List<HighScore>();
-        public List<HighScore> HighScores
-        {
-            get { return highScores; }
-            set { highScores = value; }
-        }
+        public List<HighScore> HighScores { get; set; }
 
-        private string filePath;
-        public string HighScoreFilePath
-        {
-            get { return filePath; }
-            set { filePath = value; }
-        }
+        public string HighScoreFilePath { get; set; }
 
         public string EncodeHighScores(string scores)
         {
@@ -85,7 +75,8 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
 
         public ArcadeHighScoreManager(string highScoreFilePath)
         {
-            filePath = highScoreFilePath;
+            HighScores = new List<HighScore>();
+            HighScoreFilePath = highScoreFilePath;
         }
 
         public double BestScore()
@@ -93,18 +84,8 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             return HighScores[0].PlayerScore;
         }
 
-        private bool lockedBasketballSelection;
-        public bool LockedBasketballSelection
-        {
-            get { return lockedBasketballSelection; }
-            set { lockedBasketballSelection = value; }
-        }
+        public bool LockedBasketballSelection { get; set; }
 
-        private bool canChangeBasketballSelection;
-        public bool CanChangeBasketballSelection
-        {
-            get { return canChangeBasketballSelection; }
-            set { canChangeBasketballSelection = value; }
-        }
+        public bool CanChangeBasketballSelection { get; set; }
     }
 }

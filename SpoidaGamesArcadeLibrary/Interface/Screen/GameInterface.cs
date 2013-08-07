@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
 using SpoidaGamesArcadeLibrary.Settings;
@@ -248,7 +249,7 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
         //Game Over Interface
         private const string GAME_OVER = "Game Over!";
         private const string QUIT_RESTART_TEXT = "(Q)uit | (R)etry | (M)enu";
-        private static string gameOverTimer = String.Format("{0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
+        private static readonly string gameOverTimer = String.Format("{0}", String.Format("{0:00}:{1:00}", new TimeSpan(0, 0, 0, 0).Minutes, new TimeSpan(0, 0, 0, 0).Seconds));
 
         public static void DrawGameEndInterface(SpriteBatch spriteBatch, SpriteFont pixelFont, SpriteFont pixelGlowFont, GoalManager goalManager)
         {
@@ -261,8 +262,11 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
             spriteBatch.DrawString(pixelFont, "High Scores", new Vector2(58, 30), Color.Gold);
             spriteBatch.DrawString(pixelFont, "Player", new Vector2(58, 50), Color.DarkOrange);
             spriteBatch.DrawString(pixelFont, "Score", new Vector2(290, 50), Color.DarkOrange);
-            spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(440, 50), Color.DarkOrange);
-            spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(625, 50), Color.DarkOrange);
+            if (GameState.SelectedGameMode == 0)
+            {
+                spriteBatch.DrawString(pixelFont, "Top Streak", new Vector2(440, 50), Color.DarkOrange);
+                spriteBatch.DrawString(pixelFont, "Multiplier", new Vector2(625, 50), Color.DarkOrange);
+            }
         }
 
         //Paused Interface

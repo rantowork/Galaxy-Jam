@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpoidaGamesArcadeLibrary.Globals;
+using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Resources.Entities;
 using SpoidaGamesArcadeLibrary.Settings;
@@ -64,6 +65,22 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Update(GameTime gameTime)
         {
+            Unlocks.CurrentBestScore = InterfaceSettings.ArcadeHighScoreManager.BestScore();
+            Unlocks.UnlocksCalculated = false;
+            Unlocks.IsNewUnlockedBalls = false;
+            Unlocks.IsNewHighScore = false;
+            Unlocks.IsHighScoreSoundEffectPlayed = false;
+
+            Unlocks.UnlockDisplayTimer = 0;
+            Unlocks.NewHighScoreFadeOutTimer = 0;
+            Unlocks.ShowNewHighScoreTimer = 0;
+            Unlocks.NewHighScoreTimer = 0;
+
+            Unlocks.UnlockedBallCounter = 0;
+            Unlocks.HighScoreFadeValue = 1;
+
+            Unlocks.UnlockedBalls.Clear();
+
             if (ReadyToFire)
             {
                 ReadyToFire = false;
@@ -264,6 +281,22 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 Screen.Camera.Position = Vector2.Zero;
             }
+
+            if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 3, 0))
+            {
+                GameTimer.StopGameTimer();
+                InterfaceSettings.ArcadeHighScoreManager.SaveHighScore(InterfaceSettings.PlayerOptions.PlayerName, ArcadeGoalManager.Score, 0, 0);
+                Unlocks.HighScoresPlayers.Clear();
+                Unlocks.HighScoresScore.Clear();
+                Unlocks.HighScoresStreak.Clear();
+                Unlocks.HighScoresMultiplier.Clear();
+                CleanUpGameState();
+                if (Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() && !Unlocks.UnlocksCalculated)
+                {
+                    Unlocks.IsNewHighScore = true;
+                }
+                GameState.States = GameState.GameStates.GameEnd;
+            }
         }
 
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -281,12 +314,16 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Vector2 multiplierOrigin = Fonts.PixelScoreGlow.MeasureString(currentMultiplier);
             Vector2 currentStreakOrigin = Fonts.PixelScoreGlow.MeasureString(currentStreak);
 
-            string homingBallEngaged = "Homing Ball Engaged!";
+            const string homingBallEngaged = "Homing Ball Engaged!";
             Vector2 homingBallEngagedOrigin = Fonts.SpriteFontGlow.MeasureString(homingBallEngaged) / 2;
 
+            string timeRemaining = String.Format("{0}", GameTimer.GetElapsedGameTime());
+            Vector2 timeRemainingOrigin = Fonts.PixelScoreGlow.MeasureString(timeRemaining);
+
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
-            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentMultiplier, new Vector2(1080, 60), Color.White, 0f, multiplierOrigin, 1.0f, SpriteEffects.None, 1.0f);
-            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentStreak, new Vector2(1260, 60), Color.White, 0f, currentStreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentMultiplier, new Vector2(1080, 52), Color.White, 0f, multiplierOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentStreak, new Vector2(1260, 52), Color.White, 0f, currentStreakOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, timeRemaining, new Vector2(170, 52), Color.White, 0f, timeRemainingOrigin, 1.0f, SpriteEffects.None, 1.0f);
 
             if (s_isHomingBallEngaged)
             {
@@ -382,7 +419,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 currentScore = String.Format("{0}", ArcadeGoalManager.Score);
             }
             Vector2 currentScoreOrigin = Fonts.PixelScoreGlow.MeasureString(currentScore) / 2;
-            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentScore, new Vector2(1280 / 2, 30), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(Fonts.PixelScoreGlow, currentScore, new Vector2(1280 / 2, 22), Color.White, 0f, currentScoreOrigin, 1.0f, SpriteEffects.None, 1.0f);
 
             spriteBatch.End();
 

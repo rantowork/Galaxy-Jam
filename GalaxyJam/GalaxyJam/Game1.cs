@@ -53,8 +53,6 @@ namespace GalaxyJam
         private const string SETTINGS_FILENAME = "game.settings";
         private readonly string m_fullSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SETTINGS_FILENAME);
 
-        private int m_selectedGameMode;
-
         public Game1()
         {
             m_graphics = new GraphicsDeviceManager(this);
@@ -302,7 +300,7 @@ namespace GalaxyJam
                     OptionsScreenState.Update(gameTime);
                     break;
                 case GameState.GameStates.GetReadyState:
-                    GetReadyScreenState.Update(gameTime, m_selectedGameMode);
+                    GetReadyScreenState.Update(gameTime, GameState.SelectedGameMode);
                     break;
                 case GameState.GameStates.TutorialScreen:
                     TutorialScreenState.Update(gameTime);
@@ -407,7 +405,7 @@ namespace GalaxyJam
                         InterfaceSettings.PlayerName.Clear();
                         InterfaceSettings.NameToShort = false;
                         SoundManager.SelectedMusic.Resume();
-                        m_selectedGameMode = 0;
+                        GameState.SelectedGameMode = 0;
                         GameState.States = GameState.GameStates.OptionsScreen;
                     }
                     else if (InterfaceSettings.TitleScreenSelection == 1)
@@ -422,7 +420,7 @@ namespace GalaxyJam
                         SoundManager.SelectedMusic.Resume();
                         //BasketballManager.SelectBasketball(BasketballTypes.CuteInPink);
                         //ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
-                        m_selectedGameMode = 1;
+                        GameState.SelectedGameMode = 1;
                         GameState.States = GameState.GameStates.OptionsScreen;
                     }
                     else if (InterfaceSettings.TitleScreenSelection == 2)
@@ -572,7 +570,7 @@ namespace GalaxyJam
                         InterfaceSettings.PlayerOptions.PlayerName = InterfaceSettings.PlayerName.ToString();
                         Screen.Camera.Limits = new Rectangle(0, 0, 1280, 720);
                         Screen.Camera.ResetCamera();
-                        if (m_selectedGameMode == 1)
+                        if (GameState.SelectedGameMode == 1)
                         {
                             ArcadeGoalManager.ResetArcadeGoals();
                             ArcadeModeScreenState.CleanUpGameState();
@@ -604,7 +602,7 @@ namespace GalaxyJam
             {
                 if (character == 27)
                 {
-                    if (m_selectedGameMode == 0)
+                    if (GameState.SelectedGameMode == 0)
                     {
                         GameState.States = GameState.GameStates.Playing;
                     }

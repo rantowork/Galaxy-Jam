@@ -18,5 +18,7 @@
         } ;
 
         public static GameStates States { get; set; }
+
+        public static int SelectedGameMode { get; set; }
     }
 }

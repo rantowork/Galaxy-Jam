@@ -15,7 +15,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Update(GameTime gameTime)
         {
-            if (Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() && !Unlocks.UnlocksCalculated)
+            if ((Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() || Unlocks.CurrentBestScore < InterfaceSettings.ArcadeHighScoreManager.BestScore()) && !Unlocks.UnlocksCalculated)
             {
                 foreach (Basketball basketball in BasketballManager.BasketballList)
                 {
@@ -23,10 +23,19 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     {
                         Unlocks.OldBasketballs.Add(basketball);
                     }
-
-                    if (basketball.BasketballUnlockScore <= InterfaceSettings.HighScoreManager.BestScore())
+                    if (InterfaceSettings.HighScoreManager.BestScore() <= InterfaceSettings.ArcadeHighScoreManager.BestScore())
                     {
-                        Unlocks.NewBasketballs.Add(basketball);
+                        if (basketball.BasketballUnlockScore <= InterfaceSettings.ArcadeHighScoreManager.BestScore())
+                        {
+                            Unlocks.NewBasketballs.Add(basketball);
+                        }
+                    }
+                    else if (InterfaceSettings.ArcadeHighScoreManager.BestScore() <= InterfaceSettings.HighScoreManager.BestScore())
+                    {
+                        if (basketball.BasketballUnlockScore <= InterfaceSettings.HighScoreManager.BestScore())
+                        {
+                            Unlocks.NewBasketballs.Add(basketball);
+                        }
                     }
                 }
 
@@ -53,10 +62,33 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 Unlocks.UnlocksCalculated = true;
             }
 
-            if (!Unlocks.HighScoresLoaded)
+            if (!Unlocks.HighScoresLoaded && GameState.SelectedGameMode == 0)
             {
                 int count = 0;
                 foreach (HighScore highScore in InterfaceSettings.HighScoreManager.HighScores)
+                {
+                    if (count != 9)
+                    {
+                        Unlocks.HighScoresPlayers.AppendLine(String.Format(" {0}. {1}", (count + 1),
+                                                                     highScore.CurrentPlayerName));
+                    }
+                    else
+                    {
+                        Unlocks.HighScoresPlayers.AppendLine(String.Format("{0}. {1}", (count + 1),
+                                                                     highScore.CurrentPlayerName));
+                    }
+                    Unlocks.HighScoresScore.AppendLine(String.Format("{0}", highScore.PlayerScore));
+                    Unlocks.HighScoresStreak.AppendLine(String.Format("{0}", highScore.PlayerTopStreak));
+                    Unlocks.HighScoresMultiplier.AppendLine(String.Format("{0}", highScore.PlayerMultiplier));
+                    count++;
+                }
+
+                Unlocks.HighScoresLoaded = true;
+            }
+            else if (!Unlocks.HighScoresLoaded && GameState.SelectedGameMode == 1)
+            {
+                int count = 0;
+                foreach (HighScore highScore in InterfaceSettings.ArcadeHighScoreManager.HighScores)
                 {
                     if (count != 9)
                     {
@@ -83,8 +115,11 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             spriteBatch.DrawString(Fonts.SpriteFont, Unlocks.HighScoresPlayers, new Vector2(10, 74), Color.White);
             spriteBatch.DrawString(Fonts.SpriteFont, Unlocks.HighScoresScore, new Vector2(290, 74), Color.White);
-            spriteBatch.DrawString(Fonts.SpriteFont, Unlocks.HighScoresStreak, new Vector2(440, 74), Color.White);
-            spriteBatch.DrawString(Fonts.SpriteFont, Unlocks.HighScoresMultiplier, new Vector2(625, 74), Color.White);
+            if (GameState.SelectedGameMode == 0)
+            {
+                spriteBatch.DrawString(Fonts.SpriteFont, Unlocks.HighScoresStreak, new Vector2(440, 74), Color.White);
+                spriteBatch.DrawString(Fonts.SpriteFont, Unlocks.HighScoresMultiplier, new Vector2(625, 74), Color.White);
+            }
             GameInterface.DrawGameEndInterface(spriteBatch, Fonts.SpriteFont, Fonts.PixelScoreGlow, InterfaceSettings.GoalManager);
             spriteBatch.End();
 
@@ -115,7 +150,15 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     Unlocks.ShowNewHighScoreTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
                     float amountToFadeInHighScore = MathHelper.Clamp((float)Unlocks.ShowNewHighScoreTimer / 1000, 0, 1);
                     float amountToFadeInHighScoreValue = MathHelper.Lerp(0, 1, amountToFadeInHighScore);
-                    string finalScore = String.Format("Final Score: {0:n0}!", InterfaceSettings.GoalManager.GameScore);
+                    string finalScore;
+                    if (GameState.SelectedGameMode == 0)
+                    {
+                        finalScore = String.Format("Final Score: {0:n0}!", InterfaceSettings.GoalManager.GameScore);
+                    }
+                    else
+                    {
+                        finalScore = String.Format("Final Score: {0:n0}!", ArcadeGoalManager.Score);    
+                    }
                     Vector2 finalScoreOrigin = Fonts.PixelScoreGlow.MeasureString(finalScore) / 2;
                     spriteBatch.DrawString(Fonts.PixelScoreGlow, finalScore, new Vector2(1280 / 2, 380), new Color(255, 255, 255, amountToFadeInHighScoreValue), 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
                     Unlocks.NewHighScoreTimer = 4001;
@@ -123,7 +166,15 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
             else if (gameTime.ElapsedGameTime.TotalMilliseconds < 20 && !Unlocks.IsNewHighScore)
             {
-                string finalScore = String.Format("Final Score: {0:n0}!", InterfaceSettings.GoalManager.GameScore);
+                string finalScore;
+                if (GameState.SelectedGameMode == 0)
+                {
+                    finalScore = String.Format("Final Score: {0:n0}!", InterfaceSettings.GoalManager.GameScore);
+                }
+                else
+                {
+                    finalScore = String.Format("Final Score: {0:n0}!", ArcadeGoalManager.Score);
+                }
                 Vector2 finalScoreOrigin = Fonts.PixelScoreGlow.MeasureString(finalScore) / 2;
                 spriteBatch.DrawString(Fonts.PixelScoreGlow, finalScore, new Vector2(1280 / 2, 380), Color.White, 0, finalScoreOrigin, 1f, SpriteEffects.None, 1.0f);
             }

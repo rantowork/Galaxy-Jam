@@ -5,36 +5,37 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
 {
     public class GameTimer
     {
-        private static Stopwatch stopWatch = new Stopwatch();
-        private static string elapsedTime;
+        private static readonly Stopwatch s_stopWatch = new Stopwatch();
+        private static string s_elapsedTime;
+        public static TimeSpan GameTime { get; set; }
 
         public static void StartGameTimer()
         {
-            stopWatch.Start();
+            s_stopWatch.Start();
         }
 
         public static void StopGameTimer()
         {
-            stopWatch.Stop();
+            s_stopWatch.Stop();
         }
 
 
         public static string GetElapsedGameTime()
         {
-            TimeSpan span = stopWatch.Elapsed;
-            TimeSpan elapsedSpan = new TimeSpan(0,0,2,0) - span;
-            elapsedTime = String.Format("{0:00}:{1:00}", elapsedSpan.Minutes, elapsedSpan.Seconds);
-            return elapsedTime;
+            TimeSpan span = s_stopWatch.Elapsed;
+            TimeSpan elapsedSpan = GameTime - span;
+            s_elapsedTime = String.Format("{0:00}:{1:00}", elapsedSpan.Minutes, elapsedSpan.Seconds);
+            return s_elapsedTime;
         }
 
         public static TimeSpan GetElapsedTimeSpan()
         {
-            return stopWatch.Elapsed;
+            return s_stopWatch.Elapsed;
         }
 
         public static void ResetTimer()
         {
-            stopWatch.Reset();
+            s_stopWatch.Reset();
             
         }
     }
