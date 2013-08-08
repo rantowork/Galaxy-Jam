@@ -26,7 +26,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
             BasketBallShotSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/pulse");
             BasketScoredSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/BasketScored");
             CollisionSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/Thud");
-            CountdownBeepSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/Countdown");
+            CountdownBeepSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/beep2");
             CountdownGoSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/Go");
             StreakWubSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/wub");
             HighScoreSwooshSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/HighScoreSwoosh");
@@ -38,7 +38,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
 
         public static void LoadSongs(ContentManager content, GameSettings settings)
         {
-            AmbientSpaceSong = content.Load<Song>(@"Audio/Music/IntroAmbientCreativeZero");
+            AmbientSpaceSong = content.Load<Song>(@"Audio/Music/EvilPiece");
             MediaPlayer.Play(AmbientSpaceSong);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = (float)settings.MusicVolume / 10;

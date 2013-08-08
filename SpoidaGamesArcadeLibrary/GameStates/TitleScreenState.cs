@@ -44,7 +44,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private const string TUTORIAL_TEXT = "How to Play";
         private const string EXIT_TEXT = "Exit";
         private const string COPYRIGHT = "(c) Spoida Games LLC, 2013";
-        private const string VERSION = "v0.10 RC 1 (Beta)";
+        private const string VERSION = "v0.20 RC 2 (Beta)";
 
         private static readonly Vector2 s_playTextOrigin = Fonts.SpriteFont.MeasureString(PLAY_TEXT) / 2;
         private static readonly Vector2 s_practiceOrigin = Fonts.SpriteFont.MeasureString(PRACTICE_TEXT) / 2;

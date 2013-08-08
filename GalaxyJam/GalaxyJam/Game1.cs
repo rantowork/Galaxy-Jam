@@ -456,7 +456,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                    BasketballManager.Basketballs[0].BallEmitter.CleanUpParticles();
                     GameState.States = GameState.GameStates.TitleScreen;
                 }
             }
@@ -465,7 +465,7 @@ namespace GalaxyJam
                 if (character == 27)
                 {
                     ResetPosition();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                    BasketballManager.Basketballs[0].BallEmitter.CleanUpParticles();
                     GameState.States = GameState.GameStates.TitleScreen;
                 }
             }

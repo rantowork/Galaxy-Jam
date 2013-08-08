@@ -259,13 +259,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\Music\IntroAmbientCreativeZero.mp3">
-      <Name>IntroAmbientCreativeZero</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Audio\SoundEffects\wub.wav">
       <Name>wub</Name>
       <Importer>WavImporter</Importer>
@@ -737,15 +730,22 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\SoundEffects\space_fx_pickup_22.wav">
-      <Name>space_fx_pickup_22</Name>
+    <Compile Include="Audio\SoundEffects\streak_up.wav">
+      <Name>streak_up</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\SoundEffects\streak_up.wav">
-      <Name>streak_up</Name>
+    <Compile Include="Audio\Music\EvilPiece.mp3">
+      <Name>EvilPiece</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\SoundEffects\beep2.wav">
+      <Name>beep2</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>

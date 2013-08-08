@@ -47,9 +47,9 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 const string tutText01 = "Click to shoot. Try it out!";
                 Vector2 tutText1Origin = Fonts.SpriteFont.MeasureString(tutText01) / 2;
+                BasketballManager.Basketballs[0].DrawEmitter(spriteBatch);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 spriteBatch.DrawString(Fonts.SpriteFont, tutText01, new Vector2(1280 / 2, 700), Color.White, 0f, tutText1Origin, 1.0f, SpriteEffects.None, 1.0f);
-                BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                 spriteBatch.Draw(BasketballManager.Basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.Basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.Basketballs[0].Origin, 1f, SpriteEffects.None, 0f);

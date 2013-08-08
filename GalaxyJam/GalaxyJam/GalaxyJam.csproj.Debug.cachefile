@@ -71,7 +71,6 @@ Content\Audio\SoundEffects\pulse.xnb
 Content\Audio\SoundEffects\explosion2.xnb
 Content\Audio\SoundEffects\HighScoreSwoosh.xnb
 Content\Audio\SoundEffects\UnlockSound.xnb
-Content\Audio\Music\IntroAmbientCreativeZero.xnb
 Content\Textures\Explosion.xnb
 Content\Textures\star.xnb
 Content\Textures\Basketballs\RegularBall.xnb
@@ -114,9 +113,11 @@ Content\Textures\Spark.xnb
 Content\Textures\Splat.xnb
 Content\Audio\SoundEffects\engagehoming.xnb
 Content\Audio\SoundEffects\laser_loop_tail.xnb
-Content\Audio\SoundEffects\space_fx_pickup_22.xnb
 Content\Audio\SoundEffects\streak_up.xnb
-Content\Audio\Music\IntroAmbientCreativeZero.wma
+Content\Audio\Music\EvilPiece.xnb
+Content\Audio\SoundEffects\beep.xnb
+Content\Audio\SoundEffects\beep2.xnb
+Content\Audio\Music\EvilPiece.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
 Content\Audio\Sound Bank.xsb

@@ -45,6 +45,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Vector2 leftRimOrigin = new Vector2(Textures.LeftRim1.Width, Textures.LeftRim1.Height) / 2;
             Vector2 rightRimOrigin2 = new Vector2(Textures.RightRim1.Width, Textures.RightRim1.Height) / 2;
 
+            BasketballManager.Basketballs[0].DrawEmitter(spriteBatch);
+
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             spriteBatch.DrawString(Fonts.SpriteFont, escapePractice, new Vector2(10, 10), Color.White);
             spriteBatch.DrawString(Fonts.SpriteFont, practiceModeText, new Vector2(1280 / 2, 18), Color.White, 0f, practiceModeOrigin, 1.0f, SpriteEffects.None, 1.0f);
@@ -64,7 +66,6 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 }
             }
 
-            BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
             spriteBatch.Draw(BasketballManager.Basketballs[0].BasketballTexture, (InterfaceSettings.BasketballManager.BasketballBody.Position * PhysicalWorld.MetersInPixels), BasketballManager.Basketballs[0].Source, Color.White, InterfaceSettings.BasketballManager.BasketballBody.Rotation, BasketballManager.Basketballs[0].Origin, 1f, SpriteEffects.None, 0f);
 
             //draw backboard
