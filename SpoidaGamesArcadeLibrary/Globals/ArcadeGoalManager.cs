@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using SpoidaGamesArcadeLibrary.GameStates;
 
 namespace SpoidaGamesArcadeLibrary.Globals
 {
@@ -89,6 +90,25 @@ namespace SpoidaGamesArcadeLibrary.Globals
                     if (type.PowerUpName == "Homing Ball")
                     {
                         type.AvailableInventory += 1;
+                        ArcadeModeScreenState.HomingBallTextTimer = 0;
+                        ArcadeModeScreenState.DrawHomingBallText = true;
+                    }
+                    else if (type.PowerUpName == "Rapid Fire")
+                    {
+                        ArcadeModeScreenState.RapidFireTextTimer = 0;
+                        ArcadeModeScreenState.DrawRapidFireText = true;
+                    }
+                    else if (type.PowerUpName == "2x Multiplier")
+                    {
+                        type.TimeRemaining = 10000;
+                        ArcadeModeScreenState.MulitplierTextTimer = 0;
+                        ArcadeModeScreenState.DrawMultiplierText = true;
+                    }
+                    else if (type.PowerUpName == "Laser Sight")
+                    {
+                        type.TimeRemaining = 10000;
+                        ArcadeModeScreenState.LaserSightTextTimer = 0;
+                        ArcadeModeScreenState.DrawLaserSightText = true;
                     }
                     else if (type.PowerUpName != "Rapid Fire")
                     {
@@ -100,12 +120,30 @@ namespace SpoidaGamesArcadeLibrary.Globals
                     if (type.PowerUpName == "Rapid Fire")
                     {
                         type.IsActive = true;
+                        ArcadeModeScreenState.RapidFireTextTimer = 0;
+                        ArcadeModeScreenState.DrawRapidFireText = true;
                         type.TimeRemaining = 4000;
                     }
-                    else
+                    else if (type.PowerUpName == "Laser Sight")
                     {
                         type.IsActive = true;
+                        ArcadeModeScreenState.LaserSightTextTimer = 0;
+                        ArcadeModeScreenState.DrawLaserSightText = true;
                         type.TimeRemaining = 10000;
+                    }
+                    else if (type.PowerUpName == "2x Multiplier")
+                    {
+                        ArcadeModeScreenState.MulitplierTextTimer = 0;
+                        ArcadeModeScreenState.DrawMultiplierText = true;
+                        type.TimeRemaining = 10000;
+                        type.IsActive = true;
+                    }
+                    else if (type.PowerUpName == "Homing Ball")
+                    {
+                        ArcadeModeScreenState.HomingBallTextTimer = 0;
+                        ArcadeModeScreenState.DrawHomingBallText = true;
+                        type.TimeRemaining = 10000;
+                        type.IsActive = true;
                     }
                 }
             }

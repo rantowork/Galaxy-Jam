@@ -15,6 +15,9 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static SoundEffect StreakWubSoundEffect { get; set; }
         public static SoundEffect HighScoreSwooshSoundEffect { get; set; }
         public static SoundEffect UnlockedSoundEffect { get; set; }
+        public static SoundEffect EngageHomingBall { get; set; }
+        public static SoundEffect HomingMissleBallShot { get; set; }
+        public static SoundEffect ArcadeModeStreak { get; set; }
 
         public static Song AmbientSpaceSong { get; set; }
 
@@ -28,6 +31,9 @@ namespace SpoidaGamesArcadeLibrary.Globals
             StreakWubSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/wub");
             HighScoreSwooshSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/HighScoreSwoosh");
             UnlockedSoundEffect = content.Load<SoundEffect>(@"Audio/SoundEffects/UnlockSound");
+            EngageHomingBall = content.Load<SoundEffect>(@"Audio/SoundEffects/engagehoming");
+            HomingMissleBallShot = content.Load<SoundEffect>(@"Audio/SoundEffects/laser_loop_tail");
+            ArcadeModeStreak = content.Load<SoundEffect>(@"Audio/SoundEffects/streak_up");
         }
 
         public static void LoadSongs(ContentManager content, GameSettings settings)

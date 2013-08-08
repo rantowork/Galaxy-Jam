@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
-using SpoidaGamesArcadeLibrary.Interface.Screen;
 using SpoidaGamesArcadeLibrary.Settings;
 using SpoidaGamesArcadeLibrary.GameStates;
 
@@ -57,11 +56,13 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public bool HasBallScored { get; set; }
         public bool HasBallFired { get; set; }
 
+        private int m_scoreModifier = 1000;
+
         public ArcadeBasketball(Texture2D texture, List<Rectangle> framesList, ParticleEmitterTypes ballEmitter)
         {
             BasketballTexture = texture;
             m_frames = framesList;
-            BallEmitter = ParticleEmitters.GetEmitter(ballEmitter);
+            BallEmitter = ParticleEmitters.LoadArcadeEmitter(ballEmitter);
             BallEmitterType = ballEmitter;
             BasketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((m_random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (m_random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
             BasketballBody.BodyType = BodyType.Static;
@@ -81,18 +82,30 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 HasBallScored = true;
                 Screen.Camera.Shaking = true;
                 ArcadeGoalManager.Streak++;
-                if (ArcadeModeScreenState.ShowDoubleScore)
+                if (ArcadeGoalManager.Streak >= 20)
                 {
-                    ArcadeGoalManager.Score += 1000*(ArcadeGoalManager.Multiplier*2);
+                    m_scoreModifier = 10000;
+                }
+                else if (ArcadeGoalManager.Streak >= 50)
+                {
+                    m_scoreModifier = 50000;
                 }
                 else
                 {
-                    ArcadeGoalManager.Score += 1000 * ArcadeGoalManager.Multiplier;                
+                    m_scoreModifier = 1000;
+                }
+                if (ArcadeModeScreenState.ShowDoubleScore)
+                {
+                    ArcadeGoalManager.Score += m_scoreModifier * (ArcadeGoalManager.Multiplier * 2);
+                }
+                else
+                {
+                    ArcadeGoalManager.Score += m_scoreModifier * ArcadeGoalManager.Multiplier;                
                 }
                 ArcadeGoalManager.DrawNumberScrollEffect = true;
                 if (ArcadeGoalManager.Streak % 4 == 0 && ArcadeGoalManager.Streak != 0)
                 {
-                    SoundManager.PlaySoundEffect(Sounds.StreakWubSoundEffect, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
+                    SoundManager.PlaySoundEffect(Sounds.ArcadeModeStreak, (float)InterfaceSettings.GameSettings.SoundEffectVolume / 10, 0f, 0f);
                 }
             }
 

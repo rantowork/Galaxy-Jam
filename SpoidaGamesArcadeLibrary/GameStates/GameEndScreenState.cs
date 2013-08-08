@@ -15,6 +15,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Update(GameTime gameTime)
         {
+            Screen.Camera.ResetCamera();
             if ((Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() || Unlocks.CurrentBestScore < InterfaceSettings.ArcadeHighScoreManager.BestScore()) && !Unlocks.UnlocksCalculated)
             {
                 foreach (Basketball basketball in BasketballManager.BasketballList)

@@ -16,29 +16,70 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         {
             ParticleEmitter = new Dictionary<ParticleEmitterTypes, Emitter>();
 
-            ParticleEmitter.Add(ParticleEmitterTypes.SparkleEmitter, 
-                new Emitter(new List<Texture2D> {Textures.Twopxsolidstar}, 
-                    new Vector2(-40, -40), 
-                    125, 
-                    new List<Color> {Color.DarkRed, Color.DarkOrange},
+            ParticleEmitter.Add(ParticleEmitterTypes.SparkleEmitter,
+                new Emitter(new List<Texture2D> { Textures.Twopxsolidstar },
+                    new Vector2(-40, -40),
+                    125,
+                    new List<Color> { Color.DarkRed, Color.DarkOrange },
                     ParticleEmitterTypes.SparkleEmitter,
                     true));
 
-            ParticleEmitter.Add(ParticleEmitterTypes.CombusionEmitter, 
-                new Emitter(new List<Texture2D> { Textures.Explosion }, 
-                    new Vector2(-40, -40), 
+            ParticleEmitter.Add(ParticleEmitterTypes.CombusionEmitter,
+                new Emitter(new List<Texture2D> { Textures.Explosion },
+                    new Vector2(-40, -40),
                     50,
                     new List<Color> { Color.DarkRed, Color.DarkOrange },
                     ParticleEmitterTypes.CombusionEmitter,
                     true));
 
-            ParticleEmitter.Add(ParticleEmitterTypes.StarEmitter, 
-                new Emitter(new List<Texture2D> {Textures.Star},
-                    new Vector2(-40,-40),
+            ParticleEmitter.Add(ParticleEmitterTypes.StarEmitter,
+                new Emitter(new List<Texture2D> { Textures.Star },
+                    new Vector2(-40, -40),
                     15,
-                    new List<Color>{ Color.Pink, Color.HotPink, Color.LightPink },
+                    new List<Color> { Color.Pink, Color.HotPink, Color.LightPink },
                     ParticleEmitterTypes.StarEmitter,
                     false));
+        }
+
+        public static Emitter LoadArcadeEmitter(ParticleEmitterTypes emitterType)
+        {
+            Emitter emitterToReturn;
+            switch (emitterType)
+            {
+                case ParticleEmitterTypes.CombusionEmitter:
+                    emitterToReturn = new Emitter(new List<Texture2D> {Textures.Explosion},
+                                                  new Vector2(-40, -40),
+                                                  50,
+                                                  new List<Color> {Color.DarkRed, Color.OrangeRed},
+                                                  ParticleEmitterTypes.CombusionEmitter,
+                                                  false);
+                    break;
+                case ParticleEmitterTypes.SparkleEmitter:
+                    emitterToReturn = new Emitter(new List<Texture2D> {Textures.Twopxsolidstar},
+                                                  new Vector2(-40, -40),
+                                                  75,
+                                                  new List<Color> {Color.DarkRed, Color.DarkOrange},
+                                                  ParticleEmitterTypes.SparkleEmitter,
+                                                  true);
+                    break;
+                case ParticleEmitterTypes.StarEmitter:
+                    emitterToReturn = new Emitter(new List<Texture2D> { Textures.Star },
+                                                  new Vector2(-40, -40),
+                                                  15,
+                                                  new List<Color> { Color.Pink, Color.HotPink, Color.LightPink },
+                                                  ParticleEmitterTypes.StarEmitter,
+                                                  false);
+                    break;
+                default:
+                    emitterToReturn = new Emitter(new List<Texture2D> {Textures.Twopxsolidstar},
+                                                  new Vector2(-40, -40),
+                                                  75,
+                                                  new List<Color> {Color.DarkRed, Color.DarkOrange},
+                                                  ParticleEmitterTypes.SparkleEmitter,
+                                                  true);
+                    break;
+            }
+            return emitterToReturn;
         }
 
         public static Emitter GetEmitter(ParticleEmitterTypes emitterType)
