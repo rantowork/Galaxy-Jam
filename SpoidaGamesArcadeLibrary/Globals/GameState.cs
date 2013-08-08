@@ -4,6 +4,7 @@
     {
         public enum GameStates
         {
+            Dpsf,
             StartScreen,
             TitleScreen,
             SettingsScreen,

@@ -78,7 +78,7 @@ namespace GalaxyJam
 
             PhysicalWorld.World = new World(Vector2.Zero);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
-            GameState.States = GameState.GameStates.StartScreen;
+            GameState.States = GameState.GameStates.Dpsf;
         }
 
         /// <summary>
@@ -261,11 +261,26 @@ namespace GalaxyJam
 
             ParticleSystems.TrailParticleSystemWrapper = new TrailParticleSystemWrapper(this);
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper = new ExplosionFlyingSparksParticleSystemWrapper(this);
+            ParticleSystems.DpsfSplashScreenWrapper = new DpsfSplashScreenWrapper(this);
             ParticleSystems.InitializeParticleSystems();
             ParticleSystems.TrailParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
             ParticleSystems.TrailParticleSystemWrapper.AfterAutoInitialize();
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.AfterAutoInitialize();
+            ParticleSystems.DpsfSplashScreenWrapper.AutoInitialize(GraphicsDevice, Content, null);
+            ParticleSystems.DpsfSplashScreenWrapper.AfterAutoInitialize();
+            ParticleSystems.DpsfSplashScreenWrapper.SplashScreenComplete += SplashScreenComplete;
+            ParticleSystems.ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 50, 600), new Vector3(0, 50, 0), Vector3.Up);
+        }
+
+        private void SplashScreenComplete(object sender, EventArgs e)
+        {
+            ParticleSystems.DpsfSplashScreenWrapper.SplashScreenComplete -= SplashScreenComplete;
+            ParticleSystems.ParticleSystemManager.RemoveParticleSystem(ParticleSystems.DpsfSplashScreenWrapper);
+            ParticleSystems.DpsfSplashScreenWrapper.Destroy();
+            ParticleSystems.DpsfSplashScreenWrapper = null;
+            GameState.States = GameState.GameStates.StartScreen;
+            ParticleSystems.ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, -200), new Vector3(0, 0, 0), Vector3.Up);
         }
 
         /// <summary>
@@ -287,6 +302,11 @@ namespace GalaxyJam
             InterfaceSettings.StarField.Update(gameTime);
             switch (GameState.States)
             {
+                case GameState.GameStates.Dpsf:
+                    ParticleSystems.ParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+                    ParticleSystems.ParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+                    ParticleSystems.ParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+                break;
                 case GameState.GameStates.StartScreen:
                     StartScreenState.Update(gameTime);
                     break;
@@ -339,6 +359,9 @@ namespace GalaxyJam
 
             switch (GameState.States)
             {
+                case GameState.GameStates.Dpsf:
+                    ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
+                    break;
                 case GameState.GameStates.StartScreen:
                     StartScreenState.Draw(gameTime, m_spriteBatch);
                     break;
@@ -381,7 +404,14 @@ namespace GalaxyJam
 
         private void GamePlayInput(char character)
         {
-            if (GameState.States == GameState.GameStates.StartScreen)
+            if (GameState.States == GameState.GameStates.Dpsf)
+            {
+                if (character == 27 || character == 13)
+                {
+                    GameState.States = GameState.GameStates.StartScreen;
+                }
+            }
+            else if (GameState.States == GameState.GameStates.StartScreen)
             {
                 if (character == 13)
                 {

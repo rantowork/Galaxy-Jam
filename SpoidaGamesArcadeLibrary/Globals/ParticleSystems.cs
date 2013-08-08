@@ -13,6 +13,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static ParticleSystemManager ParticleSystemManager { get; set; }
         public static TrailParticleSystemWrapper TrailParticleSystemWrapper { get; set; }
         public static ExplosionFlyingSparksParticleSystemWrapper ExplosionFlyingSparksParticleSystemWrapper { get; set; }
+        public static DpsfSplashScreenWrapper DpsfSplashScreenWrapper { get; set; }
 
         public static Matrix WorldMatrix { get; set; }
         public static Matrix ViewMatrix { get; set; }
@@ -27,6 +28,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
             _3DCamera = new _3DCamera(true);
             ParticleSystemManager.AddParticleSystem(TrailParticleSystemWrapper);
             ParticleSystemManager.AddParticleSystem(ExplosionFlyingSparksParticleSystemWrapper);
+            ParticleSystemManager.AddParticleSystem(DpsfSplashScreenWrapper);
             ParticleSystemManager.UpdatesPerSecond = PARTICLE_SYSTEM_UPDATES_PER_SECOND;
             const float aspectRatio = 1280 / 720;
             ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, -200), new Vector3(0, 0, 0), Vector3.Up);
