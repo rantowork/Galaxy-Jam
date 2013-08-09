@@ -78,7 +78,14 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
         public static void Update(GameTime gameTime)
         {
-            Unlocks.CurrentBestScore = InterfaceSettings.ArcadeHighScoreManager.BestScore();
+            if (InterfaceSettings.HighScoreManager.BestScore() <= InterfaceSettings.ArcadeHighScoreManager.BestScore())
+            {
+                Unlocks.CurrentBestScore = InterfaceSettings.ArcadeHighScoreManager.BestScore();
+            }
+            else
+            {
+                Unlocks.CurrentBestScore = InterfaceSettings.HighScoreManager.BestScore();
+            }
             Unlocks.UnlocksCalculated = false;
             Unlocks.IsNewUnlockedBalls = false;
             Unlocks.IsNewHighScore = false;

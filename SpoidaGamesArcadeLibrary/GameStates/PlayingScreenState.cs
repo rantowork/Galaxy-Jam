@@ -19,9 +19,19 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         private const double EFFECT_TIME = 1500;
         private static double s_effectTimer;
 
+        private static double s_hoopParticleTimer;
+        private static int s_hoopDirection;
+
         public static void Update(GameTime gameTime)
         {
-            Unlocks.CurrentBestScore = InterfaceSettings.HighScoreManager.BestScore();
+            if (InterfaceSettings.HighScoreManager.BestScore() <= InterfaceSettings.ArcadeHighScoreManager.BestScore())
+            {
+                Unlocks.CurrentBestScore = InterfaceSettings.ArcadeHighScoreManager.BestScore();
+            }
+            else
+            {
+                Unlocks.CurrentBestScore = InterfaceSettings.HighScoreManager.BestScore();
+            }
             Unlocks.UnlocksCalculated = false;
             Unlocks.IsNewUnlockedBalls = false;
             Unlocks.IsNewHighScore = false;
@@ -77,6 +87,69 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     s_numberScrollEffectTimer = 0;
                 }
             }
+
+            if (InterfaceSettings.GoalManager.Streak < 3)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(new Color(255, 120, 0));
+            }
+            else if (InterfaceSettings.GoalManager.Streak >= 3 && InterfaceSettings.GoalManager.Streak < 6)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.Plum);
+            }
+            else if (InterfaceSettings.GoalManager.Streak >= 6 && InterfaceSettings.GoalManager.Streak < 9)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.Lime);
+            }
+            else if (InterfaceSettings.GoalManager.Streak >= 9 && InterfaceSettings.GoalManager.Streak < 15)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.DarkRed);
+            }
+            else if (InterfaceSettings.GoalManager.Streak >= 15)
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(Color.BlueViolet);
+            }
+            else
+            {
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.ChangeExplosionColor(new Color(255, 120, 0));
+            }
+
+            s_hoopParticleTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (s_hoopParticleTimer <= 1500)
+            {
+                if (s_hoopDirection == 0)
+                {
+                    float amount = MathHelper.Clamp((float)s_hoopParticleTimer / 1500, 0, 1);
+                    Vector3 start = new Vector3(72, 35, 0);
+                    Vector3 end = new Vector3(62, 35, 0);
+                    Vector3 result = Vector3.Lerp(start, end, amount);
+                    ParticleSystems.TrailParticleSystemWrapper.Emitter.PositionData.Position = result;
+                }
+                else
+                {
+                    float amount = MathHelper.Clamp((float)s_hoopParticleTimer / 1500, 0, 1);
+                    Vector3 start = new Vector3(62, 35, 0);
+                    Vector3 end = new Vector3(72, 35, 0);
+                    Vector3 result = Vector3.Lerp(start, end, amount);
+                    ParticleSystems.TrailParticleSystemWrapper.Emitter.PositionData.Position = result;
+                }
+            }
+            else
+            {
+                s_hoopParticleTimer = 0;
+                if (s_hoopDirection == 0)
+                {
+                    s_hoopDirection = 1;
+                }
+                else
+                {
+                    s_hoopDirection = 0;
+                }
+            }
+
+            ParticleSystems.ParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+            ParticleSystems.ParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+            ParticleSystems.ParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             if (GameTimer.GetElapsedTimeSpan() >= new TimeSpan(0, 0, 2, 0))
             {
@@ -200,9 +273,9 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 spriteBatch.DrawString(Fonts.StreakText, InterfaceSettings.GoalManager.DrawStreakMessage, new Vector2(1280 / 2, 696), Color.White, 0f, streakCenter, 1.0f, SpriteEffects.None, 0f);
             }
 
-            spriteBatch.Draw(Textures.Hoop1, new Vector2(72, 198), Color.White);
-
             spriteBatch.End();
+
+            ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
         }
     }
 }

@@ -475,13 +475,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Backboard\RedOrangeHoop.png">
-      <Name>RedOrangeHoop</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Cursor\crosshair.cur">
       <Name>crosshair</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

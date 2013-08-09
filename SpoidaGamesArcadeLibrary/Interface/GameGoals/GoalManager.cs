@@ -70,6 +70,8 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             {
                 GoalScored = true;
 
+                ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.Explode();
+
                 if (!BackboardHit && RimHit)
                 {
                     ScoreMulitplier++;

@@ -58,7 +58,7 @@ namespace GalaxyJam
         private static float s_amount;
         private static float s_fade;
         private static bool s_fadeOut;
-
+        private static double s_startTimer;
         public Game1()
         {
             m_graphics = new GraphicsDeviceManager(this);
@@ -397,7 +397,11 @@ namespace GalaxyJam
                     m_spriteBatch.End();
                     break;
                 case GameState.GameStates.Dpsf:
-                    ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
+                    s_startTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (s_startTimer >= 250)
+                    {
+                        ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
+                    }
                     break;
                 case GameState.GameStates.Credits:
                     CreditsScreenState.Draw(gameTime, m_spriteBatch);
@@ -455,6 +459,12 @@ namespace GalaxyJam
             {
                 if (character == 27 || character == 13)
                 {
+                    ParticleSystems.DpsfSplashScreenWrapper.SplashScreenComplete -= SplashScreenComplete;
+                    ParticleSystems.ParticleSystemManager.RemoveParticleSystem(ParticleSystems.DpsfSplashScreenWrapper);
+                    ParticleSystems.DpsfSplashScreenWrapper.Destroy();
+                    ParticleSystems.DpsfSplashScreenWrapper = null;
+                    GameState.States = GameState.GameStates.StartScreen;
+                    ParticleSystems.ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, -200), new Vector3(0, 0, 0), Vector3.Up);
                     GameState.States = GameState.GameStates.StartScreen;
                 }
             }

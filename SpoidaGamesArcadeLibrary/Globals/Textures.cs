@@ -40,8 +40,6 @@ namespace SpoidaGamesArcadeLibrary.Globals
         public static Texture2D RightRim5 { get; set; }
         public static Texture2D RightRim5Glow { get; set; }
 
-        public static Texture2D Hoop1 { get; set; }
-
         public static Texture2D Twopxsolidstar { get; set; }
         public static Texture2D Fourpxblurstar { get; set; }
         public static Texture2D Onepxsolidstar { get; set; }
@@ -103,7 +101,6 @@ namespace SpoidaGamesArcadeLibrary.Globals
             LeftRim5Glow = content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContact");
             RightRim5 = content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletFlip");
             RightRim5Glow = content.Load<Texture2D>(@"Textures/Backboard/RoyalBlueVioletContactFlip");
-            Hoop1 = content.Load<Texture2D>(@"Textures/Backboard/RedOrangeHoop");
 
             //Empty Sprite 1px
             LineSprite = content.Load<Texture2D>(@"Textures/LineSprite");
