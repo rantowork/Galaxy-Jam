@@ -56,6 +56,9 @@ namespace SpoidaGamesArcadeLibrary.Globals
 
         public static Texture2D GalaxyJamText { get; set; }
         public static Texture2D GalaxyJamLogo { get; set; }
+        public static Texture2D SpoidaLogo { get; set; }
+        public static Texture2D TextFade { get; set; }
+        public static Texture2D Credits { get; set; }
 
         public static void LoadTextures(ContentManager content)
         {
@@ -65,6 +68,9 @@ namespace SpoidaGamesArcadeLibrary.Globals
             MenuHull = content.Load<Texture2D>(@"Textures/Interface/SelectionPanel");
             GalaxyJamText = content.Load<Texture2D>(@"Textures/Interface/GalaxyJamTitle");
             GalaxyJamLogo = content.Load<Texture2D>(@"Textures/GalaxyJamConcept");
+            SpoidaLogo = content.Load<Texture2D>(@"Textures/Interface/SpoidaLogo");
+            TextFade = content.Load<Texture2D>(@"Textures/Interface/TextFade");
+            Credits = content.Load<Texture2D>(@"Textures/Interface/credits");
 
             //Backboards
             Backboard1 = content.Load<Texture2D>(@"Textures/Backboard/RedOrangeBoard2");

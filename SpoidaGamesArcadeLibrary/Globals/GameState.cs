@@ -4,12 +4,14 @@
     {
         public enum GameStates
         {
+            Spoida,
             Dpsf,
             StartScreen,
             TitleScreen,
             SettingsScreen,
             PracticeScreen,
             TutorialScreen,
+            Credits,
             OptionsScreen,
             GetReadyState,
             Playing,

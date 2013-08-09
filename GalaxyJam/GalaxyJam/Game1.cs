@@ -53,6 +53,12 @@ namespace GalaxyJam
         private const string SETTINGS_FILENAME = "game.settings";
         private readonly string m_fullSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SETTINGS_FILENAME);
 
+        //Spoida Screen
+        private static double s_fadeTimer;
+        private static float s_amount;
+        private static float s_fade;
+        private static bool s_fadeOut;
+
         public Game1()
         {
             m_graphics = new GraphicsDeviceManager(this);
@@ -78,7 +84,7 @@ namespace GalaxyJam
 
             PhysicalWorld.World = new World(Vector2.Zero);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
-            GameState.States = GameState.GameStates.Dpsf;
+            GameState.States = GameState.GameStates.Spoida;
         }
 
         /// <summary>
@@ -302,10 +308,36 @@ namespace GalaxyJam
             InterfaceSettings.StarField.Update(gameTime);
             switch (GameState.States)
             {
+                case GameState.GameStates.Spoida:
+                    s_fadeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (s_fadeTimer <= 3500)
+                    {
+                        s_amount = MathHelper.Clamp((float)s_fadeTimer/2500, 0, 1);
+                        s_fade = MathHelper.Lerp(0, 1, s_amount);
+                    }
+                    else if (s_fadeTimer >= 3500 && !s_fadeOut)
+                    {
+                        s_fadeTimer = 0;
+                        s_fadeOut = true;
+                    }
+
+                    if (s_fadeOut && s_fadeTimer <= 2500)
+                    {
+                        s_amount = MathHelper.Clamp((float)s_fadeTimer / 2000, 0, 1);
+                        s_fade = MathHelper.Lerp(1,0 , s_amount);
+                    }
+                    else if (s_fadeOut && s_fadeTimer >= 2000)
+                    {
+                        GameState.States = GameState.GameStates.Dpsf;
+                    }
+                break;
                 case GameState.GameStates.Dpsf:
                     ParticleSystems.ParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
                     ParticleSystems.ParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
                     ParticleSystems.ParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+                break;
+                case GameState.GameStates.Credits:
+                    CreditsScreenState.Update(gameTime);
                 break;
                 case GameState.GameStates.StartScreen:
                     StartScreenState.Update(gameTime);
@@ -359,8 +391,16 @@ namespace GalaxyJam
 
             switch (GameState.States)
             {
+                case GameState.GameStates.Spoida:
+                    m_spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+                    m_spriteBatch.Draw(Textures.SpoidaLogo, new Rectangle(0, 0, 1280, 720), new Color(255, 255, 255, s_fade));
+                    m_spriteBatch.End();
+                    break;
                 case GameState.GameStates.Dpsf:
                     ParticleSystems.ParticleSystemManager.DrawAllParticleSystems();
+                    break;
+                case GameState.GameStates.Credits:
+                    CreditsScreenState.Draw(gameTime, m_spriteBatch);
                     break;
                 case GameState.GameStates.StartScreen:
                     StartScreenState.Draw(gameTime, m_spriteBatch);
@@ -404,7 +444,14 @@ namespace GalaxyJam
 
         private void GamePlayInput(char character)
         {
-            if (GameState.States == GameState.GameStates.Dpsf)
+            if (GameState.States == GameState.GameStates.Spoida)
+            {
+                if (character == 27 || character == 13)
+                {
+                    GameState.States = GameState.GameStates.Dpsf;
+                }
+            }
+            else if (GameState.States == GameState.GameStates.Dpsf)
             {
                 if (character == 27 || character == 13)
                 {
@@ -448,8 +495,6 @@ namespace GalaxyJam
                         InterfaceSettings.PlayerName.Clear();
                         InterfaceSettings.NameToShort = false;
                         SoundManager.SelectedMusic.Resume();
-                        //BasketballManager.SelectBasketball(BasketballTypes.CuteInPink);
-                        //ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
                         GameState.SelectedGameMode = 1;
                         GameState.States = GameState.GameStates.OptionsScreen;
                     }
@@ -475,10 +520,21 @@ namespace GalaxyJam
                         Screen.CachedRightLeftKeyboardState = Screen.Input.GetKeyboard().GetState();
                         GameState.States = GameState.GameStates.TutorialScreen;
                     }
+                    else if (InterfaceSettings.TitleScreenSelection == 5)
+                    {
+                        GameState.States = GameState.GameStates.Credits;
+                    }
                     else
                     {
                         Exit();
                     }
+                }
+            }
+            else if (GameState.States == GameState.GameStates.Credits)
+            {
+                if (character == 27)
+                {
+                    GameState.States = GameState.GameStates.TitleScreen;
                 }
             }
             else if (GameState.States == GameState.GameStates.TutorialScreen)
@@ -505,28 +561,36 @@ namespace GalaxyJam
                 {
                     if (ComputerSettings.CurrentSettingSelection == 4)
                     {
-                        if (Screen.DisplayModes[ComputerSettings.CurrentResolution] == ComputerSettings.PreviousDisplayMode && ComputerSettings.FullScreenSetting == ComputerSettings.PreviousFullScreenSetting && ComputerSettings.PreviousMusicSetting == ComputerSettings.MusicVolumeSetting && ComputerSettings.PreviousSoundEffectSetting == ComputerSettings.SoundEffectVolumeSetting)
+                        if (Screen.DisplayModes[ComputerSettings.CurrentResolution] ==
+                            ComputerSettings.PreviousDisplayMode &&
+                            ComputerSettings.FullScreenSetting == ComputerSettings.PreviousFullScreenSetting &&
+                            ComputerSettings.PreviousMusicSetting == ComputerSettings.MusicVolumeSetting &&
+                            ComputerSettings.PreviousSoundEffectSetting == ComputerSettings.SoundEffectVolumeSetting)
                         {
                             InterfaceSettings.DisplaySettingsSavedMessage = true;
                         }
                         else
                         {
                             DisplayMode mode = Screen.DisplayModes[ComputerSettings.CurrentResolution];
-                            InterfaceSettings.GameSettings = new GameSettings(mode.Width, mode.Height, ComputerSettings.FullScreenSetting, ComputerSettings.MusicVolumeSetting, ComputerSettings.SoundEffectVolumeSetting);
+                            InterfaceSettings.GameSettings = new GameSettings(mode.Width, mode.Height,
+                                                                              ComputerSettings.FullScreenSetting,
+                                                                              ComputerSettings.MusicVolumeSetting,
+                                                                              ComputerSettings.SoundEffectVolumeSetting);
 
                             JavaScriptSerializer serializer = new JavaScriptSerializer();
                             string json = serializer.Serialize(InterfaceSettings.GameSettings);
-                            
+
                             using (FileStream fileStream = File.Create(m_fullSettingsPath))
                             {
-                                using(StreamWriter streamWriter = new StreamWriter(fileStream))
+                                using (StreamWriter streamWriter = new StreamWriter(fileStream))
                                 {
                                     streamWriter.Write(json);
                                 }
                             }
-                            
+
                             bool fullScreen;
-                            if (InterfaceSettings.GameSettings.FullScreenOption == 0 || InterfaceSettings.GameSettings.FullScreenOption == 2)
+                            if (InterfaceSettings.GameSettings.FullScreenOption == 0 ||
+                                InterfaceSettings.GameSettings.FullScreenOption == 2)
                             {
                                 fullScreen = false;
                             }
@@ -534,7 +598,7 @@ namespace GalaxyJam
                             {
                                 fullScreen = true;
                             }
-                            
+
                             ResolutionManager.SetResolution(mode.Width, mode.Height, fullScreen);
                             ResolutionManager.ResetViewport();
 
@@ -548,7 +612,7 @@ namespace GalaxyJam
                             }
 
                             AudioCategory category = m_audioEngine.GetCategory("Music");
-                            category.SetVolume(InterfaceSettings.GameSettings.MusicVolume / 10f);
+                            category.SetVolume(InterfaceSettings.GameSettings.MusicVolume/10f);
 
                             InterfaceSettings.DisplaySettingsSavedMessage = true;
                             ComputerSettings.PreviousDisplayMode = mode;
@@ -571,7 +635,8 @@ namespace GalaxyJam
             else if (GameState.States == GameState.GameStates.OptionsScreen)
             {
                 if (character == '\b')
-                { // backspace
+                {
+                    // backspace
                     if (InterfaceSettings.PlayerName.Length > 0)
                     {
                         InterfaceSettings.PlayerName.Remove(InterfaceSettings.PlayerName.Length - 1, 1);
@@ -619,7 +684,8 @@ namespace GalaxyJam
                     //Exit();
                 }
             }
-            else if (GameState.States == GameState.GameStates.Playing || GameState.States == GameState.GameStates.ArcadeMode)
+            else if (GameState.States == GameState.GameStates.Playing ||
+                     GameState.States == GameState.GameStates.ArcadeMode)
             {
                 if (character == 27)
                 {

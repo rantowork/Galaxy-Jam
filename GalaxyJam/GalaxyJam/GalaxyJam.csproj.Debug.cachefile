@@ -115,8 +115,10 @@ Content\Audio\SoundEffects\engagehoming.xnb
 Content\Audio\SoundEffects\laser_loop_tail.xnb
 Content\Audio\SoundEffects\streak_up.xnb
 Content\Audio\Music\EvilPiece.xnb
-Content\Audio\SoundEffects\beep.xnb
 Content\Audio\SoundEffects\beep2.xnb
+Content\Textures\Interface\SpoidaLogo.xnb
+Content\Textures\Interface\TextFade.xnb
+Content\Textures\Interface\credits.xnb
 Content\Audio\Music\EvilPiece.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb

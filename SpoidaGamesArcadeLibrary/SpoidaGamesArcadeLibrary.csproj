@@ -123,6 +123,7 @@
     <Compile Include="Effects\Environment\Starfield.cs" />
     <Compile Include="Effects\Environment\Stars.cs" />
     <Compile Include="GameStates\ArcadeModeScreenState.cs" />
+    <Compile Include="GameStates\CreditsScreenState.cs" />
     <Compile Include="GameStates\GameEndScreenState.cs" />
     <Compile Include="GameStates\GetReadyScreenState.cs" />
     <Compile Include="Globals\ComputerSettings.cs" />

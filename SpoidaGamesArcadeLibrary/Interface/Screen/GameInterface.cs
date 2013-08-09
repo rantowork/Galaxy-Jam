@@ -11,12 +11,6 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 {
     public class GameInterface
     {
-        //Title Screen Interface
-        public static void DrawTitleScreen(SpriteBatch spriteBatch, Texture2D startScreenLogo)
-        {
-            spriteBatch.Draw(startScreenLogo, new Rectangle(0, 0, 1280, 720), Color.White);
-        }
-
         //Options Interface
         const string NAME_ERROR = "Name must be between 3 and 12 characters!";
         private static Cue s_previousCue;
