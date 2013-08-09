@@ -57,12 +57,8 @@ Content\Textures\Interface\Arrow.xnb
 Content\Textures\Interface\ArrowHover.xnb
 Content\Textures\Backboard\RedOrangeHoop.xnb
 Content\Audio\SoundEffects\BasketScored.xnb
-Content\Audio\Music\BouncyLoop1.xnb
-Content\Audio\Music\SpaceLoop1.xnb
 Content\Audio\Music\SpaceLoop2.xnb
-Content\Audio\Music\BouncyLoop2.xnb
 Content\Audio\Music\DeepSpace1.xnb
-Content\Audio\Music\DeepSpace2.xnb
 Content\Audio\SoundEffects\Go.xnb
 Content\Audio\SoundEffects\Countdown.xnb
 Content\Audio\SoundEffects\Thud.xnb
@@ -119,6 +115,8 @@ Content\Audio\SoundEffects\beep2.xnb
 Content\Textures\Interface\SpoidaLogo.xnb
 Content\Textures\Interface\TextFade.xnb
 Content\Textures\Interface\credits.xnb
+Content\Audio\Music\Primary1.xnb
+Content\Audio\Music\Primary2.xnb
 Content\Audio\Music\EvilPiece.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb

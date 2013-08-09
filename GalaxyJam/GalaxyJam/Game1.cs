@@ -263,7 +263,7 @@ namespace GalaxyJam
 
             AudioCategory category = m_audioEngine.GetCategory("Music");
             category.SetVolume((float)InterfaceSettings.GameSettings.MusicVolume / 10);
-            m_soundManager.SelectMusic(SongTypes.SpaceLoop1);
+            m_soundManager.SelectMusic(SongTypes.Primary1);
 
             ParticleSystems.TrailParticleSystemWrapper = new TrailParticleSystemWrapper(this);
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper = new ExplosionFlyingSparksParticleSystemWrapper(this);

@@ -201,27 +201,23 @@ namespace SpoidaGamesArcadeLibrary.Interface.Screen
 
         private static string GetSongTypeString(SongTypes type)
         {
-            if (type == SongTypes.BouncyLoop1)
+            if (type == SongTypes.Primary1)
             {
-                return "Bouncy";
+                return "Engage";
             }
-            if (type == SongTypes.BouncyLoop2)
+            if (type == SongTypes.Primary2)
             {
-                return "Grunge";
+                return "Trip";
             }
             if (type == SongTypes.DeepSpace1)
             {
                 return "Space";
             }
-            if (type == SongTypes.DeepSpace2)
-            {
-                return "Funky";
-            }
             if (type == SongTypes.SpaceLoop1)
             {
                 return "Chilly";
             }
-            return "Smooth";
+            return "Engage";
         }
 
         //Playing Interface
