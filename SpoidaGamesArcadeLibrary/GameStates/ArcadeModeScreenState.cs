@@ -350,9 +350,34 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
         }
 
+        private static bool s_drawEngageHomingTip = true;
+        private static double s_drawTimeRemaining;
+        private static double s_drawFadeTimer;
+        private const string ENGAGE_TEXT = "Press F to engage homing ball!";
+        private static readonly Vector2 s_engageTextOrigin = Fonts.PixelScoreGlow.MeasureString(ENGAGE_TEXT)/2;
+        private static float s_engageFade = 1;
+
         public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
+            
+            if (s_drawEngageHomingTip)
+            {
+                s_drawTimeRemaining += gameTime.ElapsedGameTime.TotalMilliseconds;
+                
+                if (s_drawTimeRemaining >= 1500)
+                {
+                    s_drawFadeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    float amount = MathHelper.Clamp((float)s_drawFadeTimer / 2500, 0, 1);
+                    s_engageFade = MathHelper.Lerp(1, 0, amount);
+                }
+                spriteBatch.DrawString(Fonts.PixelScoreGlow, ENGAGE_TEXT, new Vector2(1280 / 2, 500), new Color(255, 255, 255, s_engageFade), 0f, s_engageTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
+                if (s_drawTimeRemaining >= 4000)
+                {
+                    s_drawEngageHomingTip = false;
+                }
+            }
+
             if (DrawLaserSightText)
             {
                 const string laserSightText = "Laser Sight Activated!";
