@@ -38,6 +38,10 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
  
         public void Update()
         {
+            if (EmitterType == ParticleEmitterTypes.None)
+            {
+                return;
+            }
             int total = ParticleCount;
  
             for (int i = 0; i < total; i++)
@@ -137,6 +141,9 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         {
             switch (EmitterType)
             {
+                case ParticleEmitterTypes.None:
+
+                break;
                 case ParticleEmitterTypes.SparkleEmitter:
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
                     foreach (Particle t in m_particles)

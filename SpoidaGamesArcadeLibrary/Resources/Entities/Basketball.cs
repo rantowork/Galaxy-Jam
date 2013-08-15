@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Effects._3D.Particles;
 using SpoidaGamesArcadeLibrary.Globals;
 
 namespace SpoidaGamesArcadeLibrary.Resources.Entities
@@ -53,6 +54,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public int BasketballUnlockScore { get; set; }
         public Emitter BallEmitter { get; set; }
         public ParticleEmitterTypes BallEmitterType { get; set; }
+        public AnimatedSpriteParticleSystemWrapper ParticleWrapper { get; set; }
 
         public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated, string name, int unlockScore, ParticleEmitterTypes ballEmitter)
         {
@@ -69,9 +71,20 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            BallEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-            BallEmitter.Update();
-
+            if (BallEmitterType == ParticleEmitterTypes.Explosion)
+            {
+                ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+                ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+                ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+                Vector2 ballCenter = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                ParticleWrapper.Emitter.PositionData.Position = new Vector3(ballCenter.X, ballCenter.Y, 0);
+            }
+            else
+            {
+                BallEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                BallEmitter.Update();
+            }
+            
             TimeLeftForCurrentFrame += elapsed;
 
             if (Animate)

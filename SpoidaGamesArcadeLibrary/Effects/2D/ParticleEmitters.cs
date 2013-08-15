@@ -16,6 +16,8 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         {
             ParticleEmitter = new Dictionary<ParticleEmitterTypes, Emitter>();
 
+            ParticleEmitter.Add(ParticleEmitterTypes.None, new Emitter(null, new Vector2(0,0), 0, new List<Color>{Color.White}, ParticleEmitterTypes.None, false));
+            ParticleEmitter.Add(ParticleEmitterTypes.Explosion, new Emitter(null, new Vector2(0, 0), 0, new List<Color> { Color.White }, ParticleEmitterTypes.None, false));
             ParticleEmitter.Add(ParticleEmitterTypes.SparkleEmitter,
                 new Emitter(new List<Texture2D> { Textures.Twopxsolidstar },
                     new Vector2(-40, -40),
@@ -46,6 +48,10 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
             Emitter emitterToReturn;
             switch (emitterType)
             {
+                case ParticleEmitterTypes.None:
+                    emitterToReturn = new Emitter(null, new Vector2(0, 0), 0, new List<Color> {Color.White},
+                                                  ParticleEmitterTypes.None, false);
+                    break;
                 case ParticleEmitterTypes.CombusionEmitter:
                     emitterToReturn = new Emitter(new List<Texture2D> {Textures.Explosion},
                                                   new Vector2(-40, -40),
@@ -69,6 +75,10 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
                                                   new List<Color> { Color.Pink, Color.HotPink, Color.LightPink },
                                                   ParticleEmitterTypes.StarEmitter,
                                                   false);
+                    break;
+                case ParticleEmitterTypes.Explosion:
+                    emitterToReturn = new Emitter(null, new Vector2(0, 0), 0, new List<Color> { Color.White },
+                                                  ParticleEmitterTypes.None, false);
                     break;
                 default:
                     emitterToReturn = new Emitter(new List<Texture2D> {Textures.Twopxsolidstar},
@@ -95,9 +105,11 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
 
     public enum ParticleEmitterTypes
     {
+        None,
         SparkleEmitter,
         CombusionEmitter,
         StarEmitter,
-        HoopEmitter
+        HoopEmitter,
+        Explosion,
     }
 }

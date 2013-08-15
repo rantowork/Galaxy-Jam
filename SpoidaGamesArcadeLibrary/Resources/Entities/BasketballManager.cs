@@ -55,8 +55,10 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Cute In Pink", 200000, ParticleEmitterTypes.StarEmitter);
             Basketball brokenPlanet = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Broken Planet", 500000, ParticleEmitterTypes.SparkleEmitter);
             Basketball thatsNoMoon = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!", 750000, ParticleEmitterTypes.SparkleEmitter);
-            Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day", 1000000, ParticleEmitterTypes.SparkleEmitter);
-            Basketball magmaBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Magma Ball", 1500000, ParticleEmitterTypes.CombusionEmitter);
+            Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day", 1000000, ParticleEmitterTypes.None);
+            Basketball sawBlade = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/Saw"), new List<Rectangle> {new Rectangle(0,0,64,64)},false,"Sawvinguard",2000000,ParticleEmitterTypes.SparkleEmitter);
+            Basketball theTrinity = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/Trinity"), new List<Rectangle> {new Rectangle(0,0,64,64)},false,"The Trinity", 2500000,ParticleEmitterTypes.None);
+            Basketball magmaBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Magma Ball", 3500000, ParticleEmitterTypes.Explosion);
 
             Basketballs.Add(BasketballTypes.RegularBall, regularBall);
             Basketballs.Add(BasketballTypes.RedGlowBall, redGlowBall);
@@ -66,6 +68,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Basketballs.Add(BasketballTypes.BrokenPlanet, brokenPlanet);
             Basketballs.Add(BasketballTypes.ThatsNoMoon, thatsNoMoon);
             Basketballs.Add(BasketballTypes.EarthDay, earthDay);
+            Basketballs.Add(BasketballTypes.SawBlade, sawBlade);
+            Basketballs.Add(BasketballTypes.TheTrinity, theTrinity);
             Basketballs.Add(BasketballTypes.MagmaBall, magmaBall);
 
             BasketballList.Add(regularBall);
@@ -76,6 +80,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             BasketballList.Add(brokenPlanet);
             BasketballList.Add(thatsNoMoon);
             BasketballList.Add(earthDay);
+            BasketballList.Add(sawBlade);
+            BasketballList.Add(theTrinity);
             BasketballList.Add(magmaBall);
         }
 
@@ -95,6 +101,8 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         BrokenPlanet,
         ThatsNoMoon,
         EarthDay,
+        SawBlade,
+        TheTrinity,
         MagmaBall
     }
 }

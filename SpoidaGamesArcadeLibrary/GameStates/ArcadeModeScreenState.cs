@@ -7,6 +7,7 @@ using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
@@ -125,6 +126,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 {
                     PhysicalWorld.World.RemoveBody(basketball.BasketballBody);
                     s_activeBasketballsToRemove.Add(basketball);
+                    basketball.DestroyParticles();
                     if (basketball.HasBallScored == false)
                     {
                         ArcadeGoalManager.Streak = 0;
@@ -324,6 +326,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             ParticleSystems.ParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
             ParticleSystems.ParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
 
+            ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+            ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+            ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+
             if (Screen.Camera.Shaking)
             {
                 Screen.Camera.ShakeCamera(gameTime);
@@ -337,6 +343,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 GameTimer.StopGameTimer();
                 InterfaceSettings.ArcadeHighScoreManager.SaveHighScore(InterfaceSettings.PlayerOptions.PlayerName, ArcadeGoalManager.Score, 0, 0);
+                ParticleSystems.BallParticleSystemManager.DestroyAndRemoveAllParticleSystems();
                 Unlocks.HighScoresPlayers.Clear();
                 Unlocks.HighScoresScore.Clear();
                 Unlocks.HighScoresStreak.Clear();
@@ -457,6 +464,8 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             {
                 basketball.DrawEmitter(spriteBatch);
             }
+
+            ParticleSystems.BallParticleSystemManager.DrawAllParticleSystems();
 
             string currentMultiplier = String.Format("x{0}", ArcadeGoalManager.Multiplier);
             string currentStreak = String.Format("+{0}", ArcadeGoalManager.Streak);
@@ -579,6 +588,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
         public static void SpawnNewBasketball()
         {
             ArcadeBasketball newBall = new ArcadeBasketball(PlayerSelectedBall.BasketballTexture, PlayerSelectedBall.FrameList, PlayerSelectedBall.BallEmitterType);
+            if (newBall.BallEmitterType == ParticleEmitterTypes.Explosion)
+            {
+                newBall.ParticleWrapper = ParticleSystems.AddSpriteSystemToManager(ParticleEmitterTypes.Explosion);
+            }
             if (s_showRapidFire)
             {
                 newBall.BasketballBody.Position = s_randomRapidFireVector;

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SpoidaGamesArcadeLibrary.Effects._2D;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Interface.Screen;
@@ -157,6 +158,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                 if (InterfaceSettings.BasketballManager.BasketballBody.Awake == false)
                 {
                     InterfaceSettings.HighScoreManager.SaveHighScore(InterfaceSettings.PlayerOptions.PlayerName, InterfaceSettings.GoalManager.GameScore, InterfaceSettings.GoalManager.TopStreak, InterfaceSettings.GoalManager.ScoreMulitplier);
+                    ParticleSystems.BallParticleSystemManager.DestroyAndRemoveAllParticleSystems();
                     Unlocks.HighScoresPlayers.Clear();
                     Unlocks.HighScoresScore.Clear();
                     Unlocks.HighScoresStreak.Clear();
@@ -194,9 +196,16 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
 
             spriteBatch.End();
-
-            BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
             
+            if (BasketballManager.SelectedBasketball.BallEmitterType == ParticleEmitterTypes.Explosion)
+            {
+                ParticleSystems.BallParticleSystemManager.DrawAllParticleSystems();
+            }
+            else
+            {
+                BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
+            }
+
             //draw objects which contain a body that can have forces applied to it
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             //draw basketball

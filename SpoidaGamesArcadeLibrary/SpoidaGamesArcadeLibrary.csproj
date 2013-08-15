@@ -114,6 +114,8 @@
     <Compile Include="Effects\2D\Emitter.cs" />
     <Compile Include="Effects\2D\ParticleEmitters.cs" />
     <Compile Include="Effects\3D\IWrapParticleSystem.cs" />
+    <Compile Include="Effects\3D\Particles\AnimatedSpriteParticleSystem.cs" />
+    <Compile Include="Effects\3D\Particles\AnimatedSpriteParticleSystemWrapper.cs" />
     <Compile Include="Effects\3D\Particles\DPSFSplashParticleSystem.cs" />
     <Compile Include="Effects\3D\Particles\DPSFSplashScreenWrapper.cs" />
     <Compile Include="Effects\3D\Particles\ExplosionFlyingSparksParticleSystem.cs" />

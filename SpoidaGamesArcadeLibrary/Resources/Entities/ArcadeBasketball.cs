@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using DPSF;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpoidaGamesArcadeLibrary.Effects._2D;
+using SpoidaGamesArcadeLibrary.Effects._3D.Particles;
 using SpoidaGamesArcadeLibrary.Globals;
 using SpoidaGamesArcadeLibrary.Interface.GameGoals;
 using SpoidaGamesArcadeLibrary.Settings;
@@ -55,6 +57,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public Body BasketballBody { get; set; }
         public bool HasBallScored { get; set; }
         public bool HasBallFired { get; set; }
+        public AnimatedSpriteParticleSystemWrapper ParticleWrapper { get; set; }
 
         private int m_scoreModifier = 1000;
 
@@ -133,8 +136,27 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 }
             }
 
-            BallEmitter.EmitterLocation = BasketballBody.WorldCenter*PhysicalWorld.MetersInPixels;
-            BallEmitter.Update();
+            if (BallEmitterType == ParticleEmitterTypes.Explosion)
+            {
+                ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+                ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+                ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+                ParticleWrapper.Emitter.PositionData.Position = new Vector3(basketballCenter.X, basketballCenter.Y, 0);
+            }
+            else
+            {
+                BallEmitter.EmitterLocation = BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                BallEmitter.Update();
+            }
+        }
+
+        public virtual void DestroyParticles()
+        {
+            if (BallEmitterType == ParticleEmitterTypes.Explosion)
+            {
+                ParticleSystems.ParticleSystemManager.RemoveParticleSystem(ParticleWrapper);
+                ParticleWrapper.Destroy();
+            }
         }
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)

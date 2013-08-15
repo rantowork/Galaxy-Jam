@@ -268,14 +268,19 @@ namespace GalaxyJam
             ParticleSystems.TrailParticleSystemWrapper = new TrailParticleSystemWrapper(this);
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper = new ExplosionFlyingSparksParticleSystemWrapper(this);
             ParticleSystems.DpsfSplashScreenWrapper = new DpsfSplashScreenWrapper(this);
-            ParticleSystems.InitializeParticleSystems();
+            
+            ParticleSystems.InitializeParticleSystems(GraphicsDevice, Content, this);
+
             ParticleSystems.TrailParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
             ParticleSystems.TrailParticleSystemWrapper.AfterAutoInitialize();
+            
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.AutoInitialize(GraphicsDevice, Content, null);
             ParticleSystems.ExplosionFlyingSparksParticleSystemWrapper.AfterAutoInitialize();
+            
             ParticleSystems.DpsfSplashScreenWrapper.AutoInitialize(GraphicsDevice, Content, null);
             ParticleSystems.DpsfSplashScreenWrapper.AfterAutoInitialize();
             ParticleSystems.DpsfSplashScreenWrapper.SplashScreenComplete += SplashScreenComplete;
+            
             ParticleSystems.ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 50, 600), new Vector3(0, 50, 0), Vector3.Up);
         }
 
@@ -285,6 +290,7 @@ namespace GalaxyJam
             ParticleSystems.ParticleSystemManager.RemoveParticleSystem(ParticleSystems.DpsfSplashScreenWrapper);
             ParticleSystems.DpsfSplashScreenWrapper.Destroy();
             ParticleSystems.DpsfSplashScreenWrapper = null;
+            ParticleSystems.AddStatic3DSystemsToManager();
             GameState.States = GameState.GameStates.StartScreen;
             ParticleSystems.ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, -200), new Vector3(0, 0, 0), Vector3.Up);
         }
@@ -310,12 +316,12 @@ namespace GalaxyJam
             {
                 case GameState.GameStates.Spoida:
                     s_fadeTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                    if (s_fadeTimer <= 3500)
+                    if (s_fadeTimer <= 2500)
                     {
                         s_amount = MathHelper.Clamp((float)s_fadeTimer/2500, 0, 1);
-                        s_fade = MathHelper.Lerp(0, 1, s_amount);
+                        s_fade = 1;
                     }
-                    else if (s_fadeTimer >= 3500 && !s_fadeOut)
+                    else if (s_fadeTimer >= 2500 && !s_fadeOut)
                     {
                         s_fadeTimer = 0;
                         s_fadeOut = true;
@@ -463,6 +469,7 @@ namespace GalaxyJam
                     ParticleSystems.ParticleSystemManager.RemoveParticleSystem(ParticleSystems.DpsfSplashScreenWrapper);
                     ParticleSystems.DpsfSplashScreenWrapper.Destroy();
                     ParticleSystems.DpsfSplashScreenWrapper = null;
+                    ParticleSystems.AddStatic3DSystemsToManager();
                     GameState.States = GameState.GameStates.StartScreen;
                     ParticleSystems.ViewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, -200), new Vector3(0, 0, 0), Vector3.Up);
                     GameState.States = GameState.GameStates.StartScreen;
@@ -683,6 +690,13 @@ namespace GalaxyJam
                             ArcadeModeScreenState.ReadyToFire = true;
                             PhysicalWorld.World.Gravity.Y = 25;
                         }
+                        else if (GameState.SelectedGameMode == 0)
+                        {
+                            if (BasketballManager.SelectedBasketball.BallEmitterType == ParticleEmitterTypes.Explosion)
+                            {
+                                BasketballManager.SelectedBasketball.ParticleWrapper = ParticleSystems.AddSpriteSystemToManager(ParticleEmitterTypes.Explosion);
+                            }
+                        }
                         GameState.States = GameState.GameStates.GetReadyState;
                     }
                 }
@@ -690,6 +704,7 @@ namespace GalaxyJam
                 {
                     SoundManager.SelectedMusic.Pause();
                     MediaPlayer.Resume();
+                    ParticleSystems.BallParticleSystemManager.DestroyAndRemoveAllParticleSystems();
                     GameState.States = GameState.GameStates.TitleScreen;
                     //Exit();
                 }
