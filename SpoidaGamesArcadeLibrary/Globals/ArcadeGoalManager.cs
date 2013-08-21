@@ -97,6 +97,7 @@ namespace SpoidaGamesArcadeLibrary.Globals
                     {
                         ArcadeModeScreenState.RapidFireTextTimer = 0;
                         ArcadeModeScreenState.DrawRapidFireText = true;
+                        type.TimeRemaining += 1000;
                     }
                     else if (type.PowerUpName == "2x Multiplier")
                     {

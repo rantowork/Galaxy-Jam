@@ -80,5 +80,6 @@
         public float MaximumScale { get; set; }
         public bool IsBurst { get; set; }
         public bool EndBurst { get; set; }
+        public double BurstCooldown { get; set; }
     }
 }

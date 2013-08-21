@@ -96,6 +96,15 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
             // particles in the List are active. Once all particles are
             // active, the burst is complete so do not re-initialize any
             // new particles, until m_settings.EndBurst == false, again
+
+            s_elapsedBurstTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (s_elapsedBurstTimer <= Settings.BurstCooldown)
+            {
+                Settings.EndBurst = false;
+                s_elapsedBurstTimer = 0;
+            }
+
             foreach (AdvancedParticle p in m_particleList)
             {
                 if (p.Active == false)
@@ -202,5 +211,6 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
         public AdvancedParticleEmitter Settings { get; set; }
         public List<Color> ParticleColors = new List<Color>();
         private static readonly Random s_random = new Random();
+        private static double s_elapsedBurstTimer;
     }
 }
