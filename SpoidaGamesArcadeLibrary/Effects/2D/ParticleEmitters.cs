@@ -45,7 +45,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
             yinYangEmitter.ParticleColors.Add(new Color(18, 40, 255));
 
             AdvancedParticleEmitter theEye = new AdvancedParticleEmitter();
-            theEye.ParticleTextureFileName = "Textures/Spark";
+            theEye.ParticleTextureFileName = "Textures/Smoke";
             theEye.IsBurst = false;
             theEye.SetLifeTimes(.3f, .7f);
             theEye.SetScales(.8f, 1.5f);
