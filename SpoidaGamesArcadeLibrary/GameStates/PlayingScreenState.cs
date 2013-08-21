@@ -163,7 +163,10 @@ namespace SpoidaGamesArcadeLibrary.GameStates
                     Unlocks.HighScoresScore.Clear();
                     Unlocks.HighScoresStreak.Clear();
                     Unlocks.HighScoresMultiplier.Clear();
-                    BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                    if (BasketballManager.SelectedBasketball.BallEmitter != null)
+                    {
+                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                    }
                     if (Unlocks.CurrentBestScore < InterfaceSettings.HighScoreManager.BestScore() && !Unlocks.UnlocksCalculated)
                     {
                         Unlocks.IsNewHighScore = true;
@@ -203,7 +206,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             }
             else
             {
-                BasketballManager.SelectedBasketball.DrawEmitter(spriteBatch);
+                BasketballManager.SelectedBasketball.DrawEmitter(gameTime, spriteBatch);
             }
 
             //draw objects which contain a body that can have forces applied to it

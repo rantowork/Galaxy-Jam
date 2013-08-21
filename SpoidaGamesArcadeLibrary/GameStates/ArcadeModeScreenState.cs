@@ -462,7 +462,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
 
             foreach (ArcadeBasketball basketball in s_activeBasketballs)
             {
-                basketball.DrawEmitter(spriteBatch);
+                basketball.DrawEmitter(gameTime, spriteBatch);
             }
 
             ParticleSystems.BallParticleSystemManager.DrawAllParticleSystems();

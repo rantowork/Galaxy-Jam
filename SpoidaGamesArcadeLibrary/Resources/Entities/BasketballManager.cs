@@ -55,10 +55,12 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Basketball cuteInPink = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/CuteInPink"), new List<Rectangle> { new Rectangle(0, 0, 96, 96) }, false, "Cute In Pink", 200000, ParticleEmitterTypes.StarEmitter);
             Basketball brokenPlanet = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/BrokenPlanet"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Broken Planet", 500000, ParticleEmitterTypes.SparkleEmitter);
             Basketball thatsNoMoon = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/ThatsNoMoon"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "That's No Moon!", 750000, ParticleEmitterTypes.SparkleEmitter);
-            Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day", 1000000, ParticleEmitterTypes.None);
+            Basketball earthDay = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EarthDay"), new List<Rectangle> { new Rectangle(0, 0, 36, 36) }, false, "Earth Day", 1000000, ParticleEmitterTypes.AdvancedStar);
             Basketball sawBlade = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/Saw"), new List<Rectangle> {new Rectangle(0,0,64,64)},false,"Sawvinguard",2000000,ParticleEmitterTypes.SparkleEmitter);
-            Basketball theTrinity = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/Trinity"), new List<Rectangle> {new Rectangle(0,0,64,64)},false,"The Trinity", 2500000,ParticleEmitterTypes.None);
+            Basketball distantStar = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/DistantStar"), new List<Rectangle> {new Rectangle(0,0,128,128)},false, "Distant Star", 3000000, ParticleEmitterTypes.None );
             Basketball magmaBall = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/MagmaBall"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Magma Ball", 3500000, ParticleEmitterTypes.Explosion);
+            Basketball fireYang = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/FireYang"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Fire & Ice", 4500000, ParticleEmitterTypes.TheYinYang);
+            Basketball eternalEye = new Basketball(content.Load<Texture2D>(@"Textures/Basketballs/EternalEye"), new List<Rectangle> { new Rectangle(0, 0, 64, 64) }, false, "Eternal Eye", 6000000, ParticleEmitterTypes.TheEye);
 
             Basketballs.Add(BasketballTypes.RegularBall, regularBall);
             Basketballs.Add(BasketballTypes.RedGlowBall, redGlowBall);
@@ -69,8 +71,10 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Basketballs.Add(BasketballTypes.ThatsNoMoon, thatsNoMoon);
             Basketballs.Add(BasketballTypes.EarthDay, earthDay);
             Basketballs.Add(BasketballTypes.SawBlade, sawBlade);
-            Basketballs.Add(BasketballTypes.TheTrinity, theTrinity);
+            Basketballs.Add(BasketballTypes.DistantStar, distantStar);
             Basketballs.Add(BasketballTypes.MagmaBall, magmaBall);
+            Basketballs.Add(BasketballTypes.FireYang, fireYang);
+            Basketballs.Add(BasketballTypes.EternalEye, eternalEye);
 
             BasketballList.Add(regularBall);
             BasketballList.Add(redGlowBall);
@@ -81,8 +85,10 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             BasketballList.Add(thatsNoMoon);
             BasketballList.Add(earthDay);
             BasketballList.Add(sawBlade);
-            BasketballList.Add(theTrinity);
+            BasketballList.Add(distantStar);
             BasketballList.Add(magmaBall);
+            BasketballList.Add(fireYang);
+            BasketballList.Add(eternalEye);
         }
 
         private static void LoadLockedBasketballs(ContentManager content)
@@ -102,7 +108,9 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         ThatsNoMoon,
         EarthDay,
         SawBlade,
-        TheTrinity,
-        MagmaBall
+        DistantStar,
+        MagmaBall,
+        FireYang,
+        EternalEye,
     }
 }

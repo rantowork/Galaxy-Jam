@@ -108,6 +108,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\2D\AdvancedParticle.cs" />
+    <Compile Include="Effects\2D\AdvancedParticleEmitter.cs" />
+    <Compile Include="Effects\2D\AdvancedParticleSystem.cs" />
     <Compile Include="Effects\2D\Particle.cs">
       <SubType>Code</SubType>
     </Compile>

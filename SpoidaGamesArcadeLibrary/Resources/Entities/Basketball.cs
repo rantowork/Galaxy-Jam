@@ -53,8 +53,11 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public string BasketballName { get; set; }
         public int BasketballUnlockScore { get; set; }
         public Emitter BallEmitter { get; set; }
+        public AdvancedParticleSystem AdvancedParticleEmitter { get; set; }
         public ParticleEmitterTypes BallEmitterType { get; set; }
         public AnimatedSpriteParticleSystemWrapper ParticleWrapper { get; set; }
+
+        private bool m_useClassicEmitter;
 
         public Basketball(Texture2D texture, List<Rectangle> framesList, bool isAnimated, string name, int unlockScore, ParticleEmitterTypes ballEmitter)
         {
@@ -63,7 +66,16 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             Animate = isAnimated;
             BasketballName = name;
             BasketballUnlockScore = unlockScore;
-            BallEmitter = ParticleEmitters.GetEmitter(ballEmitter);
+            if (ParticleEmitters.IsEmitterClassic(ballEmitter))
+            {
+                BallEmitter = ParticleEmitters.GetEmitter(ballEmitter);
+                m_useClassicEmitter = true;
+            }
+            else
+            {
+                AdvancedParticleEmitter = ParticleEmitters.LoadAdvancedArcadeEmitter(ballEmitter);
+                m_useClassicEmitter = false;
+            }
             BallEmitterType = ballEmitter;
         }
 
@@ -71,20 +83,33 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (BallEmitterType == ParticleEmitterTypes.Explosion)
+            if (m_useClassicEmitter)
             {
-                ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
-                ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
-                ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
-                Vector2 ballCenter = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-                ParticleWrapper.Emitter.PositionData.Position = new Vector3(ballCenter.X, ballCenter.Y, 0);
+                if (BallEmitterType == ParticleEmitterTypes.Explosion)
+                {
+                    ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(
+                        ParticleSystems._3DCamera.Position);
+                    ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(
+                        ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+                    ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems(
+                        (float) gameTime.ElapsedGameTime.TotalSeconds);
+                    Vector2 ballCenter = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter*
+                                         PhysicalWorld.MetersInPixels;
+                    ParticleWrapper.Emitter.PositionData.Position = new Vector3(ballCenter.X, ballCenter.Y, 0);
+                }
+                else
+                {
+                    BallEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter*
+                                                  PhysicalWorld.MetersInPixels;
+                    BallEmitter.Update();
+                }
             }
             else
             {
-                BallEmitter.EmitterLocation = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-                BallEmitter.Update();
+                AdvancedParticleEmitter.OriginPosition = InterfaceSettings.BasketballManager.BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                AdvancedParticleEmitter.Update(gameTime);
             }
-            
+
             TimeLeftForCurrentFrame += elapsed;
 
             if (Animate)
@@ -97,9 +122,16 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             }
         }
 
-        public virtual void DrawEmitter(SpriteBatch spriteBatch)
+        public virtual void DrawEmitter(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            BallEmitter.Draw(spriteBatch);
+            if (m_useClassicEmitter)
+            {
+                BallEmitter.Draw(spriteBatch);
+            }
+            else
+            {
+                AdvancedParticleEmitter.Draw(gameTime, spriteBatch);
+            }
         }
     }
 }

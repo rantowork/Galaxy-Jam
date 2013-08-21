@@ -245,6 +245,7 @@ namespace GalaxyJam
             Textures.LoadTextures(Content);
             InterfaceSettings.LoadEffects();
             ParticleEmitters.LoadEmitters(Content);
+            ParticleEmitters.InitializeAdvancedParticleSystems(this);
             Fonts.LoadFonts(Content);
             Sounds.LoadSongs(Content, InterfaceSettings.GameSettings);
             Sounds.LoadSounds(Content);
@@ -745,7 +746,10 @@ namespace GalaxyJam
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
-                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        if (BasketballManager.SelectedBasketball.BallEmitter != null)
+                        {
+                            BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        }
                         InterfaceSettings.GoalManager.ResetGoalManager();
                         Unlocks.HighScoresLoaded = false;
                         GetReadyScreenState.SoundEffectCounter = 1;
@@ -757,6 +761,7 @@ namespace GalaxyJam
                     else
                     {
                         ArcadeGoalManager.ResetArcadeGoals();
+                        ParticleSystems.BallParticleSystemManager.DestroyAndRemoveAllParticleSystems();
                         ArcadeModeScreenState.CleanUpGameState();
                         ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
                         ArcadeModeScreenState.ReadyToFire = true;
@@ -775,7 +780,10 @@ namespace GalaxyJam
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
-                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        if (BasketballManager.SelectedBasketball.BallEmitter != null)
+                        {
+                            BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        }
                         InterfaceSettings.GoalManager.ResetGoalManager();
                         Unlocks.HighScoresLoaded = false;
                         SoundManager.MuteSounds();
@@ -786,6 +794,7 @@ namespace GalaxyJam
                     else
                     {
                         ArcadeGoalManager.ResetArcadeGoals();
+                        ParticleSystems.BallParticleSystemManager.DestroyAndRemoveAllParticleSystems();
                         ArcadeModeScreenState.CleanUpGameState();
                         ArcadeModeScreenState.PlayerSelectedBall = BasketballManager.SelectedBasketball;
                         ArcadeModeScreenState.ReadyToFire = true;
@@ -811,7 +820,10 @@ namespace GalaxyJam
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
-                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        if (BasketballManager.SelectedBasketball.BallEmitter != null)
+                        {
+                            BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        }
                         InterfaceSettings.GoalManager.ResetGoalManager();
                         Unlocks.HighScoresLoaded = false;
                         GetReadyScreenState.SoundEffectCounter = 1;
@@ -839,7 +851,10 @@ namespace GalaxyJam
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
-                        BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        if (BasketballManager.SelectedBasketball.BallEmitter != null)
+                        {
+                            BasketballManager.SelectedBasketball.BallEmitter.CleanUpParticles();
+                        }
                         InterfaceSettings.GoalManager.ResetGoalManager();
                         Unlocks.HighScoresLoaded = false;
                         GetReadyScreenState.SoundEffectCounter = 1;

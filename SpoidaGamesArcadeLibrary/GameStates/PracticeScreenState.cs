@@ -45,7 +45,7 @@ namespace SpoidaGamesArcadeLibrary.GameStates
             Vector2 leftRimOrigin = new Vector2(Textures.LeftRim1.Width, Textures.LeftRim1.Height) / 2;
             Vector2 rightRimOrigin2 = new Vector2(Textures.RightRim1.Width, Textures.RightRim1.Height) / 2;
 
-            BasketballManager.Basketballs[0].DrawEmitter(spriteBatch);
+            BasketballManager.Basketballs[0].DrawEmitter(gameTime, spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Screen.Camera.ViewMatrix * ResolutionManager.GetTransformationMatrix());
             spriteBatch.DrawString(Fonts.SpriteFont, escapePractice, new Vector2(10, 10), Color.White);

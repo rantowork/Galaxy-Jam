@@ -53,6 +53,7 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         }
 
         public Emitter BallEmitter { get; set; }
+        public AdvancedParticleSystem AdvancedParticleEmitter { get; set; }
         public ParticleEmitterTypes BallEmitterType { get; set; }
         public Body BasketballBody { get; set; }
         public bool HasBallScored { get; set; }
@@ -60,12 +61,22 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
         public AnimatedSpriteParticleSystemWrapper ParticleWrapper { get; set; }
 
         private int m_scoreModifier = 1000;
+        private readonly bool m_useClassicEmitter;
 
         public ArcadeBasketball(Texture2D texture, List<Rectangle> framesList, ParticleEmitterTypes ballEmitter)
         {
             BasketballTexture = texture;
             m_frames = framesList;
-            BallEmitter = ParticleEmitters.LoadArcadeEmitter(ballEmitter);
+            if (ParticleEmitters.IsEmitterClassic(ballEmitter))
+            {
+                BallEmitter = ParticleEmitters.LoadArcadeEmitter(ballEmitter);
+                m_useClassicEmitter = true;
+            }
+            else
+            {
+                AdvancedParticleEmitter = ParticleEmitters.LoadAdvancedArcadeEmitter(ballEmitter);
+                m_useClassicEmitter = false;
+            }
             BallEmitterType = ballEmitter;
             BasketballBody = BodyFactory.CreateCircle(PhysicalWorld.World, 32f / (2f * PhysicalWorld.MetersInPixels), 1.0f, new Vector2((m_random.Next(370, 1230)) / PhysicalWorld.MetersInPixels, (m_random.Next(310, 680)) / PhysicalWorld.MetersInPixels));
             BasketballBody.BodyType = BodyType.Static;
@@ -112,41 +123,49 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
                 }
             }
 
-            if (BallEmitter.ParticlesCanChange)
+            if (m_useClassicEmitter)
             {
-                if (ArcadeGoalManager.Streak >= 4 && ArcadeGoalManager.Streak < 8)
+                if (BallEmitter.ParticlesCanChange)
                 {
-                    BallEmitter.Colors = new List<Color> {Color.Purple, Color.Plum, Color.Orchid};
+                    if (ArcadeGoalManager.Streak >= 4 && ArcadeGoalManager.Streak < 8)
+                    {
+                        BallEmitter.Colors = new List<Color> {Color.Purple, Color.Plum, Color.Orchid};
+                    }
+                    else if (ArcadeGoalManager.Streak >= 8 && ArcadeGoalManager.Streak < 12)
+                    {
+                        BallEmitter.Colors = new List<Color> {Color.LimeGreen, Color.Teal, Color.Green};
+                    }
+                    else if (ArcadeGoalManager.Streak >= 12 && ArcadeGoalManager.Streak < 16)
+                    {
+                        BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.Red, Color.IndianRed};
+                    }
+                    else if (ArcadeGoalManager.Streak >= 16)
+                    {
+                        BallEmitter.Colors = new List<Color> {Color.Thistle, Color.BlueViolet, Color.RoyalBlue};
+                    }
+                    else
+                    {
+                        BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
+                    }
                 }
-                else if (ArcadeGoalManager.Streak >= 8 && ArcadeGoalManager.Streak < 12)
+
+                if (BallEmitterType == ParticleEmitterTypes.Explosion)
                 {
-                    BallEmitter.Colors = new List<Color> {Color.LimeGreen, Color.Teal, Color.Green};
-                }
-                else if (ArcadeGoalManager.Streak >= 12 && ArcadeGoalManager.Streak < 16)
-                {
-                    BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.Red, Color.IndianRed};
-                }
-                else if (ArcadeGoalManager.Streak >= 16)
-                {
-                    BallEmitter.Colors = new List<Color> {Color.Thistle, Color.BlueViolet, Color.RoyalBlue};
+                    ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
+                    ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
+                    ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
+                    ParticleWrapper.Emitter.PositionData.Position = new Vector3(basketballCenter.X, basketballCenter.Y, 0);
                 }
                 else
                 {
-                    BallEmitter.Colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
+                    BallEmitter.EmitterLocation = BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
+                    BallEmitter.Update();
                 }
-            }
-
-            if (BallEmitterType == ParticleEmitterTypes.Explosion)
-            {
-                ParticleSystems.BallParticleSystemManager.SetCameraPositionForAllParticleSystems(ParticleSystems._3DCamera.Position);
-                ParticleSystems.BallParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(ParticleSystems.WorldMatrix, ParticleSystems.ViewMatrix, ParticleSystems.ProjectionMatrix);
-                ParticleSystems.BallParticleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
-                ParticleWrapper.Emitter.PositionData.Position = new Vector3(basketballCenter.X, basketballCenter.Y, 0);
             }
             else
             {
-                BallEmitter.EmitterLocation = BasketballBody.WorldCenter * PhysicalWorld.MetersInPixels;
-                BallEmitter.Update();
+                AdvancedParticleEmitter.OriginPosition = BasketballBody.WorldCenter*PhysicalWorld.MetersInPixels;
+                AdvancedParticleEmitter.Update(gameTime);
             }
         }
 
@@ -164,9 +183,16 @@ namespace SpoidaGamesArcadeLibrary.Resources.Entities
             spriteBatch.Draw(BasketballTexture, BasketballBody.Position*PhysicalWorld.MetersInPixels, Source, Color.White, BasketballBody.Rotation, Origin, 1f, SpriteEffects.None, 0f);
         }
 
-        public virtual void DrawEmitter(SpriteBatch spriteBatch)
+        public virtual void DrawEmitter(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            BallEmitter.Draw(spriteBatch);
+            if (m_useClassicEmitter)
+            {
+                BallEmitter.Draw(spriteBatch);
+            }
+            else
+            {
+                AdvancedParticleEmitter.Draw(gameTime, spriteBatch);
+            }
         }
     }
 }

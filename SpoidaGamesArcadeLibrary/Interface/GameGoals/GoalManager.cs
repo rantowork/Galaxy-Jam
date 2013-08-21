@@ -156,31 +156,59 @@ namespace SpoidaGamesArcadeLibrary.Interface.GameGoals
             {
                 camera.Position = Vector2.Zero;
             }
-
-            if (Streak >= 3 && Streak < 6)
+            if (sparkleEmitter != null)
             {
-                sparkleEmitter.Colors = new List<Color> { Color.Purple, Color.Plum, Color.Orchid};
-                starfield.StarSpeedModifier = 4;
-            }
-            else if (Streak >= 6 && Streak < 9)
-            {
-                sparkleEmitter.Colors = new List<Color> {Color.LimeGreen, Color.Teal, Color.Green};
-                starfield.StarSpeedModifier = 9;
-            }
-            else if (Streak >= 9 && Streak < 15)
-            {
-                sparkleEmitter.Colors = new List<Color> { Color.DarkRed, Color.Red, Color.IndianRed };
-                starfield.StarSpeedModifier = 12;
-            }
-            else if (Streak >= 15)
-            {
-                sparkleEmitter.Colors = new List<Color> { Color.Thistle, Color.BlueViolet, Color.RoyalBlue };
-                starfield.StarSpeedModifier = 12;
-            }
-            else
-            {
-                sparkleEmitter.Colors = new List<Color> {Color.DarkRed, Color.DarkOrange};
-                starfield.StarSpeedModifier = 1;
+                if (sparkleEmitter.ParticlesCanChange)
+                {
+                    if (Streak >= 3 && Streak < 6)
+                    {
+                        sparkleEmitter.Colors = new List<Color> { Color.Purple, Color.Plum, Color.Orchid };
+                        starfield.StarSpeedModifier = 4;
+                    }
+                    else if (Streak >= 6 && Streak < 9)
+                    {
+                        sparkleEmitter.Colors = new List<Color> { Color.LimeGreen, Color.Teal, Color.Green };
+                        starfield.StarSpeedModifier = 9;
+                    }
+                    else if (Streak >= 9 && Streak < 15)
+                    {
+                        sparkleEmitter.Colors = new List<Color> { Color.DarkRed, Color.Red, Color.IndianRed };
+                        starfield.StarSpeedModifier = 12;
+                    }
+                    else if (Streak >= 15)
+                    {
+                        sparkleEmitter.Colors = new List<Color> { Color.Thistle, Color.BlueViolet, Color.RoyalBlue };
+                        starfield.StarSpeedModifier = 12;
+                    }
+                    else
+                    {
+                        sparkleEmitter.Colors = new List<Color> { Color.DarkRed, Color.DarkOrange };
+                        starfield.StarSpeedModifier = 1;
+                    }
+                }
+                else
+                {
+                    if (Streak >= 3 && Streak < 6)
+                    {
+                        starfield.StarSpeedModifier = 4;
+                    }
+                    else if (Streak >= 6 && Streak < 9)
+                    {
+                        starfield.StarSpeedModifier = 9;
+                    }
+                    else if (Streak >= 9 && Streak < 15)
+                    {
+                        starfield.StarSpeedModifier = 12;
+                    }
+                    else if (Streak >= 15)
+                    {
+                        starfield.StarSpeedModifier = 12;
+                    }
+                    else
+                    {
+                        starfield.StarSpeedModifier = 1;
+                    }
+                }
             }
         }
 

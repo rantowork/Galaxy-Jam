@@ -69,7 +69,6 @@ Content\Audio\SoundEffects\UnlockSound.xnb
 Content\Textures\Explosion.xnb
 Content\Textures\star.xnb
 Content\Textures\Basketballs\RegularBall.xnb
-Content\Textures\AnimatedButterfly.xnb
 Content\Textures\AnimatedExplosion.xnb
 Content\Textures\Arrow.xnb
 Content\Textures\Arrow2.xnb
@@ -81,7 +80,6 @@ Content\Textures\Bubble.xnb
 Content\Textures\Cloud.xnb
 Content\Textures\CloudLight.xnb
 Content\Textures\CrossArrow.xnb
-Content\Textures\Dog.xnb
 Content\Textures\Donut.xnb
 Content\Textures\DPSFLogo.xnb
 Content\Textures\DPSFText.xnb
@@ -118,6 +116,29 @@ Content\Audio\Music\Primary1.xnb
 Content\Audio\Music\Primary2.xnb
 Content\Textures\Basketballs\Saw.xnb
 Content\Textures\Basketballs\Trinity.xnb
+Content\Textures\Basketballs\DistantStar.xnb
+Content\Textures\Basketballs\EternalEye.xnb
+Content\Textures\Basketballs\FireYang.xnb
+Content\Textures\Star2.xnb
+Content\Textures\Star3.xnb
+Content\Textures\Star4.xnb
+Content\Textures\Star5.xnb
+Content\Textures\Star6.xnb
+Content\Textures\Star7.xnb
+Content\Textures\Star8.xnb
+Content\Textures\Star9.xnb
+Content\Textures\StarFish.xnb
+Content\Textures\Sun.xnb
+Content\Textures\Sun2.xnb
+Content\Textures\Sun3.xnb
+Content\Textures\ThrowingStar.xnb
+Content\Textures\Wheel.xnb
+Content\Textures\WhiteSquare.xnb
+Content\Textures\WhiteSquare1.xnb
+Content\Textures\WhiteSquare10.xnb
+Content\Textures\WhiteSquare2.xnb
+Content\Textures\WordBubble.xnb
+Content\Textures\X.xnb
 Content\Audio\Music\EvilPiece.wma
 Content\Audio\GalaxyJamAudio.xgs
 Content\Audio\Wave Bank.xwb
