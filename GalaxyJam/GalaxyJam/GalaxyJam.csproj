@@ -119,8 +119,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Nuclex.Input, Version=4.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+      <HintPath>..\..\..\..\Libraries\Nuclex.Input.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Fenix\Downloads\nuclex-framework-r1404-binaries\xna-4.0-x86\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
