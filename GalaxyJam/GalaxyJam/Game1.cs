@@ -743,6 +743,7 @@ namespace GalaxyJam
 
                 if (character == 109)
                 {
+                    Screen.Camera.Position = Vector2.Zero;
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
@@ -777,6 +778,7 @@ namespace GalaxyJam
 
                 if (character == 114)
                 {
+                    Screen.Camera.Position = Vector2.Zero;
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
@@ -817,6 +819,7 @@ namespace GalaxyJam
 
                 if (character == 109)
                 {
+                    Screen.Camera.Position = Vector2.Zero;
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();
@@ -848,6 +851,7 @@ namespace GalaxyJam
 
                 if (character == 114)
                 {
+                    Screen.Camera.Position = Vector2.Zero;
                     if (GameState.SelectedGameMode == 0)
                     {
                         ResetPosition();

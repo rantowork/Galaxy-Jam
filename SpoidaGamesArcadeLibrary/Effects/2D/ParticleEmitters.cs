@@ -144,7 +144,7 @@ namespace SpoidaGamesArcadeLibrary.Effects._2D
                 case ParticleEmitterTypes.AdvancedStar:
 
                     AdvancedParticleEmitter advancedStar = new AdvancedParticleEmitter();
-                    advancedStar.ParticleTextureFileName = "Textures/Star3";
+                    advancedStar.ParticleTextureFileName = "Textures/Particle";
                     advancedStar.IsBurst = false;
                     advancedStar.SetLifeTimes(1.0f, 1.5f);
                     advancedStar.SetScales(0.4f, .8f);
