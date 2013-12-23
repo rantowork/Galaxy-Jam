@@ -34,7 +34,7 @@ namespace GalaxyClient
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             HighScoreList.ItemsSource = m_highScoreCollection;
-            //GetHighScores();
+            GetHighScores();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
