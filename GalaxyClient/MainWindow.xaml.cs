@@ -106,7 +106,8 @@ namespace GalaxyClient
 
         private void GetCookiesClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(AuthControl.ExecuteJavascriptWithResult("document.cookie;"));
+            MessageBox.Show(AuthControl.ExecuteJavascriptWithResult("document.getElementById('id').value"));
+            MessageBox.Show(AuthControl.ExecuteJavascriptWithResult("document.getElementById('nickname').value"));
         }
     }
 }
