@@ -122,8 +122,6 @@ Content\Textures\WhiteSquare2.xnb
 Content\Textures\WordBubble.xnb
 Content\Textures\X.xnb
 Content\Audio\SoundEffects\BasketScored.xnb
-Content\Audio\Music\SpaceLoop2.xnb
-Content\Audio\Music\DeepSpace1.xnb
 Content\Audio\SoundEffects\Go.xnb
 Content\Audio\SoundEffects\Countdown.xnb
 Content\Audio\SoundEffects\Thud.xnb
@@ -136,8 +134,6 @@ Content\Audio\SoundEffects\engagehoming.xnb
 Content\Audio\SoundEffects\laser_loop_tail.xnb
 Content\Audio\SoundEffects\streak_up.xnb
 Content\Audio\SoundEffects\beep2.xnb
-Content\Audio\Music\Primary1.xnb
-Content\Audio\Music\Primary2.xnb
 Content\Audio\Music\EvilPiece.xnb
 Content\Audio\Music\EvilPiece.wma
 Content\Audio\GalaxyJamAudio.xgs

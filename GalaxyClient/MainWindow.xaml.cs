@@ -28,12 +28,11 @@ namespace GalaxyClient
             InitializeComponent();
 
             m_client.BaseAddress = new Uri("https://localhost:44300/");
-            m_client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+            m_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
-            HighScoreList.ItemsSource = m_highScoreCollection;
+            //HighScoreList.ItemsSource = m_highScoreCollection;
             GetHighScores();
         }
 
@@ -104,10 +103,9 @@ namespace GalaxyClient
             
         }
 
-        private void GetCookiesClick(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(AuthControl.ExecuteJavascriptWithResult("document.getElementById('id').value"));
-            MessageBox.Show(AuthControl.ExecuteJavascriptWithResult("document.getElementById('nickname').value"));
+            MessageBox.Show("Your User Id:" + AuthControl.ExecuteJavascriptWithResult("document.getElementById('id').value") + "       Your Nickname:" + (AuthControl.ExecuteJavascriptWithResult("document.getElementById('nickname').value")));
         }
     }
 }
