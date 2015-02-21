@@ -238,15 +238,15 @@ Wave Bank
     Windows Bank Path Edited = 0;
     Seek Tables = 1;
     Compression Preset Name = Compression;
-    Bank Last Revised Low = 3256532224;
-    Bank Last Revised High = 30346216;
+    Bank Last Revised Low = 211301585;
+    Bank Last Revised High = 30428570;
 
     Wave
     {
         Name = SpaceLoop2;
-        File = C:\Users\Spoida\Downloads\Temp Music\SpaceLoop2.wav;
-        Build Settings Last Modified Low = 3256532224;
-        Build Settings Last Modified High = 30346216;
+        File = ..\..\..\..\..\Work\Sounds\SpaceLoop2.wav;
+        Build Settings Last Modified Low = 1067578446;
+        Build Settings Last Modified High = 30428560;
 
         Cache
         {
@@ -255,21 +255,21 @@ Wave Bank
             Sampling Rate = 44100;
             Bits Per Sample = 1;
             Play Region Offset = 46;
-            Play Region Length = 6773760;
+            Play Region Length = 5644800;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 1096416177;
-            Last Modified High = 30289727;
+            Last Modified Low = 766921250;
+            Last Modified High = 30289478;
         }
     }
 
     Wave
     {
         Name = DeepSpace1;
-        File = C:\Users\Spoida\Downloads\Temp Music\DeepSpace1.wav;
-        Build Settings Last Modified Low = 3256532224;
-        Build Settings Last Modified High = 30346216;
+        File = ..\..\..\..\..\Work\Sounds\DeepSpace1.wav;
+        Build Settings Last Modified Low = 1289863680;
+        Build Settings Last Modified High = 30428560;
 
         Cache
         {
@@ -290,9 +290,9 @@ Wave Bank
     Wave
     {
         Name = Primary1;
-        File = C:\Users\Spoida\Downloads\Temp Music\Primary1.wav;
-        Build Settings Last Modified Low = 3256532224;
-        Build Settings Last Modified High = 30346216;
+        File = ..\..\..\..\..\Work\Sounds\Primary1.wav;
+        Build Settings Last Modified Low = 134527610;
+        Build Settings Last Modified High = 30428570;
 
         Cache
         {
@@ -305,17 +305,17 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2651066678;
-            Last Modified High = 30315690;
+            Last Modified Low = 3677017885;
+            Last Modified High = 30428569;
         }
     }
 
     Wave
     {
         Name = Primary2;
-        File = C:\Users\Spoida\Downloads\Temp Music\Primary2.wav;
-        Build Settings Last Modified Low = 3256532224;
-        Build Settings Last Modified High = 30346216;
+        File = ..\..\..\..\..\Work\Sounds\Primary2.wav;
+        Build Settings Last Modified Low = 211301585;
+        Build Settings Last Modified High = 30428570;
 
         Cache
         {
@@ -323,13 +323,13 @@ Wave Bank
             Channels = 2;
             Sampling Rate = 44100;
             Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 28214648;
+            Play Region Offset = 910;
+            Play Region Length = 10160636;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2666240341;
-            Last Modified High = 30315690;
+            Last Modified Low = 3219226401;
+            Last Modified High = 30428569;
         }
     }
 }
